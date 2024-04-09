@@ -27,8 +27,8 @@ public class JavaExample {
     private static String apiKey = "ff7d522c-72f5-4c84-9a3f-5d70cf143185";
 
 
-    public static void main() {
-         List<CryptoDTO> a = null;
+    public static List<CryptoDTO> main() {
+         List<CryptoDTO> a = new ArrayList<>();
         String uri0 = "https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/listings/latest";
        // String uri = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/trending/most-visited";
         String uri3 = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/category?id=1027";
@@ -122,7 +122,7 @@ public class JavaExample {
             throw new RuntimeException(e);
         }
 
-        //return a;
+        return a;
     }
 
 
