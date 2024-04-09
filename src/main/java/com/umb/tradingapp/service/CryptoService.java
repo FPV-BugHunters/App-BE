@@ -19,6 +19,6 @@ public class CryptoService {
 
 
         //return JavaExample.main();
-        return list;
+        return  JavaExample.main();
     }
 }

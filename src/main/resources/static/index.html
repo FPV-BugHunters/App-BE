@@ -11,7 +11,7 @@
   <script>
       $(document).ready(function() {
           fetchData();
-          setInterval(fetchData, 10000);
+          setInterval(fetchData, 60000);
       });
 
       function fetchData() {
@@ -25,7 +25,7 @@
                   // Loop through each cryptocurrency in the data
                   $.each(data, function(index, crypto) {
                       var name = crypto.name;
-                      var price = crypto.price; // Assuming price exists
+                      var price = crypto.priceUSD; // Assuming price exists
 
                       // Create a new element for each crypto
                       var cryptoDiv = $("<div class='crypto-item'></div>");
