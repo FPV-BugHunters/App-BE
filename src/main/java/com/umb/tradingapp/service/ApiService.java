@@ -1,4 +1,4 @@
-package com.umb.tradingapp.api; /**
+package com.umb.tradingapp.service; /**
  * This example uses the Apache HTTPComponents library.
  */
 
@@ -16,33 +16,34 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JavaExample {
+@Service
+public class ApiService {
 
-    private static String apiKey = "ff7d522c-72f5-4c84-9a3f-5d70cf143185";
+    private final String apiKey = "ff7d522c-72f5-4c84-9a3f-5d70cf143185";
 
-
-    public static List<CryptoDTO> main() {
+    public List<CryptoDTO> main() {
         List<CryptoDTO> a = new ArrayList<>();
-        String uri = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest";
+        String latest_uri = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest";
 
-        List<NameValuePair> paratmers = new ArrayList<NameValuePair>();
-        paratmers.add(new BasicNameValuePair("start","1"));
+        List<NameValuePair> parameters = new ArrayList<>();
+        parameters.add(new BasicNameValuePair("start","1"));
 
         try {
-            String result = makeAPICall(uri, paratmers);
+            String result = makeAPICall(latest_uri, parameters);
             System.out.println("///////////////////////////////////////////////");
 
             JSONObject responseJson = new JSONObject(result);  // Parse JSON response
             JSONArray dataArray = responseJson.getJSONArray("data");
 
-            System.out.println(responseJson);
-
+            //System.out.println(dataArray);
+            System.out.println(dataArray.getJSONObject(0));
             // Loop through each cryptocurrency
             for (int i = 0; i < dataArray.length(); i++) {
                 JSONObject cryptoData = dataArray.getJSONObject(i);
@@ -92,17 +93,6 @@ public class JavaExample {
 
             }
 
-            // Extract and format Bitcoin data
-            //JSONArray dataArray = responseJson.getJSONArray("bitcoin");
-           // System.out.println(dataArray);
-            //JSONObject bitcoinData = dataArray.getJSONObject(0);  // Assuming Bitcoin is at index 0
-
-            //String name = bitcoinData.getString("name");
-            //double priceUSD = bitcoinData.getDouble("1");
-
-            System.out.println(responseJson);
-
-
         } catch (IOException e) {
             System.out.println("Error: cannont access content - " + e.toString());
         } catch (URISyntaxException e) {
@@ -114,8 +104,7 @@ public class JavaExample {
         return a;
     }
 
-
-    public static String makeAPICall(String uri, List<NameValuePair> parameters)
+    public String makeAPICall(String uri, List<NameValuePair> parameters)
             throws URISyntaxException, IOException {
         String response_content = "";
 
@@ -141,5 +130,4 @@ public class JavaExample {
 
         return response_content;
     }
-
 }
