@@ -51,8 +51,6 @@ public class JavaExample {
 
             System.out.println(responseJson);
 
-
-
             // Loop through each cryptocurrency
             for (int i = 0; i < dataArray.length(); i++) {
                 JSONObject cryptoData = dataArray.getJSONObject(i);
@@ -90,6 +88,7 @@ public class JavaExample {
                 System.out.println("-------");
 
                 CryptoDTO d = new CryptoDTO();
+                d.setRank(rank);
                 d.setName(name);
                 d.setSymbol(symbol);
                 d.setPriceUSD(priceUSD);
@@ -98,8 +97,8 @@ public class JavaExample {
 
                a.add(d);
                a.get(0).getRank();
-                System.out.printf(d.getName());
-                System.out.println(a.get(0).getRank());
+                //System.out.printf(d.getName());
+                //System.out.println(a.get(0).getRank());
 
             }
 

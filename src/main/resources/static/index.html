@@ -26,11 +26,20 @@
                   $.each(data, function(index, crypto) {
                       var name = crypto.name;
                       var price = crypto.priceUSD; // Assuming price exists
+                      var marketcap = crypto.marketCap;
+                      var rank = crypto.rank;
+
 
                       // Create a new element for each crypto
                       var cryptoDiv = $("<div class='crypto-item'></div>");
                       cryptoDiv.append("<h2>" + name + "</h2>");
-                      cryptoDiv.append("<p>Price: $" + price + "</p>");
+                      cryptoDiv.append("<h3>" + rank + "</h3>");
+
+                      cryptoDiv.append("<p>Price: " + price.toFixed(2)+ " $"+"</p>");
+
+                      const roundedMarketCap = marketcap.toFixed(2);
+                      const billions = roundedMarketCap/1000000000;
+                      cryptoDiv.append("<p>Market cap: " +billions.toFixed(2)+ " mld $"+ "</p>");
 
                       // Add the new element to the container
                       $("#crypto-data").append(cryptoDiv);

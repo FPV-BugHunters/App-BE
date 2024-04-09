@@ -11,9 +11,6 @@ public class TradingAppApplication {
 
 		SpringApplication.run(TradingAppApplication.class, args);
 
-		// Create an instance of JavaExample
-		 JavaExample.main();
-
 
 	}
 
