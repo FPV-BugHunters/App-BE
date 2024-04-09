@@ -28,30 +28,20 @@ public class JavaExample {
 
 
     public static List<CryptoDTO> main() {
-         List<CryptoDTO> a = new ArrayList<>();
-        String uri0 = "https://sandbox-api.coinmarketcap.com/v1/cryptocurrency/listings/latest";
-       // String uri = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/trending/most-visited";
-        String uri3 = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/category?id=1027";
-        String uri2 = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest";
-
+        List<CryptoDTO> a = new ArrayList<>();
+        String uri = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest";
 
         List<NameValuePair> paratmers = new ArrayList<NameValuePair>();
         paratmers.add(new BasicNameValuePair("start","1"));
-       // paratmers.add(new BasicNameValuePair("limit","5000"));
-       // paratmers.add(new BasicNameValuePair("convert","USD"));
 
         try {
-            String result = makeAPICall(uri2, paratmers);
-            //System.out.println(result);
+            String result = makeAPICall(uri, paratmers);
             System.out.println("///////////////////////////////////////////////");
-
 
             JSONObject responseJson = new JSONObject(result);  // Parse JSON response
             JSONArray dataArray = responseJson.getJSONArray("data");
 
             System.out.println(responseJson);
-
-
 
             // Loop through each cryptocurrency
             for (int i = 0; i < dataArray.length(); i++) {
@@ -73,10 +63,9 @@ public class JavaExample {
                     marketCap = quoteObject.getJSONObject("USD").getDouble("market_cap");
                 }
 
-
                 JSONObject dataObject = responseJson.getJSONArray("data").getJSONObject(i);  // Assuming first element is Bitcoin
                 //circulatingSupply = dataObject.getInt("circulating_supply");
-                    circulatingSupply = circ_supply;
+                circulatingSupply = circ_supply;
 
                 dataObject = responseJson.getJSONArray("data").getJSONObject(i);  //
                 int rank = dataObject.getInt("cmc_rank");

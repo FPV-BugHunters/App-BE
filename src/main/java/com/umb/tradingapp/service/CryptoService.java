@@ -12,13 +12,7 @@ public class CryptoService {
 
     public List<CryptoDTO> listAllCryptos(){
         ArrayList<CryptoDTO> list = new ArrayList<>();
-        CryptoDTO d = new CryptoDTO();
 
-        d.setName("hehe");
-        list.add(d);
-
-
-        //return JavaExample.main();
         return  JavaExample.main();
     }
 }
