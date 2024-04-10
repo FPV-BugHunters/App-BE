@@ -80,6 +80,7 @@ public class ApiService {
                 System.out.println("-------");
 
                 CryptoDTO d = new CryptoDTO();
+                d.setRank(rank);
                 d.setName(name);
                 d.setSymbol(symbol);
                 d.setPriceUSD(priceUSD);
