@@ -5,13 +5,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class CryptoDTO {
-    private Long crypto_id;
-    private Integer rank;
+@AllArgsConstructor
+public class CryptoPriceDTO {
     private String name;
     private String symbol;
-    private String slug;
-    private Boolean isActive;
+    private int rank;
+    private double priceUSD;
+    private double circulatingSupply;
+    private double marketCap;
+
+
 }

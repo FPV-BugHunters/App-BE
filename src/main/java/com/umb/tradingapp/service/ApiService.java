@@ -2,7 +2,8 @@ package com.umb.tradingapp.service; /**
  * This example uses the Apache HTTPComponents library.
  */
 
-import com.umb.tradingapp.DTO.CryptoDTO;
+import com.umb.tradingapp.DTO.CryptoPriceDTO;
+import com.umb.tradingapp.repo.CryptoRepository;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.NameValuePair;
@@ -16,6 +17,7 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -26,10 +28,12 @@ import java.util.List;
 @Service
 public class ApiService {
 
+    @Autowired
+    private CryptoRepository cryptoRepo;
     private final String apiKey = "ff7d522c-72f5-4c84-9a3f-5d70cf143185";
 
-    public List<CryptoDTO> main() {
-        List<CryptoDTO> a = new ArrayList<>();
+    public List<CryptoPriceDTO> main() {
+        List<CryptoPriceDTO> a = new ArrayList<>();
         String latest_uri = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest";
 
         List<NameValuePair> parameters = new ArrayList<>();
@@ -79,7 +83,7 @@ public class ApiService {
                 System.out.printf("Circulating supply: %.2f\n", circulatingSupply);
                 System.out.println("-------");
 
-                CryptoDTO d = new CryptoDTO();
+                CryptoPriceDTO d = new CryptoPriceDTO();
                 d.setRank(rank);
                 d.setName(name);
                 d.setSymbol(symbol);
@@ -93,6 +97,7 @@ public class ApiService {
                 System.out.println(a.get(0).getRank());
 
             }
+            System.out.println(responseJson);
 
         } catch (IOException e) {
             System.out.println("Error: cannont access content - " + e.toString());
@@ -103,6 +108,31 @@ public class ApiService {
         }
 
         return a;
+    }
+
+    public boolean saveCryptoNamesToDS () {
+        String latest_uri = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/map";
+
+        List<NameValuePair> parameters = new ArrayList<>();
+        parameters.add(new BasicNameValuePair("start", "1"));
+        parameters.add(new BasicNameValuePair("limit","20"));
+
+        try {
+            String result = makeAPICall(latest_uri, parameters);
+            System.out.println("///////////////////////////////////////////////");
+
+            JSONArray dataArray = new JSONObject(result).getJSONArray("data");  // Parse JSON response
+
+            System.out.println(dataArray);
+
+        } catch (IOException e) {
+            System.out.println("Error: cannot access content - " + e.toString());
+        } catch (URISyntaxException e) {
+            System.out.println("Error: Invalid URL " + e.toString());
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        return true;
     }
 
     public String makeAPICall(String uri, List<NameValuePair> parameters)

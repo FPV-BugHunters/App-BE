@@ -1,6 +1,6 @@
 package com.umb.tradingapp.service;
 
-import com.umb.tradingapp.DTO.CryptoDTO;
+import com.umb.tradingapp.DTO.CryptoPriceDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,8 +13,8 @@ public class CryptoService {
     @Autowired
     private ApiService JE;
 
-    public List<CryptoDTO> listAllCryptos(){
-        ArrayList<CryptoDTO> list = new ArrayList<>();
+    public List<CryptoPriceDTO> listAllCryptos(){
+        ArrayList<CryptoPriceDTO> list = new ArrayList<>();
 
         return JE.main();
     }
