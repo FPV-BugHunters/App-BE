@@ -3,6 +3,7 @@ package com.umb.tradingapp.service; /**
  */
 
 import com.umb.tradingapp.DTO.CryptoPriceDTO;
+import com.umb.tradingapp.entity.CryptoEntity;
 import com.umb.tradingapp.repo.CryptoRepository;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
@@ -31,10 +32,10 @@ public class ApiService {
     @Autowired
     private CryptoRepository cryptoRepo;
     private final String apiKey = "ff7d522c-72f5-4c84-9a3f-5d70cf143185";
+    private final String latest_uri = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest";
 
     public List<CryptoPriceDTO> main() {
         List<CryptoPriceDTO> a = new ArrayList<>();
-        String latest_uri = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest";
 
         List<NameValuePair> parameters = new ArrayList<>();
         parameters.add(new BasicNameValuePair("start","1"));
@@ -111,19 +112,42 @@ public class ApiService {
     }
 
     public boolean saveCryptoNamesToDS () {
-        String latest_uri = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/map";
 
         List<NameValuePair> parameters = new ArrayList<>();
         parameters.add(new BasicNameValuePair("start", "1"));
-        parameters.add(new BasicNameValuePair("limit","20"));
+        parameters.add(new BasicNameValuePair("limit","100"));
 
         try {
             String result = makeAPICall(latest_uri, parameters);
-            System.out.println("///////////////////////////////////////////////");
 
             JSONArray dataArray = new JSONObject(result).getJSONArray("data");  // Parse JSON response
+            JSONObject o;
 
-            System.out.println(dataArray);
+            for (int i = 0; i < dataArray.length(); i++) {
+                o = dataArray.getJSONObject(i);
+
+                CryptoEntity cryptoEntity = new CryptoEntity();
+                cryptoEntity.setId(Long.parseLong(o.getString("id")));
+                cryptoEntity.setRank(Integer.parseInt(o.getString("cmc_rank")));
+                cryptoEntity.setName(o.getString("name"));
+                cryptoEntity.setSymbol(o.getString("symbol"));
+                cryptoEntity.setSlug(o.getString("slug"));
+                cryptoEntity.setPlatform(null);
+
+                if (!o.getString("platform").equals("null")) {
+                    JSONObject p = new JSONObject(o.getString("platform"));
+
+                    if (cryptoRepo.existsById(Long.parseLong(p.getString("id")))) {
+                        CryptoEntity platform = cryptoRepo.findById(Long.parseLong(p.getString("id"))).get();
+                        cryptoEntity.setPlatform(platform);
+                    }
+                    //System.out.println("id: " + p.getString("id"));
+                    //System.out.println("meno: " + p.getString("name"));
+                }
+
+                cryptoRepo.save(cryptoEntity);
+            }
+
 
         } catch (IOException e) {
             System.out.println("Error: cannot access content - " + e.toString());

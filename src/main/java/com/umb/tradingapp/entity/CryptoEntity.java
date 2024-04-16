@@ -16,15 +16,14 @@ public class CryptoEntity {
 
     @Id
     @Column(name = "crypto_id")
-    private Long crypto_id;
+    private Long id;
     private Integer rank;
     private String name;
     private String symbol;
     private String slug;
-    private Boolean isActive;
 
     @ManyToOne
-    @JoinColumn(name = "platform", insertable = false, updatable = false)
+    @JoinColumn(name = "platform", insertable = true, updatable = true)
     private CryptoEntity platform;
 
     @OneToMany(mappedBy = "platform")
