@@ -26,11 +26,12 @@ public class AuthenticationController {
     @PostMapping("/api/authentication")
     public void login(@RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentication,
                       HttpServletResponse response) {
-        if (authentication.isEmpty()) {
+        if (authentication.isEmpty()) { // uz nie sme prazdny
             response.setStatus(HttpStatus.FORBIDDEN.value());
+            System.out.println("hehe \n");
             return;
         }
-
+        System.out.println("haha \n");
         String[] credentials = credentialsDecode(authentication.get());
         String token = authenticationService.authenticate(credentials[0], credentials[1]);
 
@@ -39,7 +40,10 @@ public class AuthenticationController {
     }
 
     private static String[] credentialsDecode(String authorization) {
-        String base64Credentials = authorization.substring("Basic".length()).trim();
+        System.out.println(authorization);
+        //String base64Credentials = authorization.substring("Basic".length()).trim();
+        String base64Credentials = authorization.substring("Bearer".length()).trim();
+
         byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
         String credentials = new String(credDecoded, StandardCharsets.UTF_8);
         return  credentials.split(":", 2);
@@ -54,6 +58,7 @@ public class AuthenticationController {
     @DeleteMapping("/api/authentication")
     public void logout(@RequestHeader(value = AUTHORIZATION_HEADER, required = true) Optional<String> authentication) {
         String token = authentication.get().substring("Bearer".length()).trim();
+        System.out.println("removujem token");
         authenticationService.tokenRemove(token);
     }
 

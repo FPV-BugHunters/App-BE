@@ -31,31 +31,40 @@ public class AuthenticationService {
 
     @Transactional
     public String authenticate(String username, String password) {
+        System.out.printf("username: %s, password: %s\n", username, password);
         Optional<UserEntity> optionalUser = userRepository.findByUsername(username);
+        System.out.println(optionalUser);
 
         if (optionalUser.isEmpty()) {
+            System.out.printf("empty");
             throw new AuthenticationCredentialsNotFoundException("Username and/or password do not match!");
         }
 
         if (!passwordEncoder.matches(password, optionalUser.get().getPasswordHash())) {
+            System.out.println("wrong password: " + optionalUser.get().getPasswordHash() +"password: "+password);
             throw new AuthenticationCredentialsNotFoundException("Username and/or password do not match!");
         }
-
+        System.out.println("vytvaram token");
         TokenEntity token = new TokenEntity();
         String randomString = UUID.randomUUID().toString();
         token.setToken(randomString);
         token.setUser(optionalUser.get());
         token.setCreatedAt(LocalDateTime.now());
         tokenRepository.save(token);
+        System.out.println("token id: " + token.getToken());
 
         return token.getToken();
     }
 
     @Transactional
     public UserRolesDto authenticate(String token) {
+        System.out.println("toto je token "+ token);
+        // Aladdin
+        //hash
         Optional<TokenEntity> optionalToken = tokenRepository.findByToken(token);
 
         if (optionalToken.isEmpty()) {
+            System.out.printf("je to empty");
             throw new AuthenticationCredentialsNotFoundException("Authentication failed!");
         }
 

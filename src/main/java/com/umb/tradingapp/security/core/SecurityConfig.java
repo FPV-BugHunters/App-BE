@@ -26,17 +26,22 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable());
         http.authorizeHttpRequests(auth -> auth
 //                .requestMatchers("/api/authentication").permitAll()
-                .anyRequest().authenticated());
+                      .anyRequest().authenticated());
 //        http.exceptionHandling((exception)-> exception.authenticationEntryPoint(authEntryPoint).accessDeniedPage("/error/accedd-denied"));
         http.exceptionHandling((exception)-> exception.authenticationEntryPoint(authEntryPoint));
-        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+       // http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.addFilterBefore(new LibraryAuthenticationFilter(authenticationService), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
     @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/api/authentication");
+    public WebSecurityCustomizer webSecurityCustomizer() { // povoli len dve, to druhe je / hocico po druhe lomeno
+        return (web) -> web.ignoring().requestMatchers("/api/authentication").
+                and().ignoring().requestMatchers("/**").
+                and().ignoring().requestMatchers("/registration");
     }
+
+
+
 
 }
