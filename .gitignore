@@ -35,3 +35,7 @@ build/
 ### Random
 testdb.mv.db
 
+
+### Node.js ###
+**/node_modules/
+
