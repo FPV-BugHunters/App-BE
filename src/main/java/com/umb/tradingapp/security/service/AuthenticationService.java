@@ -5,7 +5,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.umb.tradingapp.security.persistence.*;
+
+import com.umb.tradingapp.security.dto.UserRolesDto;
+import com.umb.tradingapp.security.entity.RoleEntity;
+import com.umb.tradingapp.security.entity.TokenEntity;
+import com.umb.tradingapp.security.entity.UserEntity;
+import com.umb.tradingapp.security.repo.TokenRepository;
+import com.umb.tradingapp.security.repo.UserRepository;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;

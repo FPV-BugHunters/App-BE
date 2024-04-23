@@ -1,4 +1,4 @@
-package com.umb.tradingapp.security.service;
+package com.umb.tradingapp.security.dto;
 
 import java.util.Set;
 

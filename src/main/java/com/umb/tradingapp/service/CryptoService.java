@@ -1,8 +1,9 @@
 package com.umb.tradingapp.service;
 
-import com.umb.tradingapp.DTO.CryptoPriceDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.umb.tradingapp.dto.CryptoPriceDTO;
 
 import java.util.ArrayList;
 import java.util.List;

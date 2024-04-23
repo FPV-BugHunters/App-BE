@@ -1,4 +1,4 @@
-package com.umb.tradingapp.security.persistence;
+package com.umb.tradingapp.security.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

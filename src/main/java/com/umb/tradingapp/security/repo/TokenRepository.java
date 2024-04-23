@@ -1,7 +1,9 @@
-package com.umb.tradingapp.security.persistence;
+package com.umb.tradingapp.security.repo;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
+
+import com.umb.tradingapp.security.entity.TokenEntity;
 
 import java.util.Optional;
 

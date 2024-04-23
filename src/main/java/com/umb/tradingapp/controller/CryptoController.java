@@ -1,6 +1,6 @@
 package com.umb.tradingapp.controller;
 
-import com.umb.tradingapp.DTO.CryptoPriceDTO;
+import com.umb.tradingapp.dto.CryptoPriceDTO;
 import com.umb.tradingapp.service.ApiService;
 import com.umb.tradingapp.service.CryptoService;
 import org.springframework.beans.factory.annotation.Autowired;

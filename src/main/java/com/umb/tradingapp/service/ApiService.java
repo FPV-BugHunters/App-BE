@@ -2,7 +2,7 @@ package com.umb.tradingapp.service; /**
  * This example uses the Apache HTTPComponents library.
  */
 
-import com.umb.tradingapp.DTO.CryptoPriceDTO;
+import com.umb.tradingapp.dto.CryptoPriceDTO;
 import com.umb.tradingapp.entity.CryptoEntity;
 import com.umb.tradingapp.repo.CryptoRepository;
 import org.apache.http.HttpEntity;

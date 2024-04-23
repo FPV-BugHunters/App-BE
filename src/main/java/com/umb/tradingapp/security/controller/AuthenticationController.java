@@ -8,8 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.umb.tradingapp.security.dto.UserRolesDto;
 import com.umb.tradingapp.security.service.AuthenticationService;
-import com.umb.tradingapp.security.service.UserRolesDto;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
