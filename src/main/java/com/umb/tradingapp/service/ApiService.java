@@ -3,8 +3,12 @@ package com.umb.tradingapp.service; /**
  */
 
 import com.umb.tradingapp.dto.CryptoPriceDTO;
-import com.umb.tradingapp.entity.CryptoEntity;
-import com.umb.tradingapp.repo.CryptoRepository;
+import com.umb.tradingapp.entity.CryptoIdEntity;
+import com.umb.tradingapp.entity.CryptoPlatformEntity;
+import com.umb.tradingapp.repo.CryptoIdRepository;
+import com.umb.tradingapp.repo.CryptoPlatformRepository;
+import com.umb.tradingapp.repo.CryptoQuoteRepository;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.NameValuePair;
@@ -30,88 +34,66 @@ import java.util.List;
 public class ApiService {
 
     @Autowired
-    private CryptoRepository cryptoRepo;
+    private CryptoIdRepository cryptoIdRepo;
+    private CryptoPlatformRepository cryptoPlatformRepo;
+    private CryptoQuoteRepository cryptoQuoteRepo;
     private final String apiKey = "ff7d522c-72f5-4c84-9a3f-5d70cf143185";
     private final String latest_uri = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest";
+    private JSONArray dataArray;
 
-    public List<CryptoPriceDTO> main() {
-        List<CryptoPriceDTO> a = new ArrayList<>();
-
+    public void setDataArray () {
         List<NameValuePair> parameters = new ArrayList<>();
-        parameters.add(new BasicNameValuePair("start","1"));
+        parameters.add(new BasicNameValuePair("start", "1"));
+        parameters.add(new BasicNameValuePair("limit","100"));
 
         try {
             String result = makeAPICall(latest_uri, parameters);
-            System.out.println("///////////////////////////////////////////////");
 
-            JSONObject responseJson = new JSONObject(result);  // Parse JSON response
-            JSONArray dataArray = responseJson.getJSONArray("data");
-
-            //System.out.println(dataArray);
-            System.out.println(dataArray.getJSONObject(0));
-            // Loop through each cryptocurrency
-            for (int i = 0; i < dataArray.length(); i++) {
-                JSONObject cryptoData = dataArray.getJSONObject(i);
-
-                String name = cryptoData.getString("name");
-                String symbol = cryptoData.getString("symbol");
-                double circ_supply =Double.valueOf(cryptoData.getString("circulating_supply")) ;
-
-                // Extract price data for USD and EUR (assuming they exist)
-                double priceUSD = 0.0;
-                double circulatingSupply = 0.0;
-                double marketCap = 0;
-                JSONObject quoteObject = cryptoData.getJSONObject("quote");
-                //JSONObject dataObject = cryptoData.getJSONObject("data");
-
-                if (quoteObject.has("USD")) {
-                    priceUSD = quoteObject.getJSONObject("USD").getDouble("price");
-                    marketCap = quoteObject.getJSONObject("USD").getDouble("market_cap");
-                }
-
-                JSONObject dataObject = responseJson.getJSONArray("data").getJSONObject(i);  // Assuming first element is Bitcoin
-                //circulatingSupply = dataObject.getInt("circulating_supply");
-                circulatingSupply = circ_supply;
-
-                dataObject = responseJson.getJSONArray("data").getJSONObject(i);  //
-                int rank = dataObject.getInt("cmc_rank");
-
-                // Formatted output
-                System.out.printf("%s (%s):\n", name, symbol);
-                System.out.println("Rank: "+ rank);
-                System.out.printf("USD: %.2f$\n", priceUSD);
-                System.out.printf("Market cap: %.2f$\n", marketCap);
-                System.out.printf("Circulating supply: %.2f\n", circulatingSupply);
-                System.out.println("-------");
-
-                CryptoPriceDTO d = new CryptoPriceDTO();
-                d.setRank(rank);
-                d.setName(name);
-                d.setSymbol(symbol);
-                d.setPriceUSD(priceUSD);
-                d.setMarketCap(marketCap);
-                d.setCirculatingSupply(circulatingSupply);
-
-               a.add(d);
-               a.get(0).getRank();
-                System.out.printf(d.getName());
-                System.out.println(a.get(0).getRank());
-
-            }
-            System.out.println(responseJson);
+            this.dataArray = new JSONObject(result).getJSONArray("data");  // Parse JSON response
 
         } catch (IOException e) {
-            System.out.println("Error: cannont access content - " + e.toString());
+            System.out.println("Error: cannot access content - " + e.toString());
         } catch (URISyntaxException e) {
             System.out.println("Error: Invalid URL " + e.toString());
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
-
-        return a;
     }
 
-    public boolean saveCryptoNamesToDS () {
+    public void saveCryptoId () {
+        try {
+            JSONObject o;
+            for (int i = 0; i < this.dataArray.length(); i++) {
+                o = this.dataArray.getJSONObject(i);
+
+                CryptoIdEntity entity = new CryptoIdEntity();
+                entity.setId(Long.parseLong(o.getString("id")));
+                entity.setName(o.getString("name"));
+                entity.setSymbol(o.getString("symbol"));
+                entity.setSlug(o.getString("slug"));
+
+                cryptoIdRepo.save(entity);
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void saveCryptoPlatform () {
+        try {
+            JSONObject o;
+            for (int i = 0; i < this.dataArray.length(); i++) {
+                o = this.dataArray.getJSONObject(i);
+
+                CryptoPlatformEntity entity = new CryptoPlatformEntity();
+                entity.setId(Long.parseLong(o.getString("id")));
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /*public boolean saveCryptoNamesToDS () {
 
         List<NameValuePair> parameters = new ArrayList<>();
         parameters.add(new BasicNameValuePair("start", "1"));
@@ -126,7 +108,7 @@ public class ApiService {
             for (int i = 0; i < dataArray.length(); i++) {
                 o = dataArray.getJSONObject(i);
 
-                CryptoEntity cryptoEntity = new CryptoEntity();
+                CryptoIdEntity cryptoEntity = new CryptoIdEntity();
                 cryptoEntity.setId(Long.parseLong(o.getString("id")));
                 cryptoEntity.setRank(Integer.parseInt(o.getString("cmc_rank")));
                 cryptoEntity.setName(o.getString("name"));
@@ -138,7 +120,7 @@ public class ApiService {
                     JSONObject p = new JSONObject(o.getString("platform"));
 
                     if (cryptoRepo.existsById(Long.parseLong(p.getString("id")))) {
-                        CryptoEntity platform = cryptoRepo.findById(Long.parseLong(p.getString("id"))).get();
+                        CryptoIdEntity platform = cryptoRepo.findById(Long.parseLong(p.getString("id"))).get();
                         cryptoEntity.setPlatform(platform);
                     }
                     //System.out.println("id: " + p.getString("id"));
@@ -158,6 +140,7 @@ public class ApiService {
         }
         return true;
     }
+    */
 
     public String makeAPICall(String uri, List<NameValuePair> parameters)
             throws URISyntaxException, IOException {

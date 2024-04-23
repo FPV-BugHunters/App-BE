@@ -19,7 +19,7 @@ public class CryptoController {
 
     @GetMapping("/api/cryptos")
     public List<CryptoPriceDTO> getAllCryptos() {
-        as.saveCryptoNamesToDS();
+        //as.saveCryptoNamesToDS();
         //return cs.listAllCryptos();
         return null;
     }
