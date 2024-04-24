@@ -22,7 +22,8 @@ public class CryptoController {
         System.out.println("//////////////////////////////////////////////");
         as.setDataArray();
         as.saveCryptoId();
-        as.saveCryptoPlatform();
+        //as.saveCryptoPlatform();
+        as.saveCryptoQuote();
         return null;
     }
 

@@ -2,9 +2,9 @@ package com.umb.tradingapp.service; /**
  * This example uses the Apache HTTPComponents library.
  */
 
-import com.umb.tradingapp.dto.CryptoPriceDTO;
 import com.umb.tradingapp.entity.CryptoIdEntity;
 import com.umb.tradingapp.entity.CryptoPlatformEntity;
+import com.umb.tradingapp.entity.CryptoQuoteEntity;
 import com.umb.tradingapp.repo.CryptoIdRepository;
 import com.umb.tradingapp.repo.CryptoPlatformRepository;
 import com.umb.tradingapp.repo.CryptoQuoteRepository;
@@ -102,6 +102,36 @@ public class ApiService {
                         cryptoPlatformRepo.save(entity);
                     }
                 }
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void saveCryptoQuote () {
+        try {
+            JSONObject o;
+            for (int i = 0; i < this.dataArray.length(); i++) {
+                o = this.dataArray.getJSONObject(i);
+
+                CryptoQuoteEntity entity = new CryptoQuoteEntity();
+                JSONObject q = o.getJSONObject("quote").getJSONObject("USD");
+
+                entity.setCryptoId(cryptoIdRepo.findById(Long.parseLong(o.getString("id"))).get());
+                entity.setFullyDilutedMarketCap(Double.parseDouble(q.getString("fully_diluted_market_cap")));
+                entity.setMarketCap(Double.parseDouble(q.getString("market_cap")));
+                entity.setPrice(Double.parseDouble(q.getString("price")));
+                entity.setVolume24h(Double.parseDouble(q.getString("volume_24h")));
+                entity.setVolumeChange24h(Float.parseFloat(q.getString("volume_change_24h")));
+                entity.setMarketCapDominance(Float.parseFloat(q.getString("market_cap_dominance")));
+                entity.setPercentChange1h(Float.parseFloat(q.getString("percent_change_1h")));
+                entity.setPercentChange24h(Float.parseFloat(q.getString("percent_change_24h")));
+                entity.setPercentChange7d(Float.parseFloat(q.getString("percent_change_7d")));
+                entity.setPercentChange30d(Float.parseFloat(q.getString("percent_change_30d")));
+                entity.setPercentChange60d(Float.parseFloat(q.getString("percent_change_30d")));
+                entity.setPercentChange90d(Float.parseFloat(q.getString("percent_change_90d")));
+
+                cryptoQuoteRepo.save(entity);
             }
         } catch (JSONException e) {
             throw new RuntimeException(e);
