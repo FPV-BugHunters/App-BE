@@ -29,6 +29,10 @@ public class CryptoIdEntity {
     @PrimaryKeyJoinColumn
     private CryptoQuoteEntity cryptoQuote;
 
+    @OneToOne(mappedBy = "cryptoId")
+    @PrimaryKeyJoinColumn
+    private CryptoRankEntity cryptoRank;
+
     @OneToMany(mappedBy = "platform")
     Set<CryptoPlatformEntity> tokens;
 

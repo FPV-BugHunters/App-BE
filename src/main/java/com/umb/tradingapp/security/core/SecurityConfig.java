@@ -38,7 +38,8 @@ public class SecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() { // povoli len dve, to druhe je / hocico po druhe lomeno
         return (web) -> web.ignoring().requestMatchers("/api/authentication").
                 and().ignoring().requestMatchers("/**").
-                and().ignoring().requestMatchers("/registration");
+                and().ignoring().requestMatchers("/registration").
+                and().ignoring().requestMatchers("/swagger-ui");
     }
 
 
