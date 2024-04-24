@@ -35,8 +35,11 @@ public class ApiService {
 
     @Autowired
     private CryptoIdRepository cryptoIdRepo;
+    @Autowired
     private CryptoPlatformRepository cryptoPlatformRepo;
+    @Autowired
     private CryptoQuoteRepository cryptoQuoteRepo;
+
     private final String apiKey = "ff7d522c-72f5-4c84-9a3f-5d70cf143185";
     private final String latest_uri = "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest";
     private JSONArray dataArray;
@@ -85,8 +88,20 @@ public class ApiService {
             for (int i = 0; i < this.dataArray.length(); i++) {
                 o = this.dataArray.getJSONObject(i);
 
-                CryptoPlatformEntity entity = new CryptoPlatformEntity();
-                entity.setId(Long.parseLong(o.getString("id")));
+                if (!o.getString("platform").equals("null")) {
+                    CryptoPlatformEntity entity = new CryptoPlatformEntity();
+                    JSONObject p = new JSONObject(o.getString("platform"));
+                    System.out.println(p);
+
+                    if (cryptoIdRepo.existsById(Long.parseLong(o.getString("id"))) 
+                    && cryptoIdRepo.existsById(Long.parseLong(p.getString("id")))) {
+                        CryptoIdEntity platform = cryptoIdRepo.findById(Long.parseLong(p.getString("id"))).get();
+                        entity.setCryptoId(cryptoIdRepo.findById(Long.parseLong(o.getString("id"))).get());
+                        entity.setToken(p.getString("token_address"));
+                        entity.setPlatform(platform);
+                        cryptoPlatformRepo.save(entity);
+                    }
+                }
             }
         } catch (JSONException e) {
             throw new RuntimeException(e);

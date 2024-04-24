@@ -19,8 +19,10 @@ public class CryptoController {
 
     @GetMapping("/api/cryptos")
     public List<CryptoPriceDTO> getAllCryptos() {
-        //as.saveCryptoNamesToDS();
-        //return cs.listAllCryptos();
+        System.out.println("//////////////////////////////////////////////");
+        as.setDataArray();
+        as.saveCryptoId();
+        as.saveCryptoPlatform();
         return null;
     }
 
