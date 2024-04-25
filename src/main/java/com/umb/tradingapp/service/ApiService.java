@@ -2,14 +2,10 @@ package com.umb.tradingapp.service; /**
  * This example uses the Apache HTTPComponents library.
  */
 
-import com.umb.tradingapp.entity.CryptoIdEntity;
-import com.umb.tradingapp.entity.CryptoPlatformEntity;
-import com.umb.tradingapp.entity.CryptoQuoteEntity;
-import com.umb.tradingapp.entity.CryptoRankEntity;
-import com.umb.tradingapp.repo.CryptoIdRepository;
-import com.umb.tradingapp.repo.CryptoPlatformRepository;
-import com.umb.tradingapp.repo.CryptoQuoteRepository;
-import com.umb.tradingapp.repo.CryptoRankRepository;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
@@ -27,10 +23,14 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
+import com.umb.tradingapp.entity.CryptoIdEntity;
+import com.umb.tradingapp.entity.CryptoPlatformEntity;
+import com.umb.tradingapp.entity.CryptoQuoteEntity;
+import com.umb.tradingapp.entity.CryptoRankEntity;
+import com.umb.tradingapp.repo.CryptoIdRepository;
+import com.umb.tradingapp.repo.CryptoPlatformRepository;
+import com.umb.tradingapp.repo.CryptoQuoteRepository;
+import com.umb.tradingapp.repo.CryptoRankRepository;
 
 @Service
 public class ApiService {
@@ -147,6 +147,26 @@ public class ApiService {
     }
 
     public void saveCryptoRank () {
+        try {
+            JSONObject o;
+            for (int i = 0; i < this.dataArray.length(); i++) {
+                o = this.dataArray.getJSONObject(i);
+
+                CryptoRankEntity entity = new CryptoRankEntity();
+
+                if (cryptoRankRepo.existsById(Long.parseLong(o.getString("id"))))
+                    entity.setId(Long.parseLong(o.getString("id")));
+                entity.setCryptoId(cryptoIdRepo.findById(Long.parseLong(o.getString("id"))).get());
+                entity.setCmcRank(Integer.parseInt(o.getString("cmc_rank")));
+
+                cryptoRankRepo.save(entity);
+            }
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void updateCryptoQuote () {
         try {
             JSONObject o;
             for (int i = 0; i < this.dataArray.length(); i++) {
