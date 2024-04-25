@@ -57,6 +57,7 @@ public class ApiService {
             String result = makeAPICall(latest_uri, parameters);
 
             this.dataArray = new JSONObject(result).getJSONArray("data");  // Parse JSON response
+            System.out.println(this.dataArray);
 
         } catch (IOException e) {
             System.out.println("Error: cannot access content - " + e.toString());
@@ -99,7 +100,8 @@ public class ApiService {
                     if (cryptoIdRepo.existsById(Long.parseLong(o.getString("id"))) 
                     && cryptoIdRepo.existsById(Long.parseLong(p.getString("id")))) {
                         CryptoIdEntity platform = cryptoIdRepo.findById(Long.parseLong(p.getString("id"))).get();
-                        entity.setId(Long.parseLong(o.getString("id")));
+                        if (cryptoPlatformRepo.existsById(Long.parseLong(o.getString("id"))))
+                            entity.setId(Long.parseLong(o.getString("id")));
                         entity.setCryptoId(cryptoIdRepo.findById(Long.parseLong(o.getString("id"))).get());
                         entity.setToken(p.getString("token_address"));
                         entity.setPlatform(platform);
@@ -121,7 +123,8 @@ public class ApiService {
                 CryptoQuoteEntity entity = new CryptoQuoteEntity();
                 JSONObject q = o.getJSONObject("quote").getJSONObject("USD");
 
-                entity.setId(Long.parseLong(o.getString("id")));
+                if (cryptoQuoteRepo.existsById(Long.parseLong(o.getString("id"))))
+                    entity.setId(Long.parseLong(o.getString("id")));
                 entity.setCryptoId(cryptoIdRepo.findById(Long.parseLong(o.getString("id"))).get());
                 entity.setFullyDilutedMarketCap(Double.parseDouble(q.getString("fully_diluted_market_cap")));
                 entity.setMarketCap(Double.parseDouble(q.getString("market_cap")));
@@ -151,7 +154,8 @@ public class ApiService {
 
                 CryptoRankEntity entity = new CryptoRankEntity();
 
-                entity.setId(Long.parseLong(o.getString("id")));
+                if (cryptoRankRepo.existsById(Long.parseLong(o.getString("id"))))
+                    entity.setId(Long.parseLong(o.getString("id")));
                 entity.setCryptoId(cryptoIdRepo.findById(Long.parseLong(o.getString("id"))).get());
                 entity.setCmcRank(Integer.parseInt(o.getString("cmc_rank")));
 
