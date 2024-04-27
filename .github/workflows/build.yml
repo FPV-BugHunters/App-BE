@@ -35,12 +35,16 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+
     - name: Display structure of downloaded files
       run: ls -R target/
+
     - name: Display structue of backend files
       run: ls -R
+
     - name: Upload artifact
-      run: mkdir staging && cp backend/target/*.jar staging
+      run: mkdir staging && cp target/*.jar staging
+
     - uses: actions/upload-artifact@v4
       with:
         name: trading-application
