@@ -92,7 +92,7 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: application-backend
+        name: application-frontend
         path: frontend/dict
 
 
@@ -122,7 +122,7 @@ jobs:
       - name: Download artifact frontend
         uses: actions/download-artifact@v4
         with:
-          name: application-backend
+          name: application-frontend
           path: backend/target/classes/public
 
       - name: Display structure of downloaded files
