@@ -49,3 +49,4 @@ backend/first-run.flag
 frontend/.env
 backend/src/main/resources/application.properties
 backend/src/main/resources/static
+backend/db-update.flag
