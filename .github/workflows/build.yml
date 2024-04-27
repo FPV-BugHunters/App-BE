@@ -79,13 +79,14 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
 
+    - name: pwd
+      run: pwd
+        
     - name: Install dependencies
       run: npm install
-      working-directory: ./frontend
 
     - name: Build React App
       run: npm run build
-      working-directory: ./frontend
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
