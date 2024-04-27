@@ -17,7 +17,7 @@ import java.io.IOException;
 public class RootController {
     
 
-     private final Resource indexHtml = new ClassPathResource("/opt/app/static/index.html");
+     private final Resource indexHtml = new ClassPathResource("static/index.html");
 
     @GetMapping(value = "/")
     @ResponseBody
