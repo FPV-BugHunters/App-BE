@@ -129,7 +129,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: application-frontend
-          path: backend/target/classes/public
+          path: backend/target/classes/static
 
       - name: Display structure of downloaded files
         run: ls -R target/

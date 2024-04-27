@@ -71,8 +71,8 @@ public class ListingLatest {
 
         try {
             String result = makeAPICall(coinmarketcapUri + "/v1/cryptocurrency/listings/latest", parameters);
-            System.out.println(result);
-            System.out.println(result);
+            // System.out.println(result);
+            // System.out.println(result);
 
             this.dataArray = new JSONObject(result).getJSONArray("data");  // Parse JSON response
             System.out.println(this.dataArray);
