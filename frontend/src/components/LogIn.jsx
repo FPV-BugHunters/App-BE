@@ -79,7 +79,7 @@ export default function LogIn() {
   }
 
   const handleSignUp = (data) => {
-    axios.post("http://localhost:8080" + "/registration", data, {
+    axios.post(import.meta.env.VITE_API_URL + "/registration", data, {
       headers: { 'Content-Type': 'application/json' }
     })
 
