@@ -45,12 +45,11 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/login").permitAll()
                 .requestMatchers(HttpMethod.POST, "/registration").permitAll()
 				.requestMatchers("/api/cryptos").permitAll()	
-				.requestMatchers("/").permitAll()	
                 .requestMatchers(SWAGGER_PATHS).permitAll()
 
 
-				.requestMatchers("/**.html", "/assets/*.css", "/assets/*.js", "/assets/**", "/vite.svg" ).permitAll()
-				.requestMatchers("**").permitAll()	
+				.requestMatchers("/", "/**.html", "/assets/*.css", "/assets/*.js", "/assets/**", "/vite.svg" ).permitAll()
+				// .requestMatchers("**").permitAll()	
                 .anyRequest().authenticated())
 
                 // .addFilterBefore(new LibraryAuthenticationFilter(authenticationService),
