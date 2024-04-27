@@ -58,9 +58,10 @@ jobs:
    
 
   build-react:
+
     defaults:
       run:
-        working-directory: 'frontend'
+        working-directory: ./frontend
 
     runs-on: ubuntu-latest
 
@@ -77,8 +78,11 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
 
-    - run: npm install
-    - run: npm run build
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build React App
+      run: npm run build
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
