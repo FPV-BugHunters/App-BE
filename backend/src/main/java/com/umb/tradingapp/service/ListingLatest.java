@@ -75,7 +75,6 @@ public class ListingLatest {
             System.out.println(result);
 
             this.dataArray = new JSONObject(result).getJSONArray("data");  // Parse JSON response
-            System.out.println(this.dataArray);
 
         } catch (IOException e) {
             System.out.println("Error: cannot access content - " + e.toString());
