@@ -49,7 +49,7 @@ public class SecurityConfig {
                 .requestMatchers(SWAGGER_PATHS).permitAll()
 
 
-				.requestMatchers("/**.html", "/assets/*.css", "/assets/*.js", "/assets/*.html", "/vite.svg" ).permitAll()
+				.requestMatchers("/**.html", "/assets/*.css", "/assets/*.js", "/assets/**", "/vite.svg" ).permitAll()
                 .anyRequest().authenticated())
 
                 // .addFilterBefore(new LibraryAuthenticationFilter(authenticationService),
