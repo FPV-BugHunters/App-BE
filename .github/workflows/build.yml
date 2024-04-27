@@ -59,6 +59,8 @@ jobs:
 
 
   build-and-push-image:
+
+
     defaults:
       run:
         working-directory: ./backend
@@ -76,7 +78,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: trading-application
-          path: /backend/staging
+          path: backend/staging
 
       - name: Display structure of downloaded files
         run: ls -R target/
