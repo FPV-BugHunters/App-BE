@@ -19,10 +19,12 @@ public class RootController {
 
     private final Resource indexHtml = new ClassPathResource("static/index.html");
 
+
     @GetMapping(value = "/")
     @ResponseBody
     public Resource serveFrontend(HttpServletRequest request) throws IOException {
-        return indexHtml;
+        System.out.println("RootController.serveFrontend()" + indexHtml.getURL());
+        return null;
     }
     
 }
