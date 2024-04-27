@@ -96,6 +96,7 @@ public class AuthenticationService {
 
     @Transactional
     public void tokenRemove(String token) {
+        System.out.println("removujem token");
         tokenRepository.deleteByToken(token);
     }
 

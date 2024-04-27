@@ -40,21 +40,20 @@ public class AuthenticationController {
     }
 
 
-    @GetMapping("/api/authentication")
+    @GetMapping("/api/authentication")// funkčne ale nepouživa sa
     public UserRolesDto getRoles(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth) {
 
         String token = auth.substring("Bearer".length()).trim();
         return authenticationService.authenticate(token);
     }
 
-    @DeleteMapping("/api/authentication")
+    @DeleteMapping("/api/authentication")// funguje, zatial nepouzivane
     public void logout(@RequestHeader(value = AUTHORIZATION_HEADER, required = true) Optional<String> authentication) {
         String token = authentication.get().substring("Bearer".length()).trim();
-        System.out.println("removujem token");
         authenticationService.tokenRemove(token);
     }
 
-    @GetMapping("/api/user")
+    @GetMapping("/api/user") //funkčne
     public void getUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth, HttpServletResponse response) throws JSONException {
         String token = auth.substring("Bearer".length()).trim();
 
@@ -78,7 +77,6 @@ public class AuthenticationController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
 
         //authenticationService.
         // Nastavenie stavového kódu v odpovedi
