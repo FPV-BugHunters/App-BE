@@ -90,7 +90,7 @@ jobs:
       run: npm run build
     
     - name: Upload artifact
-      run: mkdir staging && cp -r dict/* ./staging
+      run: mkdir staging && cp -r dist/* ./staging
 
     - name: Display structure of frontend files
       run: ls -R staging
