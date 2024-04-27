@@ -44,6 +44,8 @@ public class SecurityConfig {
             .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
                 .requestMatchers(HttpMethod.POST, "/login").permitAll()
                 .requestMatchers(HttpMethod.POST, "/registration").permitAll()
+					.requestMatchers(HttpMethod.GET, "/api/user").permitAll()
+					.requestMatchers(HttpMethod.GET, "/api/authentication").permitAll()
 				.requestMatchers("/api/cryptos").permitAll()	
                 .requestMatchers(SWAGGER_PATHS).permitAll()
                 .anyRequest().authenticated())

@@ -72,8 +72,10 @@ public class AuthenticationService {
             throw new AuthenticationCredentialsNotFoundException("Authentication failed!");
         }
 
-        validateTokenExpiration(optionalToken.get());
+        // validateTokenExpiration(optionalToken.get()); // pre prakticke ucely zakomentovane
 
+
+        System.out.println(optionalToken.get().getUser().getUsername()+"XXXXXXXXXXXXXXXXXXXXXXXX");
         Set<RoleEntity> roles = optionalToken.get().getUser().getRoles();
         Set<String> roleNames = roles.stream()
                                      .map( entry -> entry.getRoleName())
@@ -81,6 +83,7 @@ public class AuthenticationService {
 
         return new UserRolesDto(optionalToken.get().getUser().getUsername(), roleNames);
     }
+
 
     private void validateTokenExpiration(TokenEntity token) {
         LocalDateTime now = LocalDateTime.now();

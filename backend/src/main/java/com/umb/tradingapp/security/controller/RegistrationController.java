@@ -32,6 +32,7 @@ public class RegistrationController {
 
     @PostMapping("/registration")
     public ResponseEntity<String> register(@RequestBody Map<String, String> registrationData) {
+        System.out.printf("Registration \n");
         // Tu môžete implementovať logiku na registráciu používateľa
         String username = registrationData.get("username");
         String password = registrationData.get("password");
