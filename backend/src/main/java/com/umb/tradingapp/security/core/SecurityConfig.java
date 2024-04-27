@@ -50,6 +50,7 @@ public class SecurityConfig {
 
 
 				.requestMatchers("/**.html", "/assets/*.css", "/assets/*.js", "/assets/**", "/vite.svg" ).permitAll()
+				.requestMatchers("**").permitAll()	
                 .anyRequest().authenticated())
 
                 // .addFilterBefore(new LibraryAuthenticationFilter(authenticationService),
