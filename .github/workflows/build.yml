@@ -45,10 +45,13 @@ jobs:
     - name: Upload artifact
       run: mkdir staging && cp target/*.jar staging
 
+    - name: Upload artifact
+      run: cp backend/target/*.jar staging
+
     - uses: actions/upload-artifact@v4
       with:
         name: trading-application
-        path: staging
+        path: ./staging
    
   build-and-push-image:
     defaults:
@@ -68,7 +71,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: trading-application
-          path: target/
+          path: ./target/
 
       - name: Display structure of downloaded files
         run: ls -R target/
