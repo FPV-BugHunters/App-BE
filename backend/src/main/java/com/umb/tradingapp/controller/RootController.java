@@ -2,6 +2,7 @@ package com.umb.tradingapp.controller;
 
 
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,14 +18,15 @@ import java.io.IOException;
 public class RootController {
     
 
-    private final Resource indexHtml = new ClassPathResource("static/index.html");
+
+    private final Resource indexHtml = new FileSystemResource("static/index.html");
 
 
     @GetMapping(value = "/")
     @ResponseBody
     public Resource serveFrontend(HttpServletRequest request) throws IOException {
         System.out.println("RootController.serveFrontend()" + indexHtml.getURL());
-        return null;
+        return indexHtml;
     }
     
 }
