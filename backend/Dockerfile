@@ -9,4 +9,4 @@ COPY target/trading-app-0.0.1-SNAPSHOT.jar app.jar
 COPY target/classes/static static
 
 
-ENTRYPOINT ["java", "-jar","/app.jar", "--spring.config.location=file:///config/application.properties"]
+ENTRYPOINT ["java", "-jar","/opt/app/app.jar", "--spring.config.location=file:///config/application.properties"]
