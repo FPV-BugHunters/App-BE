@@ -87,7 +87,7 @@ jobs:
       run: npm install
 
     - name: Build React App
-      run: npm run build --mode production
+      run: npm run build --mode staging
     
     - name: Upload artifact
       run: mkdir staging && cp -r dist/* ./staging
