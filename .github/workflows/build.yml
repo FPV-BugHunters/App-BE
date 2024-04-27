@@ -65,7 +65,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        working-directory: ./backend
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
