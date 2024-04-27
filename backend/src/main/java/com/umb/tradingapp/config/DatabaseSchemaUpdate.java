@@ -2,9 +2,6 @@ package com.umb.tradingapp.config;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.stereotype.Component;
 import com.umb.tradingapp.security.entity.RoleEntity;
 import com.umb.tradingapp.security.repo.RoleRepository;
 

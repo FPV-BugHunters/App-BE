@@ -11,8 +11,6 @@ import com.umb.tradingapp.security.dto.AccountCredentialsDTO;
 import com.umb.tradingapp.security.dto.UserRolesDto;
 import com.umb.tradingapp.security.service.AuthenticationService;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.Optional;
 
 @RestController

@@ -9,7 +9,6 @@ import com.umb.tradingapp.service.ListingLatest;
 @Service
 public class DataScheduler {
     
-
     @Autowired
     ListingLatest ll;
     
@@ -17,6 +16,10 @@ public class DataScheduler {
     public void updateData() {
 
         ll.loadData();
+        ll.saveCryptoId();
+        ll.saveCryptoPlatform();
+        ll.saveCryptoQuote();
+        ll.saveCryptoRank();
 
         System.out.println("Task performed on: " + new Date() + "n" +
           "Thread's name: " + Thread.currentThread().getName());
