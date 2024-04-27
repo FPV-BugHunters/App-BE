@@ -37,7 +37,6 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
-
     - name: Display structue of backend files
       run: ls -R
 
@@ -45,21 +44,20 @@ jobs:
       run: pwd
 
     - name: Upload artifact
-      run: mkdir staging && cp target/*.jar /backend/staging
-
+      run: mkdir staging && cp target/*.jar ./staging
 
     - name: Display structue of backend files
       run: ls -R
 
-    - name: Display structue of backend/staging files
-      run: ls -R /backend/staging
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: trading-application
-        path: /backend/staging
+        path: backend/staging
    
+
+
   build-and-push-image:
     defaults:
       run:
