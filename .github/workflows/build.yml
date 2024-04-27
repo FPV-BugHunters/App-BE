@@ -78,6 +78,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+        cache-dependency-path: '**/package-lock.json' # THIS PATTERN did the trick for me.
 
     - name: pwd
       run: pwd
