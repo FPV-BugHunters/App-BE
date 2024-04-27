@@ -20,10 +20,8 @@ env:
 
 jobs:
   build:
-    default:
-      run:
-        working-directory: frontend
     runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 17
@@ -42,9 +40,9 @@ jobs:
         path: staging
    
   build-and-push-image:
-    default:
+    defaults:
       run:
-        working-directory: frontend
+        working-directory: ./frontend
     needs: build
     runs-on: ubuntu-latest
     # Sets the permissions granted to the `GITHUB_TOKEN` for the actions in this job.
