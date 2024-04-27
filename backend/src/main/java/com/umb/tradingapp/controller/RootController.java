@@ -1,4 +1,4 @@
-package com.umb.tradingapp.security.controller;
+package com.umb.tradingapp.controller;
 
 
 import org.springframework.core.io.ClassPathResource;
@@ -9,13 +9,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 
+import com.umb.tradingapp.security.controller.HttpServletRequest;
+
 import java.io.IOException;
 
 @RestController
 public class RootController {
     
 
-     private final Resource indexHtml = new ClassPathResource("/static/index.html");
+     private final Resource indexHtml = new ClassPathResource("/opt/app/static/index.html");
 
     @GetMapping(value = "/")
     @ResponseBody
