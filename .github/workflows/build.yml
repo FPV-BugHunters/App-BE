@@ -59,17 +59,19 @@ jobs:
 
   build-react:
 
+    runs-on: ubuntu-latest
+
     defaults:
       run:
         working-directory: ./frontend
 
-    runs-on: ubuntu-latest
 
     strategy:
       matrix:
         node-version: [ 21.x]
 
     steps:
+
     - uses: actions/checkout@v4
 
     - name: Use Node.js ${{ matrix.node-version }}
@@ -80,12 +82,15 @@ jobs:
 
     - name: Install dependencies
       run: npm install
+      working-directory: ./frontend
 
     - name: Build React App
       run: npm run build
+      working-directory: ./frontend
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
+      working-directory: ./frontend
       with:
         name: application-backend
         path: frontend/dict
