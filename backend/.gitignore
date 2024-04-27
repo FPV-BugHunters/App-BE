@@ -35,16 +35,3 @@ build/
 ### Random
 testdb.mv.db
 
-
-### Node.js ###
-**/node_modules/
-.env
-
-
-### DB ###
-postgres
-
-
-backend/first-run.flag
-frontend/.env
-backend/src/main/resources/application.properties

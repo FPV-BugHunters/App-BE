@@ -85,14 +85,14 @@ export default function SymbolDataTable() {
             <StyledTableRow key={row.name}>
               <StyledTableCell>{row.id}</StyledTableCell>
               <StyledTableCell>{row.name}</StyledTableCell>
-              <StyledTableCell>${parseFloat(row.price).toFixed(2)}</StyledTableCell>
+              {/* <StyledTableCell>${parseFloat(row.price).toFixed(2)}</StyledTableCell>
               <StyledTableCell>{parseFloat(row._1h).toFixed(2)}%</StyledTableCell>
               <StyledTableCell>{parseFloat(row._7h).toFixed(2)}%</StyledTableCell>
               <StyledTableCell>{parseFloat(row._24h).toFixed(2)}%</StyledTableCell>
               <StyledTableCell>${parseFloat(row.marketCap).toFixed(2)}</StyledTableCell>
               <StyledTableCell>{parseFloat(row.volume).toFixed(2)}</StyledTableCell>
-              <StyledTableCell>${parseFloat(row.circulatingSupply).toFixed(2)}</StyledTableCell>
-              <SymbolDataTableChart symbol={row} />
+              <StyledTableCell>${parseFloat(row.circulatingSupply).toFixed(2)}</StyledTableCell> */}
+              {/* <SymbolDataTableChart symbol={row} /> */}
 
             </StyledTableRow>
           ))}
