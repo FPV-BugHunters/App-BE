@@ -65,6 +65,9 @@ export default function LogIn() {
     axios.post(import.meta.env.VITE_API_URL + "/login", data, {
       headers: { 'Content-Type': 'application/json' }
     })
+    
+      
+      
 
     .then(res => {
       const token = res.headers.authorization;
