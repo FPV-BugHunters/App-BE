@@ -10,6 +10,7 @@ import Home from './pages/Home';
 import Watchlist from './pages/Watchlist';
 import { grey } from '@mui/material/colors';
 import IsAuthContext from './contexts/IsAuthContext';
+import UserContex from './contexts/UserContex';
 
 const darkTheme = createTheme({
   palette: {
@@ -32,16 +33,17 @@ const queryClient = new QueryClient();
 
 function App() {
 
-  const [isAuth, setIsAuth] = useState(false); 
+  const [ isAuth, setIsAuth ] = useState(false); 
+  const [ user, setUser] = useState({});
   
   return (
   <>
     <ThemeProvider theme={darkTheme}> 
       <IsAuthContext.Provider value={{isAuth, setIsAuth}}>
+      <UserContex.Provider value={{user, setUser}}>
         <CssBaseline />
 
         <Router > 
-
             <TopNav />
             <QueryClientProvider client={queryClient}>
               <Routes>
@@ -52,6 +54,8 @@ function App() {
               </Routes>
             </QueryClientProvider>
         </Router>
+
+      </UserContex.Provider>
       </IsAuthContext.Provider> 
     </ThemeProvider>  
   </>

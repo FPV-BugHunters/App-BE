@@ -1,8 +1,8 @@
-import { getAxiosConfig } from '../config/AxiosConfig';
-import { User } from '../types';
+import { UserInfo } from '../types';
 import axios from 'axios';
+import { createContext } from 'react';
 
-export const getUser = async (): Promise<User> => {
-  const response = await axios.get(`${import.meta.env.API_URL}/api/cars`, getAxiosConfig());
-  return response.data._embedded.cars;
-}
+
+const UserContex = createContext<UserInfo | null>(null);
+
+export default UserContex;

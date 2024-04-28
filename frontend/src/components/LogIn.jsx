@@ -14,8 +14,12 @@ import { useState } from 'react';
 import axios from 'axios';
 import IsAuthContext from '../contexts/IsAuthContext';
 import { useNavigate } from "react-router-dom";
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
+import { getUserInfo } from '../api/UserApi';
 
-function Copyright(props) {
+
+function Copyright (props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
@@ -31,68 +35,109 @@ function Copyright(props) {
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
-export default function LogIn() {
+export default function LogIn () {
   let navigate = useNavigate();
-  const [open, setOpen] = useState(false);
-  const [isLoginInPage, setIsLoginInPage] = useState(true);
+  const [ open, setOpen ] = useState(false);
+  const [ isLoginInPage, setIsLoginInPage ] = useState(true);
 
   const { isAuth, setIsAuth } = React.useContext(IsAuthContext);
+  
+  const [ notificationUserAlreadyExists, setNotificationUserAlreadyExists ] = useState(false);
+  const [ notificationUserjWrongCredentials, setNotificationUserjWrongCredentials ] = useState(false);
+  const [ notificationLoginError, setNotificationLoginError ] = useState(false);
+  const [ notificationUserCreated, setNotificationUserCreated ] = useState(false);
+
+
   // const history = useHistory();
+  const resetSnackbar = () => {
+    setNotificationLoginError(false);
+    setNotificationUserjWrongCredentials(false);
+    setNotificationUserAlreadyExists(false);
+  }
 
   const handleSubmit = (event) => {
+    resetSnackbar();
 
     event.preventDefault();
 
     const data = new FormData(event.currentTarget);
+    console.log(data);
 
     if (isLoginInPage) {
+
       handleLogIn({
         username: data.get('username'),
         password: data.get('password')
       });
-    }else if (!isLoginInPage) {
+
+    } else if (!isLoginInPage) {
+
       handleSignUp({
         username: data.get('username'),
-        password: data.get('password')
+        password: data.get('password'),
+        email: data.get('email'),
+        firstName: data.get('firstName'),
+        lastName: data.get('lastName'),
+        phoneNumber: data.get('phoneNumber')
       });
+
     }
 
+    event.currentTarget.reset();
+
   }
-  
+
 
   const handleLogIn = (data) => {
 
     axios.post(import.meta.env.VITE_API_URL + "/login", data, {
       headers: { 'Content-Type': 'application/json' }
     })
-    
-      
-      
 
     .then(res => {
       const token = res.headers.authorization;
       if (token !== null) {
         sessionStorage.setItem("token", token);
         setIsAuth(true);
+        console.log(getUserInfo());
         navigate("/");
       }
     })
 
-    .catch(() => setOpen(true));
+    .catch(error => {
+      if (error.response.status === 401) {
+        setNotificationUserjWrongCredentials(true);
+      } else {
+        setNotificationLoginError(true);
+      }
+    });
+
   }
 
+
   const handleSignUp = (data) => {
+
     axios.post(import.meta.env.VITE_API_URL + "/registration", data, {
       headers: { 'Content-Type': 'application/json' }
     })
 
-    .then(res => {
-      setIsLoginInPage(true);
+      
+    .then(()=> {
+      setNotificationUserCreated(true);
+    }) 
+
+    .catch(error => {
+      if (error.response.status === 400) {
+        setNotificationUserAlreadyExists(true);
+      } else {
+        setNotificationLoginError(true);
+      }
     })
 
-    .catch(() => setOpen(true));
+    setIsLoginInPage(true);
+
   }
-    
+
 
 
 
@@ -114,7 +159,7 @@ export default function LogIn() {
           <Typography component="h1" variant="h5">
             {isLoginInPage ? "Login in" : "Sign up"}
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
@@ -135,10 +180,46 @@ export default function LogIn() {
               id="password"
               autoComplete="current-password"
             />
-            {/* <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            /> */}
+            {!isLoginInPage && (
+              <>
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="email"
+                  label="Email"
+                  name="email"
+                  autoComplete="email"
+                />
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="firstName"
+                  label="First Name"
+                  name="firstName"
+                  autoComplete="firstName"
+                />
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="lastName"
+                  label="Last Name"
+                  name="lastName"
+                  autoComplete="lastName"
+                />
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="phoneNumber"
+                  label="Phone Number"
+                  name="phoneNumber"
+                  autoComplete="phoneNumber"
+                />
+              </>
+            )}
             <Button
               type="submit"
               fullWidth
@@ -156,7 +237,12 @@ export default function LogIn() {
             </Grid>
           </Box>
         </Box>
+        {notificationLoginError&& <Alert severity="error">An error occurred while trying to log in</Alert>}
+        {notificationUserjWrongCredentials && <Alert severity="error">Wrong credentials</Alert>}
+        {notificationUserAlreadyExists && <Alert severity="error">Username already exists</Alert>}
+        {notificationUserCreated && <Alert severity="success">User created successfully</Alert>}
         <Copyright sx={{ mt: 8, mb: 4 }} />
+
       </Container>
     </ThemeProvider>
   );

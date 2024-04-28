@@ -4,20 +4,25 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.umb.tradingapp.security.dto.UserRolesDto;
+import com.umb.tradingapp.security.entity.UserEntity;
 import com.umb.tradingapp.security.service.AuthenticationService;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class LibraryAuthenticationFilter extends OncePerRequestFilter {
 
     private final AuthenticationService authenticationService;
@@ -31,19 +36,23 @@ public class LibraryAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         System.out.println("Filtering request: " + request.getRequestURI());
         String authHeader = request.getHeader("Authorization");
-        if ( !StringUtils.hasLength(authHeader) || ! authHeader.startsWith("Bearer ")) {
-            throw new AuthenticationCredentialsNotFoundException("Authentication failed!");
+        
+        System.out.println("authHeader: " + authHeader);
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+
+            String token = authHeader.substring("Bearer".length()).trim();
+            UserRolesDto userRoles = authenticationService.authenticate(token);
+            UserEntity user = authenticationService.getUser(token);
+
+            request.setAttribute("user", user);
+
+            List<SimpleGrantedAuthority> roles = userRoles.getRoles().stream().map(
+                    role -> new SimpleGrantedAuthority(role)).collect(Collectors.toList());
+
+            UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userRoles.getUserName(),
+                    null, roles);
+            SecurityContextHolder.getContext().setAuthentication(auth);
         }
-
-        String token = authHeader.substring("Bearer".length()).trim();
-        UserRolesDto userRoles = authenticationService.authenticate(token);
-
-        List<SimpleGrantedAuthority> roles = userRoles.getRoles().stream().map(
-                role -> new SimpleGrantedAuthority(role)).collect(Collectors.toList());
-
-        UsernamePasswordAuthenticationToken auth
-                = new UsernamePasswordAuthenticationToken(userRoles.getUserName(), null, roles);
-        SecurityContextHolder.getContext().setAuthentication(auth);
 
         filterChain.doFilter(request, response);
     }

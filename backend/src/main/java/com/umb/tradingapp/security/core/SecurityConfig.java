@@ -10,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
@@ -21,51 +22,48 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
-@EnableMethodSecurity
+@EnableWebSecurity
 public class SecurityConfig {
 
 	private static final String[] SWAGGER_PATHS = {"/api-docs/**", "/swagger-ui/**", "/v3/api-docs/**"};
     
-    @Autowired
-    private AuthenticationService authenticationService;
-
-    @Autowired
-    private LibraryAuthenticationEntryPoint authEntryPoint;
 	
+	private final LibraryAuthenticationEntryPoint libraryAuthenticationEntryPoint;
+	private final LibraryAuthenticationFilter libraryAuthenticationFilter;
+	private final AuthenticationService authenticationService;
 
+	public SecurityConfig(LibraryAuthenticationFilter libraryAuthenticationFilter, LibraryAuthenticationEntryPoint libraryAuthenticationEntryPoint, AuthenticationService authenticationService) {
+		this.libraryAuthenticationFilter = libraryAuthenticationFilter;
+		this.libraryAuthenticationEntryPoint = libraryAuthenticationEntryPoint;
+		this.authenticationService = authenticationService;
+	}
     
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http
-
-            .csrf((csrf) -> csrf.disable()).cors(withDefaults())
+			.csrf((csrf) -> csrf.disable())
+			.cors(withDefaults())
 			.sessionManagement( (sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests((authorizeHttpRequests) -> authorizeHttpRequests
+
                 .requestMatchers(HttpMethod.POST, "/login").permitAll()
                 .requestMatchers(HttpMethod.POST, "/registration").permitAll()
-					.requestMatchers(HttpMethod.GET, "/api/user").permitAll()
-					.requestMatchers(HttpMethod.GET, "/api/authentication").permitAll()
-					.requestMatchers(HttpMethod.DELETE, "/api/logout").permitAll()
-
-					.requestMatchers("/api/cryptos").permitAll()
-                .requestMatchers(SWAGGER_PATHS).permitAll()
-
-
+				.requestMatchers(HttpMethod.GET, "/api/user").permitAll()
+				.requestMatchers(HttpMethod.GET, "/api/authentication").permitAll()
+				.requestMatchers(HttpMethod.DELETE, "/api/logout").permitAll()
 				.requestMatchers("/", "/**.html", "/assets/*.css", "/assets/*.js", "/assets/**", "/vite.svg" ).permitAll()
-				// .requestMatchers("**").permitAll()	
-                .anyRequest().authenticated())
 
-                // .addFilterBefore(new LibraryAuthenticationFilter(authenticationService),
-                //         UsernamePasswordAuthenticationFilter.class)
+                .requestMatchers(SWAGGER_PATHS).permitAll()
+				.anyRequest().authenticated()
+			)
 
-				// .addFilterBefore(libraryAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling((exception)-> exception.authenticationEntryPoint(authEntryPoint));
+				.addFilterBefore(libraryAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+				.exceptionHandling((exception) -> exception.authenticationEntryPoint(libraryAuthenticationEntryPoint));
 
             return http.build();
     }
-
-
 
 
 	@Bean
@@ -77,8 +75,6 @@ public class SecurityConfig {
 		config.setAllowedHeaders(Arrays.asList("*"));
 		config.setAllowCredentials(false);
         config.setExposedHeaders(Arrays.asList("Authorization"));
-		config.applyPermitDefaultValues();
-
 		source.registerCorsConfiguration("/**", config);
 		return source;
 	}

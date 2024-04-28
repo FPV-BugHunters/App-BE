@@ -64,24 +64,31 @@ public class AuthenticationService {
 
     @Transactional
     public UserRolesDto authenticate(String token) {
-        // Aladdin
-        //hash
         Optional<TokenEntity> optionalToken = tokenRepository.findByToken(token);
 
         if (optionalToken.isEmpty()) {
             throw new AuthenticationCredentialsNotFoundException("Authentication failed!");
         }
 
-        // validateTokenExpiration(optionalToken.get()); // pre prakticke ucely zakomentovane
 
-
-        System.out.println(optionalToken.get().getUser().getUsername()+"XXXXXXXXXXXXXXXXXXXXXXXX");
         Set<RoleEntity> roles = optionalToken.get().getUser().getRoles();
         Set<String> roleNames = roles.stream()
                                      .map( entry -> entry.getRoleName())
                                      .collect(Collectors.toSet());
 
         return new UserRolesDto(optionalToken.get().getUser().getUsername(), roleNames);
+    }
+
+    @Transactional
+    public UserEntity getUser(String token) {
+        Optional<TokenEntity> optionalToken = tokenRepository.findByToken(token);
+
+        if (optionalToken.isEmpty()) {
+            throw new AuthenticationCredentialsNotFoundException("Authentication failed!");
+        }
+
+        UserEntity user = optionalToken.get().getUser();
+        return user;
     }
 
 

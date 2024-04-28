@@ -1,6 +1,5 @@
 package com.umb.tradingapp.security.controller;
-import com.umb.tradingapp.security.repo.UserRepository;
-import com.umb.tradingapp.security.service.RegistrationService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -12,17 +11,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.Map;
+
+import com.umb.tradingapp.security.dto.RegisterUserDTO;
+import com.umb.tradingapp.security.repo.UserRepository;
+import com.umb.tradingapp.security.service.RegistrationService;
+
+import io.swagger.v3.oas.annotations.Operation;
 
 @RestController
 public class RegistrationController {
-
-    @GetMapping("/registration")
-    public String showRegistrationForm() {
-        System.out.printf("!!!!");
-        return "redirect:/register.html";
-    }
 
     @Autowired
     private RegistrationService registrationService;
@@ -30,29 +28,15 @@ public class RegistrationController {
     @Autowired
     private UserRepository userRepository;
 
+    @Operation(summary = "POST user's credentials", description = "Posts user credentials")
     @PostMapping("/registration")
-    public ResponseEntity<String> register(@RequestBody Map<String, String> registrationData) {
-        System.out.printf("Registration \n");
-        // Tu môžete implementovať logiku na registráciu používateľa
-        String username = registrationData.get("username");
-        String password = registrationData.get("password");
+    public ResponseEntity<String> register(@RequestBody RegisterUserDTO registerUserDTO) {
 
-        if (userRepository.findByUsername(username).isEmpty() == false){
+        if (userRepository.findByUsername(registerUserDTO.getUsername()).isEmpty() == false) {
             return new ResponseEntity<>("Username already exists", HttpStatus.BAD_REQUEST);
         }
-        // Príklad overenia, že používateľské meno a heslo boli úspešne prijaté
-        System.out.println("Received registration data:");
 
-        System.out.println("Username: " + username);
-        System.out.println("Password: " + password);
-        
-        String udaje [] = new String[2] ;
-
-        udaje[0] = username;
-        udaje[1] = password;
-
-        registrationService.saveUser(udaje);
-
+        registrationService.saveUser(registerUserDTO);
 
         return new ResponseEntity<>("Registration successful", null, HttpStatus.OK);
     }

@@ -2,6 +2,7 @@ package com.umb.tradingapp.security.controller;
 
 
 import com.umb.tradingapp.security.entity.TokenEntity;
+import com.umb.tradingapp.security.entity.UserEntity;
 import com.umb.tradingapp.security.repo.TokenRepository;
 import com.umb.tradingapp.security.repo.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,15 +22,21 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import com.umb.tradingapp.security.dto.AccountCredentialsDTO;
+import com.umb.tradingapp.security.dto.LoginUserDTO;
+import com.umb.tradingapp.security.dto.UserInfoDto;
 import com.umb.tradingapp.security.dto.UserRolesDto;
 import com.umb.tradingapp.security.service.AuthenticationService;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 //@CrossOrigin("*")
@@ -57,7 +64,7 @@ public class AuthenticationController {
             )
     })
     @PostMapping("/login" ) // toto sa pouziva
-    public void login( @RequestBody AccountCredentialsDTO  accountCredentials, HttpServletResponse response) {
+    public void login( @RequestBody LoginUserDTO  accountCredentials, HttpServletResponse response) {
         
         System.out.println("login " + accountCredentials.getUsername() + " " + accountCredentials.getPassword());
         String token = authenticationService.authenticate(accountCredentials.getUsername(), accountCredentials.getPassword());
@@ -129,37 +136,24 @@ public class AuthenticationController {
                             examples = @ExampleObject(value = "{\"role\": \"[USER]\", \"name\": \"admin\"}"))),
             @ApiResponse(responseCode = "401", description = "Not found - wrong token")
     })
+    
+    
     @GetMapping("/api/user") //funkčne
-    public void getUser(@Parameter(description = "User's authorization token (Bearer token), (swagger-ui, hore zamok na endpointe treba pouzit)")
-                            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String auth,
-                        HttpServletResponse response) throws JSONException {
-        String token = auth.substring("Bearer".length()).trim();
+    public UserInfoDto getUser( HttpServletRequest request) throws JSONException {
+        UserEntity userEntity = (UserEntity) request.getAttribute("user");
+        
+        UserInfoDto user = new UserInfoDto();
+        user.setUsername(userEntity.getUsername());
+        user.setFirstName(userEntity.getFirstName());
+        user.setLastName(userEntity.getLastName());
+        user.setEmail(userEntity.getEmail());
+        user.setPhoneNumber(userEntity.getPhoneNumber());
+        
+        Set<String> roles = new HashSet<>();
+        userEntity.getRoles().forEach(role -> roles.add(role.getRoleName()));
+        user.setRoles(roles);
 
-        UserRolesDto user = authenticationService.authenticate(token);
-        String name = user.getUserName();
-        String role = user.getRoles().toString();
-
-        // Vytvorenie JSON objektu s menom a rolou používateľa
-        JSONObject jsonResponse = new JSONObject();
-        jsonResponse.put("name", name);
-        jsonResponse.put("role", role);
-
-        // Nastavenie hlavičiek výstupnej odpovede na JSON typ
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-
-        // Nastavenie telo odpovede s JSON objektom
-        try (PrintWriter out = response.getWriter()) {
-            out.print(jsonResponse.toString());
-            out.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        //authenticationService.
-        // Nastavenie stavového kódu v odpovedi
-        response.setStatus(HttpStatus.OK.value());
-
+        return user;
 
     }
 }

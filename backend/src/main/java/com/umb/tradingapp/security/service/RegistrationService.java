@@ -1,5 +1,6 @@
 package com.umb.tradingapp.security.service;
 
+import com.umb.tradingapp.security.dto.RegisterUserDTO;
 import com.umb.tradingapp.security.entity.RoleEntity;
 import com.umb.tradingapp.security.entity.UserEntity;
 import com.umb.tradingapp.security.repo.RoleRepository;
@@ -29,13 +30,19 @@ public class RegistrationService {
     }
 
 
-    public void saveUser (String udaje[]) {
+    public void saveUser (RegisterUserDTO registerUserDTO) {
 
         UserEntity userEntity = new UserEntity();
-        userEntity.setUsername(udaje[0]);
 
+        userEntity.setUsername(registerUserDTO.getUsername());
+        userEntity.setFirstName(registerUserDTO.getFirstName());
+        userEntity.setLastName(registerUserDTO.getLastName());
+        userEntity.setEmail(registerUserDTO.getEmail());
+        userEntity.setPhoneNumber(registerUserDTO.getPhoneNumber());
+        
+        
         // Zasifrovanie hesla
-        String encryptedPassword = passwordEncoder.encode(udaje[1]);
+        String encryptedPassword = passwordEncoder.encode(registerUserDTO.getPassword());
 
         userEntity.setPasswordHash(encryptedPassword);
 
@@ -43,15 +50,11 @@ public class RegistrationService {
         Set<RoleEntity> roles = new HashSet<>();
 
         roles.add(roleRepository.findByRoleName("USER").get());
-        System.out.println(roles);
-
 
         userEntity.setRoles(roles);
 
         // Uloženie používateľa
         userRepository.save(userEntity);
-
-
     }
 
 
