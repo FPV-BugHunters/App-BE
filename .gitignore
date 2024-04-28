@@ -39,7 +39,7 @@ testdb.mv.db
 ### Node.js ###
 **/node_modules/
 .env
-
+backend/public/
 
 ### DB ###
 postgres
@@ -48,3 +48,6 @@ postgres
 backend/first-run.flag
 frontend/.env
 backend/src/main/resources/application.properties
+backend/src/main/resources/static
+backend/db-update.flag
+backend/static/*

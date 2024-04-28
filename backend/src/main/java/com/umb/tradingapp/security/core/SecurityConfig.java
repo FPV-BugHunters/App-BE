@@ -25,7 +25,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-	private static final String[] SWAGGER_PATHS = {"/api-docs/**", "/swagger-ui/**"};
+	private static final String[] SWAGGER_PATHS = {"/api-docs/**", "/swagger-ui/**", "/v3/api-docs/**"};
     
     @Autowired
     private AuthenticationService authenticationService;
@@ -50,6 +50,10 @@ public class SecurityConfig {
 
 					.requestMatchers("/api/cryptos").permitAll()
                 .requestMatchers(SWAGGER_PATHS).permitAll()
+
+
+				.requestMatchers("/", "/**.html", "/assets/*.css", "/assets/*.js", "/assets/**", "/vite.svg" ).permitAll()
+				// .requestMatchers("**").permitAll()	
                 .anyRequest().authenticated())
 
                 // .addFilterBefore(new LibraryAuthenticationFilter(authenticationService),
