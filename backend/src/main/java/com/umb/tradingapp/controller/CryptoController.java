@@ -1,6 +1,6 @@
 package com.umb.tradingapp.controller;
 
-import com.umb.tradingapp.entity.CryptoIdEntity;
+import com.umb.tradingapp.dto.CryptoPriceDTO;
 import com.umb.tradingapp.service.ListAllCrypto;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +14,8 @@ public class CryptoController {
     private ListAllCrypto listAllCrypto;
 
     @GetMapping("/api/cryptos")
-    public Iterable<CryptoIdEntity> getAllCryptos() {
-        return listAllCrypto.getData();
+    public Iterable<CryptoPriceDTO> getAllCryptos() {
+        return listAllCrypto.getCryptoPrice();
     }
 
 }

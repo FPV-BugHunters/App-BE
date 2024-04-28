@@ -22,6 +22,7 @@ public class CryptoQuoteEntity {
     private Double marketCap;
     private Double price;
     private Double volume24h;
+    private Double circulatingSupply;
     private Float volumeChange24h;
     private Float marketCapDominance;
     private Float percentChange1h;

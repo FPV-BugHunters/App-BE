@@ -178,6 +178,7 @@ public class ListingLatest {
                 entity.setPercentChange30d(Float.parseFloat(q.getString("percent_change_30d")));
                 entity.setPercentChange60d(Float.parseFloat(q.getString("percent_change_30d")));
                 entity.setPercentChange90d(Float.parseFloat(q.getString("percent_change_90d")));
+                entity.setCirculatingSupply(Double.parseDouble(o.getString("circulating_supply")));
 
                 cryptoQuoteRepo.save(entity);
 
