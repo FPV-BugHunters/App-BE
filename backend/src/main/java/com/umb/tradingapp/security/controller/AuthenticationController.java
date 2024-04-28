@@ -47,7 +47,7 @@ public class AuthenticationController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved",
                     headers = {
-                            @Header(name = "authorization", description = "Bearer 49d9e059-b670-4cf5-8fbc-15423d8c2540", schema = @Schema(type = "string"))
+                            @Header(name = "authorization", description = "Bearer xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", schema = @Schema(type = "string"))
                     }
             ),
             @ApiResponse(responseCode = "401", description = "Error: response status is 401",
@@ -94,8 +94,7 @@ public class AuthenticationController {
 
     })
     @DeleteMapping("/api/logout") // funguje
-    public void logout(@Parameter(description = "User's authorization token (Bearer token), (swagger-ui, hore zamok na endpointe treba pouzit)",
-            example = "3de1b5ce-c647-4043-8d89-8f8d31c0fe4f")
+    public void logout(@Parameter(description = "User's authorization token (Bearer token), (swagger-ui, hore zamok na endpointe treba pouzit)")
                            @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentication, HttpServletResponse response) {
 
         if (authentication.isEmpty()) {
@@ -131,8 +130,7 @@ public class AuthenticationController {
             @ApiResponse(responseCode = "401", description = "Not found - wrong token")
     })
     @GetMapping("/api/user") //funkčne
-    public void getUser(@Parameter(description = "User's authorization token (Bearer token), (swagger-ui, hore zamok na endpointe treba pouzit)",
-            example = "3de1b5ce-c647-4043-8d89-8f8d31c0fe4f")
+    public void getUser(@Parameter(description = "User's authorization token (Bearer token), (swagger-ui, hore zamok na endpointe treba pouzit)")
                             @RequestHeader(name = HttpHeaders.AUTHORIZATION) String auth,
                         HttpServletResponse response) throws JSONException {
         String token = auth.substring("Bearer".length()).trim();
