@@ -46,7 +46,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/registration").permitAll()
 					.requestMatchers(HttpMethod.GET, "/api/user").permitAll()
 					.requestMatchers(HttpMethod.GET, "/api/authentication").permitAll()
-					.requestMatchers(HttpMethod.DELETE, "/api/authentication").permitAll()
+					.requestMatchers(HttpMethod.DELETE, "/api/logout").permitAll()
 
 					.requestMatchers("/api/cryptos").permitAll()
                 .requestMatchers(SWAGGER_PATHS).permitAll()

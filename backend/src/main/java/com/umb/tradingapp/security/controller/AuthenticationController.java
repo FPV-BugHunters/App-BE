@@ -1,15 +1,19 @@
 package com.umb.tradingapp.security.controller;
 
 
+import com.umb.tradingapp.security.entity.TokenEntity;
+import com.umb.tradingapp.security.repo.TokenRepository;
 import com.umb.tradingapp.security.repo.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletResponse;
+import org.antlr.v4.runtime.Token;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,11 +35,27 @@ import java.util.Optional;
 //@CrossOrigin("*")
 public class AuthenticationController {
 
+    @Autowired
+    private TokenRepository tokenRepository;
+
     private final String AUTHORIZATION_HEADER = "Authorization";
 
     @Autowired
     private AuthenticationService authenticationService;
 
+    @Operation(summary = "POST user's credentials", description = "Posts user credentials")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved",
+                    headers = {
+                            @Header(name = "authorization", description = "Bearer 49d9e059-b670-4cf5-8fbc-15423d8c2540", schema = @Schema(type = "string"))
+                    }
+            ),
+            @ApiResponse(responseCode = "401", description = "Error: response status is 401",
+                    content = @Content(mediaType = "text/plain",
+                            examples = @ExampleObject(value = "Response body: Username and/or password do not match!")
+                    )
+            )
+    })
     @PostMapping("/login" ) // toto sa pouziva
     public void login( @RequestBody AccountCredentialsDTO  accountCredentials, HttpServletResponse response) {
         
@@ -51,16 +71,58 @@ public class AuthenticationController {
     public UserRolesDto getRoles(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth) {
 
         String token = auth.substring("Bearer".length()).trim();
+
+
         return authenticationService.authenticate(token);
     }
 
-    @DeleteMapping("/api/authentication")// funguje, zatial nepouzivane
-    public void logout(@RequestHeader(value = AUTHORIZATION_HEADER, required = true) Optional<String> authentication) {
+    @Operation(summary = "DELETE user(token) - logout", description = "Logs out the user by removing the authentication token")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully logged off",
+                    headers = {
+                    @Header(name = "authorization", description = "logout successful ", schema = @Schema(type = "string"))
+            }
+            ),
+            @ApiResponse(responseCode = "401", description = "Error: response status is 401",
+                    headers = {
+                            @Header(name = "error", description = "logout not successful, user does not exists", schema = @Schema(type = "string")),
+                            @Header(name = "error1", description = "logout not successful, token not sent", schema = @Schema(type = "string"))
+
+                    }
+            )
+
+
+    })
+    @DeleteMapping("/api/logout") // funguje
+    public void logout(@Parameter(description = "User's authorization token (Bearer token), (swagger-ui, hore zamok na endpointe treba pouzit)",
+            example = "3de1b5ce-c647-4043-8d89-8f8d31c0fe4f")
+                           @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentication, HttpServletResponse response) {
+
+        if (authentication.isEmpty()) {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.addHeader("Error1", "logout not successful, token not sent");
+            return;
+        }
         String token = authentication.get().substring("Bearer".length()).trim();
-        authenticationService.tokenRemove(token);
+
+        System.out.println("Idem sa pokusit removnut pouzivatela: ");
+
+        Optional<TokenEntity> te;
+        te =tokenRepository.findByToken(token);
+        if (te.isEmpty()){
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.addHeader("Error", "logout not successful, user does not exists" );
+
+        }
+        else{
+            authenticationService.tokenRemove(token);
+            response.setStatus(HttpStatus.OK.value());
+            response.addHeader(AUTHORIZATION_HEADER, "logout successful" );
+        }
+
     }
 
-    @Operation(summary = "Get user's atributes by unique token", description = "Returns atributes: role, name")
+    @Operation(summary = "GET user's atributes by unique token", description = "Returns atributes: role, name")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved",
                     content = @Content(mediaType = "application/json",
