@@ -2,6 +2,13 @@ package com.umb.tradingapp.security.controller;
 
 
 import com.umb.tradingapp.security.repo.UserRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,8 +60,19 @@ public class AuthenticationController {
         authenticationService.tokenRemove(token);
     }
 
+    @Operation(summary = "Get user's atributes by unique token", description = "Returns atributes: role, name")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully retrieved",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = UserRolesDto.class),
+                            examples = @ExampleObject(value = "{\"role\": \"[USER]\", \"name\": \"admin\"}"))),
+            @ApiResponse(responseCode = "401", description = "Not found - wrong token")
+    })
     @GetMapping("/api/user") //funkčne
-    public void getUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth, HttpServletResponse response) throws JSONException {
+    public void getUser(@Parameter(description = "User's authorization token (Bearer token), (swagger-ui, hore zamok na endpointe treba pouzit)",
+            example = "3de1b5ce-c647-4043-8d89-8f8d31c0fe4f")
+                            @RequestHeader(name = HttpHeaders.AUTHORIZATION) String auth,
+                        HttpServletResponse response) throws JSONException {
         String token = auth.substring("Bearer".length()).trim();
 
         UserRolesDto user = authenticationService.authenticate(token);
