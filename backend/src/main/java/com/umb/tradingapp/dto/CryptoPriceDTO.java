@@ -8,12 +8,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CryptoPriceDTO {
+    private Long id;
     private String name;
     private String symbol;
-    private int rank;
-    private double priceUSD;
-    private double circulatingSupply;
-    private double marketCap;
-
+    private Integer rank;
+    private Double priceUSD;
+    private Double circulatingSupply;
+    private Double marketCap;
+    private Double volume;
+    private Float h1;
+    private Float h24;
+    private Float d7;
 
 }

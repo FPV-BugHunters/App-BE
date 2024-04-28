@@ -1,7 +1,5 @@
 package com.umb.tradingapp.entity;
 
-import java.util.Set;
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,20 +19,31 @@ public class CryptoIdEntity {
     private String symbol;
     private String slug;
 
-    @OneToOne(mappedBy = "cryptoId")
-    @PrimaryKeyJoinColumn    
-    private CryptoPlatformEntity cryptoPlatform;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "quote_id", referencedColumnName = "id")
+    private CryptoQuoteEntity quote;
 
-    @OneToOne(mappedBy = "cryptoId")
-    @PrimaryKeyJoinColumn
-    private CryptoQuoteEntity cryptoQuote;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "rank_id", referencedColumnName = "id")
+    private CryptoRankEntity rank;
 
-    @OneToOne(mappedBy = "cryptoId")
-    @PrimaryKeyJoinColumn
-    private CryptoRankEntity cryptoRank;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "platform_id", referencedColumnName = "id")
+    private CryptoPlatformEntity platform;
 
-    @OneToMany(mappedBy = "platform")
-    Set<CryptoPlatformEntity> tokens;
+    //@OneToMany(mappedBy = "platform")
+    //Set<CryptoPlatformEntity> tokens;
 
+    //@OneToOne(mappedBy = "cryptoId", cascade = CascadeType.ALL)
+    //@PrimaryKeyJoinColumn    
+    //private CryptoPlatformEntity cryptoPlatform;
+
+    //@OneToOne(mappedBy = "cryptoId", cascade = CascadeType.ALL)
+    //@PrimaryKeyJoinColumn
+    //private CryptoQuoteEntity cryptoQuote;
+
+    //@OneToOne(mappedBy = "cryptoId", cascade = CascadeType.ALL)
+    //@PrimaryKeyJoinColumn
+    //private CryptoRankEntity cryptoRank;
 }
 
