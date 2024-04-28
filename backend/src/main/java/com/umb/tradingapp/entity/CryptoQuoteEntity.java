@@ -3,9 +3,6 @@ package com.umb.tradingapp.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,6 +22,7 @@ public class CryptoQuoteEntity {
     private Double marketCap;
     private Double price;
     private Double volume24h;
+    private Double circulatingSupply;
     private Float volumeChange24h;
     private Float marketCapDominance;
     private Float percentChange1h;
@@ -34,8 +32,4 @@ public class CryptoQuoteEntity {
     private Float percentChange60d;
     private Float percentChange90d;
 
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "id")
-    private CryptoIdEntity cryptoId;
 }

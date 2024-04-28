@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
@@ -24,8 +22,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.umb.tradingapp.entity.CryptoIdEntity;
 import com.umb.tradingapp.entity.CryptoPlatformEntity;
@@ -71,8 +69,6 @@ public class ListingLatest {
 
         try {
             String result = makeAPICall(coinmarketcapUri + "/v1/cryptocurrency/listings/latest", parameters);
-            // System.out.println(result);
-            // System.out.println(result);
 
             this.dataArray = new JSONObject(result).getJSONArray("data");  // Parse JSON response
             // System.out.println(this.dataArray);
@@ -88,18 +84,27 @@ public class ListingLatest {
         }
     }
 
+    @Transactional
     public void saveCryptoId () {
         try {
             JSONObject o;
             for (int i = 0; i < this.dataArray.length(); i++) {
                 o = this.dataArray.getJSONObject(i);
+                Long cryptoId = Long.parseLong(o.getString("id"));
+                CryptoIdEntity entity;
 
-                CryptoIdEntity entity = new CryptoIdEntity();
+                if (cryptoIdRepo.existsById(cryptoId)) {
+                    entity = cryptoIdRepo.getReferenceById(cryptoId);
+                } else {
+                    entity = new CryptoIdEntity();
+                }
+
                 entity.setId(Long.parseLong(o.getString("id")));
                 entity.setName(o.getString("name"));
                 entity.setSymbol(o.getString("symbol"));
                 entity.setSlug(o.getString("slug"));
-
+                entity.setRank(null);
+                entity.setQuote(null);
                 cryptoIdRepo.save(entity);
             }
         } catch (JSONException e) {
@@ -107,25 +112,35 @@ public class ListingLatest {
         }
     }
 
+    @Transactional
     public void saveCryptoPlatform () {
         try {
             JSONObject o;
             for (int i = 0; i < this.dataArray.length(); i++) {
                 o = this.dataArray.getJSONObject(i);
+                Long cryptoId = Long.parseLong(o.getString("id"));
+                CryptoPlatformEntity entity;
 
                 if (!o.getString("platform").equals("null")) {
-                    CryptoPlatformEntity entity = new CryptoPlatformEntity();
-                    JSONObject p = new JSONObject(o.getString("platform"));
 
-                    if (cryptoIdRepo.existsById(Long.parseLong(o.getString("id"))) 
-                    && cryptoIdRepo.existsById(Long.parseLong(p.getString("id")))) {
-                        CryptoIdEntity platform = cryptoIdRepo.findById(Long.parseLong(p.getString("id"))).get();
-                        if (cryptoPlatformRepo.existsById(Long.parseLong(o.getString("id"))))
-                            entity.setId(Long.parseLong(o.getString("id")));
-                        entity.setCryptoId(cryptoIdRepo.findById(Long.parseLong(o.getString("id"))).get());
+                    JSONObject p = new JSONObject(o.getString("platform"));
+                    Long platformId = Long.parseLong(p.getString("id"));
+
+                    if (cryptoPlatformRepo.existsById(cryptoId)) {
+                        entity = cryptoPlatformRepo.getReferenceById(cryptoId);
+                    } else {
+                        entity = new CryptoPlatformEntity();
+                        entity.setId(cryptoId);
+                    }
+
+                    if (cryptoIdRepo.existsById(platformId)) {
+                        CryptoIdEntity platform = cryptoIdRepo.getReferenceById(platformId);
+                        CryptoIdEntity id = cryptoIdRepo.getReferenceById(cryptoId);
                         entity.setToken(p.getString("token_address"));
                         entity.setPlatform(platform);
                         cryptoPlatformRepo.save(entity);
+                        id.setPlatform(entity);
+                        cryptoIdRepo.save(id);
                     }
                 }
             }
@@ -134,18 +149,24 @@ public class ListingLatest {
         }
     }
 
+    @Transactional
     public void saveCryptoQuote () {
         try {
             JSONObject o;
             for (int i = 0; i < this.dataArray.length(); i++) {
                 o = this.dataArray.getJSONObject(i);
 
-                CryptoQuoteEntity entity = new CryptoQuoteEntity();
+                Long cryptoId = Long.parseLong(o.getString("id"));
+                CryptoQuoteEntity entity;
                 JSONObject q = o.getJSONObject("quote").getJSONObject("USD");
 
-                if (cryptoQuoteRepo.existsById(Long.parseLong(o.getString("id"))))
-                    entity.setId(Long.parseLong(o.getString("id")));
-                entity.setCryptoId(cryptoIdRepo.findById(Long.parseLong(o.getString("id"))).get());
+                if (cryptoQuoteRepo.existsById(cryptoId)) {
+                    entity = cryptoQuoteRepo.getReferenceById(cryptoId);
+                } else {
+                    entity = new CryptoQuoteEntity();
+                    entity.setId(cryptoId);
+                }
+
                 entity.setFullyDilutedMarketCap(Double.parseDouble(q.getString("fully_diluted_market_cap")));
                 entity.setMarketCap(Double.parseDouble(q.getString("market_cap")));
                 entity.setPrice(Double.parseDouble(q.getString("price")));
@@ -158,48 +179,40 @@ public class ListingLatest {
                 entity.setPercentChange30d(Float.parseFloat(q.getString("percent_change_30d")));
                 entity.setPercentChange60d(Float.parseFloat(q.getString("percent_change_30d")));
                 entity.setPercentChange90d(Float.parseFloat(q.getString("percent_change_90d")));
+                entity.setCirculatingSupply(Double.parseDouble(o.getString("circulating_supply")));
 
                 cryptoQuoteRepo.save(entity);
+
+                CryptoIdEntity id = cryptoIdRepo.getReferenceById(cryptoId);
+                id.setQuote(entity);
+                cryptoIdRepo.save(id);
             }
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void saveCryptoRank () {
+     @Transactional
+     public void saveCryptoRank() {
         try {
-            JSONObject o;
             for (int i = 0; i < this.dataArray.length(); i++) {
-                o = this.dataArray.getJSONObject(i);
-
-                CryptoRankEntity entity = new CryptoRankEntity();
-
-                if (cryptoRankRepo.existsById(Long.parseLong(o.getString("id"))))
-                    entity.setId(Long.parseLong(o.getString("id")));
-                entity.setCryptoId(cryptoIdRepo.findById(Long.parseLong(o.getString("id"))).get());
+                JSONObject o = this.dataArray.getJSONObject(i);
+                long cryptoId = Long.parseLong(o.getString("id"));
+                
+                CryptoRankEntity entity;
+                if (cryptoRankRepo.existsById(cryptoId)) {
+                    entity = cryptoRankRepo.getReferenceById(cryptoId);
+                } else {
+                    entity = new CryptoRankEntity();
+                    entity.setId(cryptoId);
+                }
                 entity.setCmcRank(Integer.parseInt(o.getString("cmc_rank")));
 
                 cryptoRankRepo.save(entity);
-            }
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
-    public void updateCryptoQuote () {
-        try {
-            JSONObject o;
-            for (int i = 0; i < this.dataArray.length(); i++) {
-                o = this.dataArray.getJSONObject(i);
-
-                CryptoRankEntity entity = new CryptoRankEntity();
-
-                if (cryptoRankRepo.existsById(Long.parseLong(o.getString("id"))))
-                    entity.setId(Long.parseLong(o.getString("id")));
-                entity.setCryptoId(cryptoIdRepo.findById(Long.parseLong(o.getString("id"))).get());
-                entity.setCmcRank(Integer.parseInt(o.getString("cmc_rank")));
-
-                cryptoRankRepo.save(entity);
+                CryptoIdEntity id = cryptoIdRepo.getReferenceById(cryptoId);
+                id.setRank(entity);
+                cryptoIdRepo.save(id);
             }
         } catch (JSONException e) {
             throw new RuntimeException(e);

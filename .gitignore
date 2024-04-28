@@ -51,3 +51,4 @@ backend/src/main/resources/application.properties
 backend/src/main/resources/static
 backend/db-update.flag
 backend/static/*
+db-update.flag

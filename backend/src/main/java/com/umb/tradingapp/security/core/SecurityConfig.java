@@ -1,7 +1,6 @@
 package com.umb.tradingapp.security.core;
 
 import java.util.Arrays;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -14,9 +13,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationFilter;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import com.umb.tradingapp.security.service.AuthenticationService;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -28,6 +24,11 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig {
 
 	private static final String[] SWAGGER_PATHS = {"/api-docs/**", "/swagger-ui/**", "/v3/api-docs/**"};
+    
+    @Autowired
+    private LibraryAuthenticationEntryPoint authEntryPoint;
+	
+
     
 	
 	private final LibraryAuthenticationEntryPoint libraryAuthenticationEntryPoint;
