@@ -10,6 +10,7 @@ export const getSymbols = async (): Promise<SymbolResponse[]> => {
   const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/cryptos`, getAxiosConfig());
 
   return response.data;
+  
   // const mockData: SymbolResponse[] = Array.from({ length: 10 }, (_, id) => ({
   //   id: id + 1,
   //   name: `Symbol ${id + 1}`,

@@ -10,8 +10,9 @@ import Paper from '@mui/material/Paper';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {Symbol, SymbolResponse} from '../types';
 import Chart from 'react-apexcharts'
-import { getSymbols } from '../contexts/SymbolContex';
+import { getSymbols } from '../api/SymbolApi';
 import SymbolDataTableChart from './SymbolDataTableChart';
+import { Style } from '@mui/icons-material';
 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -34,6 +35,19 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+export type SymbolResponse = {
+    id: number;
+    name: string;
+    symbol: string;
+    rank: number;
+    priceUSD: number;
+    circulatingSupply: number;
+    marketCap: number;
+    volume: number;
+    h1: number;
+    h24: number;
+    d7: number;
+}
 
 export default function SymbolDataTable() {
     
@@ -85,13 +99,15 @@ export default function SymbolDataTable() {
             <StyledTableRow key={row.name}>
               <StyledTableCell>{row.id}</StyledTableCell>
               <StyledTableCell>{row.name}</StyledTableCell>
-              {/* <StyledTableCell>${parseFloat(row.price).toFixed(2)}</StyledTableCell>
-              <StyledTableCell>{parseFloat(row._1h).toFixed(2)}%</StyledTableCell>
-              <StyledTableCell>{parseFloat(row._7h).toFixed(2)}%</StyledTableCell>
-              <StyledTableCell>{parseFloat(row._24h).toFixed(2)}%</StyledTableCell>
-              <StyledTableCell>${parseFloat(row.marketCap).toFixed(2)}</StyledTableCell>
-              <StyledTableCell>{parseFloat(row.volume).toFixed(2)}</StyledTableCell>
-              <StyledTableCell>${parseFloat(row.circulatingSupply).toFixed(2)}</StyledTableCell> */}
+              <StyledTableCell>${parseFloat(row.priceUSD).toFixed(2)}</StyledTableCell>
+              <StyledTableCell>{parseFloat(row.h1).toFixed(2)}%</StyledTableCell>
+              <StyledTableCell>{parseFloat(row.h24).toFixed(2)}%</StyledTableCell>
+              <StyledTableCell>{parseFloat(row.d7).toFixed(2)}%</StyledTableCell>
+              <StyledTableCell>${parseFloat(row.marketCap).toFixed(0)}</StyledTableCell>
+              <StyledTableCell>${parseFloat(row.volume).toFixed(0)}</StyledTableCell>
+              <StyledTableCell>{parseFloat(row.circulatingSupply).toFixed(2) + ' ' + row.symbol}</StyledTableCell>
+
+
               {/* <SymbolDataTableChart symbol={row} /> */}
 
             </StyledTableRow>

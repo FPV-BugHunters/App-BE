@@ -1,12 +1,13 @@
 export type SymbolResponse = {
     id: number;
     name: string;
-    price: number;
-    _1h: number;
-    _24h: number;
-    _7h: number;
+    symbol: string;
+    rank: number;
+    priceUSD: number;
+    circulatingSupply: number;
     marketCap: number;
     volume: number;
-    circulatingSupply: number;
+    h1: number;
+    h24: number;
+    d7: number;
 }
-    
