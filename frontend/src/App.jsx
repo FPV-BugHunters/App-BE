@@ -1,9 +1,9 @@
 import CssBaseline from '@mui/material/CssBaseline';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import * as React from 'react';
+// import * as React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import TopNav from './components/TopNav';
 import LogIn from './components/LogIn';
 import Home from './pages/Home';
@@ -11,6 +11,7 @@ import Watchlist from './pages/Watchlist';
 import { grey } from '@mui/material/colors';
 import IsAuthContext from './contexts/IsAuthContext';
 import UserContex from './contexts/UserContex';
+import CheckUser from './components/CheckUser';
 
 const darkTheme = createTheme({
   palette: {
@@ -36,26 +37,28 @@ function App() {
   const [ isAuth, setIsAuth ] = useState(false); 
   const [ user, setUser] = useState({});
   
+
+  
   return (
   <>
     <ThemeProvider theme={darkTheme}> 
       <IsAuthContext.Provider value={{isAuth, setIsAuth}}>
-      <UserContex.Provider value={{user, setUser}}>
-        <CssBaseline />
+        <UserContex.Provider value={{user, setUser}}>
+          <CssBaseline />
+          <CheckUser />
+          <Router > 
+              <TopNav />
+              <QueryClientProvider client={queryClient}>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/dashboard" element={<Home />} />
+                  <Route path="/login" element={<LogIn />} />
+                  <Route path="/watchlist" element={<Watchlist />} /> 
+                </Routes>
+              </QueryClientProvider>
+          </Router>
 
-        <Router > 
-            <TopNav />
-            <QueryClientProvider client={queryClient}>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/dashboard" element={<Home />} />
-                <Route path="/login" element={<LogIn />} />
-                <Route path="/watchlist" element={<Watchlist />} /> 
-              </Routes>
-            </QueryClientProvider>
-        </Router>
-
-      </UserContex.Provider>
+        </UserContex.Provider>
       </IsAuthContext.Provider> 
     </ThemeProvider>  
   </>

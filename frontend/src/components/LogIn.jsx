@@ -16,7 +16,7 @@ import IsAuthContext from '../contexts/IsAuthContext';
 import { useNavigate } from "react-router-dom";
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
-import { getUserInfo } from '../api/UserApi';
+import { userInfo } from '../api/UserApi';
 
 
 function Copyright (props) {
@@ -99,7 +99,7 @@ export default function LogIn () {
       if (token !== null) {
         sessionStorage.setItem("token", token);
         setIsAuth(true);
-        console.log(getUserInfo());
+        console.log(userInfo());
         navigate("/");
       }
     })

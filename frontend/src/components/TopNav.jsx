@@ -12,9 +12,10 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { useLocation } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import IsAuthContext from '../contexts/IsAuthContext';
-
+import UserContext from '../contexts/UserContex';
+import { logoutUser } from '../api/UserApi';
 import { Link } from 'react-router-dom';
 const pages = [ 'Dashboard' ];
 const settings = [ 'Profile', 'Account', 'Dashboard', 'Logout' ];
@@ -23,7 +24,9 @@ function TopNav () {
   const [ anchorElNav, setAnchorElNav ] = useState(null);
   const [ anchorElUser, setAnchorElUser ] = useState(null);
 
-  const { isAuth, setIsAuth } = React.useContext(IsAuthContext);
+  const { isAuth, setIsAuth } = useContext(IsAuthContext);
+  const { user, setUser } = useContext(UserContext);
+  
   console.log(isAuth);
   const location = useLocation();
 
@@ -51,10 +54,17 @@ function TopNav () {
     setAnchorElNav(null);
   };
 
-  const handleCloseUserMenu = () => {
-    console.log('close');
+  const handleCloseUserMenu = (e) => {
+    console.log('close', e);
     setAnchorElUser(null);
   };
+
+  const handleLogout = () => {  
+    console.log('Logout');
+    setUser(null);
+    setIsAuth(false);
+    logoutUser();
+  }
 
   return (
     <AppBar position="static">
@@ -65,7 +75,7 @@ function TopNav () {
             variant="h6"
             noWrap
             component="a"
-            href="/"
+            // href="/"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -76,7 +86,7 @@ function TopNav () {
               textDecoration: 'none',
             }}
           >
-            TRADER
+          <Link to="/" style={{ textDecoration: 'none', color: 'white', display: 'block', marginRight: 10 }}>TRADER</Link>
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -120,7 +130,6 @@ function TopNav () {
             variant="h5"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
@@ -132,7 +141,7 @@ function TopNav () {
               textDecoration: 'none',
             }}
           >
-            LOGO
+          <Link to="/" style={{ textDecoration: 'none', color: 'white', display: 'block', marginRight: 10 }}>TRADER</Link>
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             <Link to="/dashboard" style={{ textDecoration: 'none', color: 'white', display: 'block', marginRight: 10 }}>Dashboard</Link>
@@ -147,9 +156,10 @@ function TopNav () {
             <Box sx={{ flexGrow: 0 }}>
               <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                  <Avatar alt={user && user.firstName} />
                 </IconButton>
               </Tooltip>
+
               <Menu
                 sx={{ mt: '45px' }}
                 id="menu-appbar"
@@ -166,15 +176,17 @@ function TopNav () {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-                {settings.map((setting) => (
-                  <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                    <Typography textAlign="center">{setting}</Typography>
-                  </MenuItem>
-                ))}
+                <MenuItem >
+                  <Typography textAlign="center">Account</Typography>
+                </MenuItem>
+
+                <MenuItem onClick={handleLogout}>
+                  <Typography textAlign="center">Logout</Typography>
+                </MenuItem>
+
               </Menu>
             </Box>
           ) : (
-              
             <Link to="/login" style={{ textDecoration: 'none', color: 'white', display: 'block', marginRight: 10 }}>Login</Link>
           )}
 
