@@ -12,7 +12,7 @@ public class DataScheduler {
     @Autowired
     ListingLatest ll;
     
-    @Scheduled(fixedRate=1000*100)
+    @Scheduled(fixedRate=1000*1000)
     public void updateData() {
 
         ll.loadData();

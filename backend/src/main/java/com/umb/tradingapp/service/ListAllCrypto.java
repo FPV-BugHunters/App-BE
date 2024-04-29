@@ -36,14 +36,14 @@ public class ListAllCrypto {
             dto.setId(id.getId());
             dto.setName(id.getName());
             dto.setSymbol(id.getSymbol());
-            // dto.setRank(id.getRank().getCmcRank());
-            // dto.setPriceUSD(id.getQuote().getPrice());
-            // dto.setCirculatingSupply(id.getQuote().getCirculatingSupply());
-            // dto.setMarketCap(id.getQuote().getMarketCap());
-            // dto.setVolume(id.getQuote().getVolume24h());
-            // dto.setH1(id.getQuote().getPercentChange1h());
-            // dto.setH24(id.getQuote().getPercentChange24h());
-            // dto.setD7(id.getQuote().getPercentChange7d());
+            dto.setRank(id.getRank().getCmcRank());
+            dto.setPriceUSD(id.getQuote().getPrice());
+            dto.setCirculatingSupply(id.getQuote().getCirculatingSupply());
+            dto.setMarketCap(id.getQuote().getMarketCap());
+            dto.setVolume(id.getQuote().getVolume24h());
+            dto.setH1(id.getQuote().getPercentChange1h());
+            dto.setH24(id.getQuote().getPercentChange24h());
+            dto.setD7(id.getQuote().getPercentChange7d());
 
             arrDto.add(dto);
         }
