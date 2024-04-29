@@ -41,7 +41,7 @@ public class DatabaseSchemaUpdate  {
             }
         }
 
-        System.out.println("Transferring data");
+        System.out.println("Transfering data");
         
         List<RoleEntity> roles = new ArrayList<>();
         
