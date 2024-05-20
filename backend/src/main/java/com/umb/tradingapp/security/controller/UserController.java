@@ -13,6 +13,7 @@ import com.umb.tradingapp.security.entity.TokenEntity;
 import com.umb.tradingapp.security.entity.UserEntity;
 import com.umb.tradingapp.security.repo.TokenRepository;
 import com.umb.tradingapp.security.repo.UserRepository;
+import com.umb.tradingapp.security.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -40,6 +41,9 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private UserService userService;
+
     /*
     @Operation(summary = "DELETE user(token) - logout", description = "Logs out the user by removing the authentication token")
         @ApiResponses(value = {
@@ -59,58 +63,27 @@ public class UserController {
 
     })*/
     @GetMapping("/api/user/balance")
-    public UserBalanceDTO balance(@Parameter(description = "User's authorization token (Bearer token)") 
+    public Integer balance(@Parameter(description = "User's authorization token (Bearer token)") 
         @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentification, HttpServletResponse response) {
-        if (authentification.isEmpty()) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.addHeader("Error1", "getting balance not successful, token not sent");
-            return null;
-        }
-        String token = authentification.get().substring("Bearer".length()).trim();
-
-        Optional<TokenEntity> te;
-        te = tokenRepository.findByToken(token);
-        if (te.isEmpty()) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.addHeader("Error", "getting balance not successful, user does not exists");
-            return null;
-        }
-        
-        Long userId = te.get().getUser().getId();
-        UserEntity entity = userRepository.getReferenceById(userId);
-        return new UserBalanceDTO(entity.getBalance());
+            return userService.balance(authentification, response);
     }
 
-    @PostMapping("/api/user/balance")
-    public ResponseEntity<String> balance(@RequestBody UserBalanceDTO dto, HttpServletResponse response,
+    @PostMapping("/api/user/balance/compare")
+    public Boolean enoughBalance(@RequestBody Integer dto, HttpServletResponse response,
     @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentification) {
-        if (authentification.isEmpty()) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.addHeader("Error1", "adding balance not successful, token not sent");
-            return new ResponseEntity<>("Balance not added", null, HttpStatus.UNAUTHORIZED);
-        }
-        String token = authentification.get().substring("Bearer".length()).trim();
-
-        Optional<TokenEntity> te;
-        te = tokenRepository.findByToken(token);
-        if (te.isEmpty()) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.addHeader("Error", "adding balance not successful, user does not exists");
-            return new ResponseEntity<>("Balance not added", null, HttpStatus.UNAUTHORIZED);
-        }
-
-        System.out.println();
-
-        if (dto.getBalance().equals(null)) {
-            response.setStatus(HttpStatus.NOT_FOUND.value());
-            response.addHeader("Error", "adding balance not successful, balance null");
-            return new ResponseEntity<>("Balance not added", null, HttpStatus.NOT_FOUND);
-        }
-        
-        Long userId = te.get().getUser().getId();
-        UserEntity entity = userRepository.getReferenceById(userId);
-        entity.setBalance(entity.getBalance() + dto.getBalance());
-        userRepository.save(entity);
-        return new ResponseEntity<>("Balance successfully added", null, HttpStatus.OK);
+        return userService.enoughBalance(dto, response, authentification);
     }
+
+    @PostMapping("/api/user/balance/add")
+    public ResponseEntity<String> addBalance(@RequestBody Integer dto, HttpServletResponse response,
+    @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentification) {
+        return userService.addBalance(dto, response, authentification);
+    }
+
+    @PostMapping("/api/user/balance/remove")
+    public ResponseEntity<String> removeBalance(@RequestBody Integer dto, HttpServletResponse response,
+    @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentification) {
+        return userService.removeBalance(dto, response, authentification);
+    }
+
 }
