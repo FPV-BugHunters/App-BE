@@ -36,6 +36,9 @@ public class UserEntity {
     @Column()
     private String phoneNumber;
 
+    @Column()
+    private Integer balance;
+
     
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
