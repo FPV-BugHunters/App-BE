@@ -37,7 +37,7 @@ public class UserEntity {
     private String phoneNumber;
 
     @Column()
-    private Integer balance;
+    private Double balance;
 
     
     @ManyToMany(fetch = FetchType.EAGER)

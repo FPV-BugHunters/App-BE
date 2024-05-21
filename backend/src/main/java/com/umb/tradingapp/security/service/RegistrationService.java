@@ -39,7 +39,7 @@ public class RegistrationService {
         userEntity.setLastName(registerUserDTO.getLastName());
         userEntity.setEmail(registerUserDTO.getEmail());
         userEntity.setPhoneNumber(registerUserDTO.getPhoneNumber());
-        userEntity.setBalance(0);
+        userEntity.setBalance(0.);
         
         
         // Zasifrovanie hesla

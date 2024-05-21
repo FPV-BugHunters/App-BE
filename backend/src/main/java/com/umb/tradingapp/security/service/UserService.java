@@ -4,16 +4,13 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.umb.tradingapp.security.dto.UserBalanceDTO;
 import com.umb.tradingapp.security.entity.TokenEntity;
 import com.umb.tradingapp.security.entity.UserEntity;
 import com.umb.tradingapp.security.repo.TokenRepository;
 import com.umb.tradingapp.security.repo.UserRepository;
 
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Service
@@ -25,9 +22,7 @@ public class UserService {
     @Autowired
     TokenRepository tokenRepository;
     
-    private final String AUTHORIZATION_HEADER = "Authorization";
-
-    public Integer balance(Optional<String> authentification, HttpServletResponse response) {
+    public Double balance(Optional<String> authentification, HttpServletResponse response) {
         String token = authentification.get().substring("Bearer".length()).trim();
         Optional<TokenEntity> te = tokenRepository.findByToken(token);
         Long userId = te.get().getUser().getId();
@@ -36,7 +31,7 @@ public class UserService {
         return entity.getBalance();
     }
 
-    public Boolean addBalance(Integer dto, HttpServletResponse response, Optional<String> authentification) {
+    public Boolean addBalance(Double dto, HttpServletResponse response, Optional<String> authentification) {
         String token = authentification.get().substring("Bearer".length()).trim();
         Optional<TokenEntity> te = tokenRepository.findByToken(token);
         Long userId = te.get().getUser().getId();
@@ -47,7 +42,7 @@ public class UserService {
         return true;
     }
 
-    public Boolean removeBalance(Integer dto, HttpServletResponse response, Optional<String> authentification) {
+    public Boolean removeBalance(Double dto, HttpServletResponse response, Optional<String> authentification) {
         String token = authentification.get().substring("Bearer".length()).trim();
         Optional<TokenEntity> te = tokenRepository.findByToken(token);
         Long userId = te.get().getUser().getId();
@@ -58,7 +53,7 @@ public class UserService {
         return true;
     }
 
-    public Boolean enoughBalance(Integer dto, HttpServletResponse response, Optional<String> authentification) {
+    public Boolean enoughBalance(Double dto, HttpServletResponse response, Optional<String> authentification) {
         String token = authentification.get().substring("Bearer".length()).trim();
         Optional<TokenEntity> te = tokenRepository.findByToken(token);
         Long userId = te.get().getUser().getId();
