@@ -65,25 +65,48 @@ public class UserController {
     @GetMapping("/api/user/balance")
     public Integer balance(@Parameter(description = "User's authorization token (Bearer token)") 
         @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentification, HttpServletResponse response) {
+            if (!userService.checkTokenGiven(authentification, response)) 
+                return null;
+            if (!userService.checkTokenExists(authentification, response))
+                return null;
             return userService.balance(authentification, response);
     }
 
     @PostMapping("/api/user/balance/compare")
     public Boolean enoughBalance(@RequestBody Integer dto, HttpServletResponse response,
     @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentification) {
+        if (!userService.checkTokenGiven(authentification, response))
+            return null;
+        if (!userService.checkTokenExists(authentification, response))
+            return null;
+        if (!userService.checkDtoExists(dto, response))
+            return null;
         return userService.enoughBalance(dto, response, authentification);
     }
 
     @PostMapping("/api/user/balance/add")
-    public ResponseEntity<String> addBalance(@RequestBody Integer dto, HttpServletResponse response,
+    public Boolean addBalance(@RequestBody Integer dto, HttpServletResponse response,
     @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentification) {
+        if (!userService.checkTokenGiven(authentification, response))
+            return null;
+        if (!userService.checkTokenExists(authentification, response))
+            return null;
+        if (!userService.checkDtoExists(dto, response))
+            return null;
         return userService.addBalance(dto, response, authentification);
     }
 
     @PostMapping("/api/user/balance/remove")
-    public ResponseEntity<String> removeBalance(@RequestBody Integer dto, HttpServletResponse response,
+    public Boolean removeBalance(@RequestBody Integer dto, HttpServletResponse response,
     @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentification) {
+        if (!userService.checkTokenGiven(authentification, response))
+            return null;
+        if (!userService.checkTokenExists(authentification, response))
+            return null;
+        if (!userService.checkDtoExists(dto, response))
+            return null;
+        if (!userService.enoughBalance(dto, response, authentification))
+            return false;
         return userService.removeBalance(dto, response, authentification);
     }
-
 }

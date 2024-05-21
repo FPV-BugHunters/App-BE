@@ -28,111 +28,72 @@ public class UserService {
     private final String AUTHORIZATION_HEADER = "Authorization";
 
     public Integer balance(Optional<String> authentification, HttpServletResponse response) {
-        if (authentification.isEmpty()) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.addHeader("Error1", "getting balance not successful, token not sent");
-            return null;
-        }
         String token = authentification.get().substring("Bearer".length()).trim();
-
-        Optional<TokenEntity> te;
-        te = tokenRepository.findByToken(token);
-        if (te.isEmpty()) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.addHeader("Error", "getting balance not successful, user does not exists");
-            return null;
-        }
-        
+        Optional<TokenEntity> te = tokenRepository.findByToken(token);
         Long userId = te.get().getUser().getId();
         UserEntity entity = userRepository.getReferenceById(userId);
+
         return entity.getBalance();
-        
     }
 
-    public ResponseEntity<String> addBalance(Integer dto, HttpServletResponse response, Optional<String> authentification) {
-        if (authentification.isEmpty()) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.addHeader("Error1", "adding balance not successful, token not sent");
-            return new ResponseEntity<>("Balance not added", null, HttpStatus.UNAUTHORIZED);
-        }
+    public Boolean addBalance(Integer dto, HttpServletResponse response, Optional<String> authentification) {
         String token = authentification.get().substring("Bearer".length()).trim();
-
-        Optional<TokenEntity> te;
-        te = tokenRepository.findByToken(token);
-        if (te.isEmpty()) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.addHeader("Error", "adding balance not successful, user does not exists");
-            return new ResponseEntity<>("Balance not added", null, HttpStatus.UNAUTHORIZED);
-        }
-
-        if (dto.equals(null)) {
-            response.setStatus(HttpStatus.NOT_FOUND.value());
-            response.addHeader("Error", "adding balance not successful, balance null");
-            return new ResponseEntity<>("Balance not added", null, HttpStatus.NOT_FOUND);
-        }
-        
+        Optional<TokenEntity> te = tokenRepository.findByToken(token);
         Long userId = te.get().getUser().getId();
         UserEntity entity = userRepository.getReferenceById(userId);
+
         entity.setBalance(entity.getBalance() + dto);
         userRepository.save(entity);
-        return new ResponseEntity<>("Balance successfully added", null, HttpStatus.OK);
+        return true;
     }
 
-    public ResponseEntity<String> removeBalance(Integer dto, HttpServletResponse response, Optional<String> authentification) {
-        if (authentification.isEmpty()) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.addHeader("Error1", "removing balance not successful, token not sent");
-            return new ResponseEntity<>("Balance not added", null, HttpStatus.UNAUTHORIZED);
-        }
+    public Boolean removeBalance(Integer dto, HttpServletResponse response, Optional<String> authentification) {
         String token = authentification.get().substring("Bearer".length()).trim();
-
-        Optional<TokenEntity> te;
-        te = tokenRepository.findByToken(token);
-        if (te.isEmpty()) {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.addHeader("Error", "removing balance not successful, user does not exists");
-            return new ResponseEntity<>("Balance not removed", null, HttpStatus.UNAUTHORIZED);
-        }
-
-        if (dto.equals(null)) {
-            response.setStatus(HttpStatus.NOT_FOUND.value());
-            response.addHeader("Error", "removing balance not successful, balance null");
-            return new ResponseEntity<>("Balance not removed", null, HttpStatus.NOT_FOUND);
-        }
-        
+        Optional<TokenEntity> te = tokenRepository.findByToken(token);
         Long userId = te.get().getUser().getId();
         UserEntity entity = userRepository.getReferenceById(userId);
+
         entity.setBalance(entity.getBalance() - dto);
         userRepository.save(entity);
-        return new ResponseEntity<>("Balance successfully removed", null, HttpStatus.OK);
+        return true;
     }
 
     public Boolean enoughBalance(Integer dto, HttpServletResponse response, Optional<String> authentification) {
+        String token = authentification.get().substring("Bearer".length()).trim();
+        Optional<TokenEntity> te = tokenRepository.findByToken(token);
+        Long userId = te.get().getUser().getId();
+        UserEntity entity = userRepository.getReferenceById(userId);
+
+        return ((entity.getBalance() - dto < 0) ? false : true);
+    }
+
+    public Boolean checkTokenGiven(Optional<String> authentification, HttpServletResponse response) {
         if (authentification.isEmpty()) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.addHeader("Error1", "comparing balance not successful, token not sent");
-            return null;
+            response.addHeader("Error", "token not sent"); 
+            return false;
         }
-        String token = authentification.get().substring("Bearer".length()).trim();
+        return true;
+    }
 
+    public Boolean checkTokenExists(Optional<String> authentification, HttpServletResponse response) {
+        String token = authentification.get().substring("Bearer".length()).trim();
         Optional<TokenEntity> te;
         te = tokenRepository.findByToken(token);
         if (te.isEmpty()) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.addHeader("Error", "comparing balance not successful, user does not exists");
-            return null; 
+            response.addHeader("Error", "user does not exists");
+            return false; 
         }
+        return true;
+    }
 
+    public <T> Boolean checkDtoExists(T dto, HttpServletResponse response) {
         if (dto.equals(null)) {
             response.setStatus(HttpStatus.NOT_FOUND.value());
-            response.addHeader("Error", "comparing balance not successful, balance null");
-            return null;
-        }
-        
-        Long userId = te.get().getUser().getId();
-        UserEntity entity = userRepository.getReferenceById(userId);
-        if (entity.getBalance() - dto < 0)
+            response.addHeader("Error", "dto not found");
             return false;
+        }
         return true;
     }
 }
