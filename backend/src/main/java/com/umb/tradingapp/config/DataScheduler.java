@@ -15,6 +15,9 @@ public class DataScheduler {
     @Scheduled(fixedRate=1000*1000)
     public void updateData() {
 
+        ll.loadDataHistorical(); // historicke data cien
+        ll.loadDataListOfCoins(); // Coin k UUID, podla UUID vieme vytiahnut historicke data daneho coinu
+
         ll.loadData();
         ll.saveCryptoId();
         ll.saveCryptoPlatform();

@@ -52,11 +52,162 @@ public class ListingLatest {
     @Value("${coinmarketcapApiKey}")
     private String coinmarketcapApiKey;
 
+    @Value("${coinrankingApiKey}")
+    private String coinrankingApiKey;
+
     @Value("${coinmarketcapUri}")
     private String coinmarketcapUri;
 
+    @Value("${coinrankingUri}")
+    private String coinrankingUri;
+
     private JSONArray dataArray;
 
+    public void loadDataListOfCoins(){
+       // https://developers.coinranking.com/api/documentation/coins/coins
+
+        System.out.println(coinrankingApiKey);
+        System.out.println(coinrankingUri);
+
+        // "coin/UUID"
+        //  BTC UUID = Qwsogvtv82FCd
+        //  ostatne UUID = z druhej api, urlAllCoins
+
+        //timePeriod (optional) String
+        //Timeperiod where the change and history are based on
+        //Default value: 24h
+        //Allowed values:
+        //1h 3h 12h 24h 7d 30d 3m 1y 3y 5y
+
+        //referenceCurrencyUuid (optional) String
+        //UUID of reference currency, in which all the prices are calculated. Defaults to US Dollar
+        //Default value: yhjMzLPhuIDl
+
+        List<NameValuePair> parameters = new ArrayList<>();
+        //String timePeriod = "?timePeriod=5y";
+
+        try {
+            String result = makeAPICall(coinrankingUri + "/v2/coins", parameters);
+            System.out.println(result);
+            formatCryptoData(result);
+
+        } catch (IOException e) {
+            System.out.println("Error: cannot access content - " + e.toString());
+
+        } catch (URISyntaxException e) {
+            System.out.println("Error: Invalid URL " + e.toString());
+
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+    public static void formatCryptoData(String jsonString) throws JSONException {
+        JSONObject jsonObj = new JSONObject(jsonString);
+
+        // Skontrolovať stav
+        if (!jsonObj.getString("status").equals("success")) {
+            System.out.println("Neúspešný pokus o získanie dát.");
+            return;
+        }
+
+        JSONObject stats = jsonObj.getJSONObject("data").getJSONObject("stats");
+        JSONArray coins = jsonObj.getJSONObject("data").getJSONArray("coins");
+
+        // Vypis štatistík
+        System.out.println("Štatistiky:");
+        System.out.println("Celkový počet: " + stats.getInt("total"));
+        System.out.println("Celkový počet mincí: " + stats.getInt("totalCoins"));
+        System.out.println("Celkový počet trhov: " + stats.getInt("totalMarkets"));
+        System.out.println("Celkový počet burz: " + stats.getInt("totalExchanges"));
+        System.out.println("Celková trhová kapitalizácia: " + stats.getString("totalMarketCap"));
+        System.out.println("Celkový 24h objem: " + stats.getString("total24hVolume"));
+        System.out.println();
+
+        // Vypis informácií o minciach
+        for (int i = 0; i < coins.length(); i++) {
+            JSONObject coin = coins.getJSONObject(i);
+            System.out.println("Minca:");
+            System.out.println("  UUID: " + coin.getString("uuid"));
+            System.out.println("  Symbol: " + coin.getString("symbol"));
+            System.out.println("  Názov: " + coin.getString("name"));
+            /*
+            System.out.println("  Farba: " + coin.getString("color"));
+            System.out.println("  URL ikony: " + coin.getString("iconUrl"));
+            System.out.println("  Trhová kapitalizácia: " + coin.getString("marketCap"));
+            System.out.println("  Cena: " + coin.getString("price"));
+            System.out.println("  Zoznam: " + coin.getLong("listedAt"));
+            System.out.println("  Úroveň: " + coin.getInt("tier"));
+            System.out.println("  Zmena: " + coin.getString("change"));
+            System.out.println("  Poradie: " + coin.getInt("rank"));
+            System.out.println("  URL: " + coin.getString("coinrankingUrl"));
+            System.out.println("  24h objem: " + coin.getString("24hVolume"));
+            System.out.println("  BTC cena: " + coin.getString("btcPrice"));
+             */
+            System.out.println();
+        }
+    }
+    public void loadDataHistorical(){
+
+        System.out.println(coinrankingApiKey);
+        System.out.println(coinrankingUri);
+
+        // https://developers.coinranking.com/api/documentation/coins/coin-price-history
+        // "coin/UUID"
+        //  BTC UUID = Qwsogvtv82FCd
+        //  ostatne UUID = z druhej api, urlAllCoins
+
+        //timePeriod (optional) String
+        //Timeperiod where the change and history are based on
+        //Default value: 24h
+        //Allowed values:
+        //1h 3h 12h 24h 7d 30d 3m 1y 3y 5y
+
+        //referenceCurrencyUuid (optional) String
+        //UUID of reference currency, in which all the prices are calculated. Defaults to US Dollar
+        //Default value: yhjMzLPhuIDl
+
+        List<NameValuePair> parameters = new ArrayList<>();
+        parameters.add(new BasicNameValuePair("timePeriod", "5y"));
+        String UUID = "razxDUgYGNAdQ"; // UUID pre ETH
+        //String timePeriod = "?timePeriod=5y";
+
+        try {
+            String result = makeAPICall(coinrankingUri + "/v2/coin/"+UUID+"/history", parameters);
+            System.out.println(result);
+            formatAndPrintResponse(result);
+
+        } catch (IOException e) {
+            System.out.println("Error: cannot access content - " + e.toString());
+
+        } catch (URISyntaxException e) {
+            System.out.println("Error: Invalid URL " + e.toString());
+
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    private static void formatAndPrintResponse(String responseBody) throws JSONException {
+        JSONObject jsonResponse = new JSONObject(responseBody);
+        String status = jsonResponse.getString("status");
+        System.out.println("Status: " + status);
+
+        JSONObject data = jsonResponse.getJSONObject("data");
+        String change = data.getString("change");
+        System.out.println("Change: " + change);
+
+        JSONArray history = data.getJSONArray("history");
+        System.out.println("History:");
+
+        for (int i = 0; i < history.length(); i++) {
+            JSONObject entry = history.getJSONObject(i);
+            String price = entry.getString("price");
+            long timestamp = entry.getLong("timestamp");
+            System.out.println("  Timestamp: " + timestamp + ", Price: " + price);
+        }
+    }
     public void loadData() {
 
         System.out.println(coinmarketcapApiKey);
