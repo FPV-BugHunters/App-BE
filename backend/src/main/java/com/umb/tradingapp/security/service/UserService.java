@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 
 import com.umb.tradingapp.security.entity.TokenEntity;
 import com.umb.tradingapp.security.entity.UserEntity;
+import com.umb.tradingapp.security.entity.UserPortfolioEntity;
 import com.umb.tradingapp.security.repo.TokenRepository;
+import com.umb.tradingapp.security.repo.UserPortfolioRepository;
 import com.umb.tradingapp.security.repo.UserRepository;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,6 +23,9 @@ public class UserService {
 
     @Autowired
     TokenRepository tokenRepository;
+
+    @Autowired
+    UserPortfolioRepository userPortfolioRepo;
     
     public Double balance(Optional<String> authentification, HttpServletResponse response) {
         String token = authentification.get().substring("Bearer".length()).trim();

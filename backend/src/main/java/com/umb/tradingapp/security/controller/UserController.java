@@ -226,5 +226,9 @@ public class UserController {
         return new CryptoPriceDTO(5l, "LBK", "woeur", 6, 12., 32432., 20948., 2340., 13.54f, -12f, 13f);
         //TODO implementovat
     }
+
+
+
+    
 }
 
