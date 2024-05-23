@@ -7,6 +7,9 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.umb.tradingapp.dto.CryptoHistoryPriceDTO;
+import com.umb.tradingapp.dto.Minca;
+import com.umb.tradingapp.dto.TimestampPrice;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.NameValuePair;
@@ -62,6 +65,8 @@ public class ListingLatest {
     private String coinrankingUri;
 
     private JSONArray dataArray;
+    private JSONArray dataArrayHistorical;
+    private CryptoHistoryPriceDTO cp;
 
     public void loadDataListOfCoins(){
        // https://developers.coinranking.com/api/documentation/coins/coins
@@ -147,7 +152,7 @@ public class ListingLatest {
             System.out.println();
         }
     }
-    public void loadDataHistorical(){
+    public CryptoHistoryPriceDTO loadDataHistorical(String nazov){
 
         System.out.println(coinrankingApiKey);
         System.out.println(coinrankingUri);
@@ -172,10 +177,18 @@ public class ListingLatest {
         String UUID = "razxDUgYGNAdQ"; // UUID pre ETH
         //String timePeriod = "?timePeriod=5y";
 
+
+        String uuid = findUuidByName(nazov);
+        System.out.println("UUID pre mincu " + nazov + " je: " + uuid);
+        cp = new CryptoHistoryPriceDTO();
+        cp.setName(nazov);
+
         try {
-            String result = makeAPICall(coinrankingUri + "/v2/coin/"+UUID+"/history", parameters);
-            System.out.println(result);
-            formatAndPrintResponse(result);
+            String result = makeAPICall(coinrankingUri + "/v2/coin/"+uuid+"/history", parameters);
+
+            //System.out.println(dataArrayHistorical);
+            System.out.println("result: "+result);
+           return formatAndPrintResponse(result);
 
         } catch (IOException e) {
             System.out.println("Error: cannot access content - " + e.toString());
@@ -187,9 +200,72 @@ public class ListingLatest {
             throw new RuntimeException(e);
         }
 
+        return null;
     }
 
-    private static void formatAndPrintResponse(String responseBody) throws JSONException {
+    public static String findUuidByName(String name) {
+        List<Minca> mince = new ArrayList<>();
+
+            mince.add(new Minca("Qwsogvtv82FCd", "BTC", "Bitcoin"));
+            mince.add(new Minca("razxDUgYGNAdQ", "ETH", "Ethereum"));
+            mince.add(new Minca("HIVsRcGKkPFtW", "USDT", "Tether USD"));
+            mince.add(new Minca("WcwrkfNI4FUAe", "BNB", "BNB"));
+            mince.add(new Minca("zNZHO_Sjf", "SOL", "Solana"));
+            mince.add(new Minca("VINVMYf0u", "stETH", "Lido Staked Ether"));
+            mince.add(new Minca("aKzUVe4Hh_CON", "USDC", "USDC"));
+            mince.add(new Minca("-l8Mn2pVlRs-p", "XRP", "XRP"));
+            mince.add(new Minca("a91GCGd_u96cF", "DOGE", "Dogecoin"));
+            mince.add(new Minca("67YlI0K1b", "TON", "Toncoin"));
+            mince.add(new Minca("qzawljRxB5bYu", "ADA", "Cardano"));
+            mince.add(new Minca("dvUj0CzDZ", "AVAX", "Avalanche"));
+            mince.add(new Minca("xz24e0BjL", "SHIB", "Shiba Inu"));
+            mince.add(new Minca("CiixT63n3", "wstETH", "Wrapped liquid staked Ether 2.0"));
+            mince.add(new Minca("Mtfb0obXVh59u", "WETH", "Wrapped Ether"));
+            mince.add(new Minca("x4WXHge-vvFY", "WBTC", "Wrapped BTC"));
+            mince.add(new Minca("qUhEFk1I61atv", "TRX", "TRON"));
+            mince.add(new Minca("25W7FG7om", "DOT", "Polkadot"));
+            mince.add(new Minca("VLqpJwogdhHNb", "LINK", "Chainlink"));
+            mince.add(new Minca("ZlZpzOJo43mIo", "BCH", "Bitcoin Cash"));
+            mince.add(new Minca("_H5FVG9iW", "UNI", "Uniswap"));
+            mince.add(new Minca("uW2tk-ILY0ii", "MATIC", "Polygon"));
+            mince.add(new Minca("AWma-WzFHmKVQ", "FET", "Fetch.AI"));
+            mince.add(new Minca("D7B1x_ks7WhV5", "LTC", "Litecoin"));
+            mince.add(new Minca("aMNLwaUbY", "ICP", "Internet Computer (DFINITY)"));
+            mince.add(new Minca("7C4Mh4xy1yDel", "RNDR", "Render Token"));
+            mince.add(new Minca("03WI8NQPF", "PEPE", "PEPE"));
+            mince.add(new Minca("MoTuySvg7", "DAI", "Dai"));
+            mince.add(new Minca("Z96jIvLU7", "IMX", "Immutable X"));
+            mince.add(new Minca("DCrsaMv68", "NEAR", "NEAR Protocol"));
+            mince.add(new Minca("ncYFcP709", "CAKE", "PancakeSwap"));
+            mince.add(new Minca("hnfQfsYfeIGUQ", "ETC", "Ethereum Classic"));
+            mince.add(new Minca("jad286TjB", "HBAR", "Hedera"));
+            mince.add(new Minca("cpjRxjFYD", "FDUSD", "First Digital USD"));
+            mince.add(new Minca("BoI4ux0nd", "MNT", "Mantle"));
+            mince.add(new Minca("ymQub4fuB", "FIL", "Filecoin"));
+            mince.add(new Minca("qhd1biQ7M", "GRT", "The Graph"));
+            mince.add(new Minca("V8GxkwWow", "KAS", "Kaspa"));
+            mince.add(new Minca("pgv7xSFi6", "TAO", "Bittensor"));
+            mince.add(new Minca("sZUrmToWF", "WIF", "dogwifhat"));
+            mince.add(new Minca("mMPrMcB7", "STX", "Stacks"));
+            mince.add(new Minca("PDKcptVnzJTmN", "OKB", "OKB"));
+            mince.add(new Minca("7XWg41D1", "AR", "Arweave"));
+            mince.add(new Minca("Knsels4_Ol-Ny", "ATOM", "Cosmos"));
+            mince.add(new Minca("qFakph2rpuMOL", "MKR", "Maker"));
+            mince.add(new Minca("FEbS54wxo4oIl", "VET", "VeChain"));
+            mince.add(new Minca("PkY9BmsyW", "INJ", "Injective Protocol"));
+            mince.add(new Minca("3mVx2FX_iJFp5", "XMR", "Monero"));
+            mince.add(new Minca("exbfr2U-0", "USDE", "USDe"));
+            mince.add(new Minca("B42IRxNtoYmwK", "THETA", "Theta Token"));
+
+        for (Minca minca : mince) {
+            if (minca.getNazov().equalsIgnoreCase(name)) {
+                return minca.getUuid();
+            }
+        }
+        return "Minca s názvom '" + name + "' nebola nájdená.";
+    }
+
+    private CryptoHistoryPriceDTO formatAndPrintResponse(String responseBody) throws JSONException {
         JSONObject jsonResponse = new JSONObject(responseBody);
         String status = jsonResponse.getString("status");
         System.out.println("Status: " + status);
@@ -205,8 +281,19 @@ public class ListingLatest {
             JSONObject entry = history.getJSONObject(i);
             String price = entry.getString("price");
             long timestamp = entry.getLong("timestamp");
+
+            if(!price.equals("null"))
+                try {
+                    this.cp.getDataList().add(new TimestampPrice(timestamp,Double.parseDouble(price)));
+                    // Pokračujte s ďalším spracovaním doubleValue
+                } catch (NumberFormatException e) {
+                    System.err.println("Invalid number format for value: " + price);
+                    // Ošetrite chybu parsovania
+                }
+            // dataList.add(new TimestampPrice(1573689600L, 188.53320286391812));
             System.out.println("  Timestamp: " + timestamp + ", Price: " + price);
         }
+        return  this.cp;
     }
     public void loadData() {
 
@@ -222,7 +309,7 @@ public class ListingLatest {
             String result = makeAPICall(coinmarketcapUri + "/v1/cryptocurrency/listings/latest", parameters);
 
             this.dataArray = new JSONObject(result).getJSONArray("data");  // Parse JSON response
-            // System.out.println(this.dataArray);
+            System.out.println(this.dataArray);
 
         } catch (IOException e) {
             System.out.println("Error: cannot access content - " + e.toString());
