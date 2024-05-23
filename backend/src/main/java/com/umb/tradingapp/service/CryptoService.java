@@ -59,9 +59,9 @@ public class CryptoService {
         return arrDto;
     }
 
-    public CryptoHistoryPriceDTO listCryptoHistoricalPrice(String name) {
+    public CryptoHistoryPriceDTO listCryptoHistoricalPrice(String name,String timeframe) {
         CryptoHistoryPriceDTO dto = new CryptoHistoryPriceDTO();
-       dto = ll.loadDataHistorical(name);
+       dto = ll.loadDataHistorical(name,timeframe);
 
         return dto;
             //CryptoIdEntity id = arrId.get(i);

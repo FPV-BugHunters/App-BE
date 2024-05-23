@@ -65,7 +65,6 @@ public class ListingLatest {
     private String coinrankingUri;
 
     private JSONArray dataArray;
-    private JSONArray dataArrayHistorical;
     private CryptoHistoryPriceDTO cp;
 
     public void loadDataListOfCoins(){
@@ -152,7 +151,7 @@ public class ListingLatest {
             System.out.println();
         }
     }
-    public CryptoHistoryPriceDTO loadDataHistorical(String nazov){
+    public CryptoHistoryPriceDTO loadDataHistorical(String nazov,String timeframe){
 
         System.out.println(coinrankingApiKey);
         System.out.println(coinrankingUri);
@@ -173,8 +172,13 @@ public class ListingLatest {
         //Default value: yhjMzLPhuIDl
 
         List<NameValuePair> parameters = new ArrayList<>();
-        parameters.add(new BasicNameValuePair("timePeriod", "5y"));
-        String UUID = "razxDUgYGNAdQ"; // UUID pre ETH
+        if (timeframe == null){
+            timeframe= "7d";
+        }
+
+
+        parameters.add(new BasicNameValuePair("timePeriod", timeframe));
+        //String UUID = "razxDUgYGNAdQ"; // UUID pre ETH
         //String timePeriod = "?timePeriod=5y";
 
 

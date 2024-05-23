@@ -16,7 +16,7 @@ public class DataScheduler {
     @Scheduled(fixedRate=1000*1000)
     public void updateData() {
 
-        ll.loadDataHistorical("Solana"); // historicke data cien
+        ll.loadDataHistorical("Solana","5y"); // historicke data cien
         //ll.loadDataListOfCoins(); // Coin k UUID, podla UUID vieme vytiahnut historicke data daneho coinu
 
         ll.loadData();
