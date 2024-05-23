@@ -20,7 +20,7 @@ public class CryptoController {
         return cryptoService.listAllCrypto();
     }
 
-    @GetMapping("/api/crypto/history") // http://localhost:8080/api/crypto/history?symbol=Ethereum&timeframe=5y
+    @GetMapping("/api/crypto/history") // http://localhost:8080/api/crypto/history?symbol=ETH&timeframe=5y
     public CryptoHistoryPriceDTO getCryptoPriceHistory(@RequestParam(name = "symbol") String cryptoSymbol,@RequestParam(name = "timeframe") String timeframe ) {
         return cryptoService.listCryptoHistoricalPrice(cryptoSymbol,timeframe);
     }
