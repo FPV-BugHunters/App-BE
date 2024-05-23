@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.umb.tradingapp.dto.CryptoHistoryPriceDTO;
-import com.umb.tradingapp.dto.Minca;
+import com.umb.tradingapp.dto.Coin;
 import com.umb.tradingapp.dto.TimestampPrice;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
@@ -151,7 +151,7 @@ public class ListingLatest {
             System.out.println();
         }
     }
-    public CryptoHistoryPriceDTO loadDataHistorical(String nazov,String timeframe){
+    public CryptoHistoryPriceDTO loadDataHistorical(String symbol,String timeframe){
 
         System.out.println(coinrankingApiKey);
         System.out.println(coinrankingUri);
@@ -182,10 +182,10 @@ public class ListingLatest {
         //String timePeriod = "?timePeriod=5y";
 
 
-        String uuid = findUuidByName(nazov);
-        System.out.println("UUID pre mincu " + nazov + " je: " + uuid);
+        String uuid = findUuidBySymbol(symbol);
+        System.out.println("UUID pre mincu so symbolom " + symbol + " je: " + uuid);
         cp = new CryptoHistoryPriceDTO();
-        cp.setName(nazov);
+        cp.setName(symbol);
 
         try {
             String result = makeAPICall(coinrankingUri + "/v2/coin/"+uuid+"/history", parameters);
@@ -207,66 +207,66 @@ public class ListingLatest {
         return null;
     }
 
-    public static String findUuidByName(String name) {
-        List<Minca> mince = new ArrayList<>();
+    public static String findUuidBySymbol(String symbol) {
+        List<Coin> coins = new ArrayList<>();
 
-            mince.add(new Minca("Qwsogvtv82FCd", "BTC", "Bitcoin"));
-            mince.add(new Minca("razxDUgYGNAdQ", "ETH", "Ethereum"));
-            mince.add(new Minca("HIVsRcGKkPFtW", "USDT", "Tether USD"));
-            mince.add(new Minca("WcwrkfNI4FUAe", "BNB", "BNB"));
-            mince.add(new Minca("zNZHO_Sjf", "SOL", "Solana"));
-            mince.add(new Minca("VINVMYf0u", "stETH", "Lido Staked Ether"));
-            mince.add(new Minca("aKzUVe4Hh_CON", "USDC", "USDC"));
-            mince.add(new Minca("-l8Mn2pVlRs-p", "XRP", "XRP"));
-            mince.add(new Minca("a91GCGd_u96cF", "DOGE", "Dogecoin"));
-            mince.add(new Minca("67YlI0K1b", "TON", "Toncoin"));
-            mince.add(new Minca("qzawljRxB5bYu", "ADA", "Cardano"));
-            mince.add(new Minca("dvUj0CzDZ", "AVAX", "Avalanche"));
-            mince.add(new Minca("xz24e0BjL", "SHIB", "Shiba Inu"));
-            mince.add(new Minca("CiixT63n3", "wstETH", "Wrapped liquid staked Ether 2.0"));
-            mince.add(new Minca("Mtfb0obXVh59u", "WETH", "Wrapped Ether"));
-            mince.add(new Minca("x4WXHge-vvFY", "WBTC", "Wrapped BTC"));
-            mince.add(new Minca("qUhEFk1I61atv", "TRX", "TRON"));
-            mince.add(new Minca("25W7FG7om", "DOT", "Polkadot"));
-            mince.add(new Minca("VLqpJwogdhHNb", "LINK", "Chainlink"));
-            mince.add(new Minca("ZlZpzOJo43mIo", "BCH", "Bitcoin Cash"));
-            mince.add(new Minca("_H5FVG9iW", "UNI", "Uniswap"));
-            mince.add(new Minca("uW2tk-ILY0ii", "MATIC", "Polygon"));
-            mince.add(new Minca("AWma-WzFHmKVQ", "FET", "Fetch.AI"));
-            mince.add(new Minca("D7B1x_ks7WhV5", "LTC", "Litecoin"));
-            mince.add(new Minca("aMNLwaUbY", "ICP", "Internet Computer (DFINITY)"));
-            mince.add(new Minca("7C4Mh4xy1yDel", "RNDR", "Render Token"));
-            mince.add(new Minca("03WI8NQPF", "PEPE", "PEPE"));
-            mince.add(new Minca("MoTuySvg7", "DAI", "Dai"));
-            mince.add(new Minca("Z96jIvLU7", "IMX", "Immutable X"));
-            mince.add(new Minca("DCrsaMv68", "NEAR", "NEAR Protocol"));
-            mince.add(new Minca("ncYFcP709", "CAKE", "PancakeSwap"));
-            mince.add(new Minca("hnfQfsYfeIGUQ", "ETC", "Ethereum Classic"));
-            mince.add(new Minca("jad286TjB", "HBAR", "Hedera"));
-            mince.add(new Minca("cpjRxjFYD", "FDUSD", "First Digital USD"));
-            mince.add(new Minca("BoI4ux0nd", "MNT", "Mantle"));
-            mince.add(new Minca("ymQub4fuB", "FIL", "Filecoin"));
-            mince.add(new Minca("qhd1biQ7M", "GRT", "The Graph"));
-            mince.add(new Minca("V8GxkwWow", "KAS", "Kaspa"));
-            mince.add(new Minca("pgv7xSFi6", "TAO", "Bittensor"));
-            mince.add(new Minca("sZUrmToWF", "WIF", "dogwifhat"));
-            mince.add(new Minca("mMPrMcB7", "STX", "Stacks"));
-            mince.add(new Minca("PDKcptVnzJTmN", "OKB", "OKB"));
-            mince.add(new Minca("7XWg41D1", "AR", "Arweave"));
-            mince.add(new Minca("Knsels4_Ol-Ny", "ATOM", "Cosmos"));
-            mince.add(new Minca("qFakph2rpuMOL", "MKR", "Maker"));
-            mince.add(new Minca("FEbS54wxo4oIl", "VET", "VeChain"));
-            mince.add(new Minca("PkY9BmsyW", "INJ", "Injective Protocol"));
-            mince.add(new Minca("3mVx2FX_iJFp5", "XMR", "Monero"));
-            mince.add(new Minca("exbfr2U-0", "USDE", "USDe"));
-            mince.add(new Minca("B42IRxNtoYmwK", "THETA", "Theta Token"));
+            coins.add(new Coin("Qwsogvtv82FCd", "BTC", "Bitcoin"));
+            coins.add(new Coin("razxDUgYGNAdQ", "ETH", "Ethereum"));
+            coins.add(new Coin("HIVsRcGKkPFtW", "USDT", "Tether USD"));
+            coins.add(new Coin("WcwrkfNI4FUAe", "BNB", "BNB"));
+            coins.add(new Coin("zNZHO_Sjf", "SOL", "Solana"));
+            coins.add(new Coin("VINVMYf0u", "stETH", "Lido Staked Ether"));
+            coins.add(new Coin("aKzUVe4Hh_CON", "USDC", "USDC"));
+            coins.add(new Coin("-l8Mn2pVlRs-p", "XRP", "XRP"));
+            coins.add(new Coin("a91GCGd_u96cF", "DOGE", "Dogecoin"));
+            coins.add(new Coin("67YlI0K1b", "TON", "Toncoin"));
+            coins.add(new Coin("qzawljRxB5bYu", "ADA", "Cardano"));
+            coins.add(new Coin("dvUj0CzDZ", "AVAX", "Avalanche"));
+            coins.add(new Coin("xz24e0BjL", "SHIB", "Shiba Inu"));
+            coins.add(new Coin("CiixT63n3", "wstETH", "Wrapped liquid staked Ether 2.0"));
+            coins.add(new Coin("Mtfb0obXVh59u", "WETH", "Wrapped Ether"));
+            coins.add(new Coin("x4WXHge-vvFY", "WBTC", "Wrapped BTC"));
+            coins.add(new Coin("qUhEFk1I61atv", "TRX", "TRON"));
+            coins.add(new Coin("25W7FG7om", "DOT", "Polkadot"));
+            coins.add(new Coin("VLqpJwogdhHNb", "LINK", "Chainlink"));
+            coins.add(new Coin("ZlZpzOJo43mIo", "BCH", "Bitcoin Cash"));
+            coins.add(new Coin("_H5FVG9iW", "UNI", "Uniswap"));
+            coins.add(new Coin("uW2tk-ILY0ii", "MATIC", "Polygon"));
+            coins.add(new Coin("AWma-WzFHmKVQ", "FET", "Fetch.AI"));
+            coins.add(new Coin("D7B1x_ks7WhV5", "LTC", "Litecoin"));
+            coins.add(new Coin("aMNLwaUbY", "ICP", "Internet Computer (DFINITY)"));
+            coins.add(new Coin("7C4Mh4xy1yDel", "RNDR", "Render Token"));
+            coins.add(new Coin("03WI8NQPF", "PEPE", "PEPE"));
+            coins.add(new Coin("MoTuySvg7", "DAI", "Dai"));
+            coins.add(new Coin("Z96jIvLU7", "IMX", "Immutable X"));
+            coins.add(new Coin("DCrsaMv68", "NEAR", "NEAR Protocol"));
+            coins.add(new Coin("ncYFcP709", "CAKE", "PancakeSwap"));
+            coins.add(new Coin("hnfQfsYfeIGUQ", "ETC", "Ethereum Classic"));
+            coins.add(new Coin("jad286TjB", "HBAR", "Hedera"));
+            coins.add(new Coin("cpjRxjFYD", "FDUSD", "First Digital USD"));
+            coins.add(new Coin("BoI4ux0nd", "MNT", "Mantle"));
+            coins.add(new Coin("ymQub4fuB", "FIL", "Filecoin"));
+            coins.add(new Coin("qhd1biQ7M", "GRT", "The Graph"));
+            coins.add(new Coin("V8GxkwWow", "KAS", "Kaspa"));
+            coins.add(new Coin("pgv7xSFi6", "TAO", "Bittensor"));
+            coins.add(new Coin("sZUrmToWF", "WIF", "dogwifhat"));
+            coins.add(new Coin("mMPrMcB7", "STX", "Stacks"));
+            coins.add(new Coin("PDKcptVnzJTmN", "OKB", "OKB"));
+            coins.add(new Coin("7XWg41D1", "AR", "Arweave"));
+            coins.add(new Coin("Knsels4_Ol-Ny", "ATOM", "Cosmos"));
+            coins.add(new Coin("qFakph2rpuMOL", "MKR", "Maker"));
+            coins.add(new Coin("FEbS54wxo4oIl", "VET", "VeChain"));
+            coins.add(new Coin("PkY9BmsyW", "INJ", "Injective Protocol"));
+            coins.add(new Coin("3mVx2FX_iJFp5", "XMR", "Monero"));
+            coins.add(new Coin("exbfr2U-0", "USDE", "USDe"));
+            coins.add(new Coin("B42IRxNtoYmwK", "THETA", "Theta Token"));
 
-        for (Minca minca : mince) {
-            if (minca.getNazov().equalsIgnoreCase(name)) {
-                return minca.getUuid();
+        for (Coin coin : coins) {
+            if (coin.getSymbol().equalsIgnoreCase(symbol)) {
+                return coin.getUuid();
             }
         }
-        return "Minca s názvom '" + name + "' nebola nájdená.";
+        return "Minca so symbolom '" + symbol + "' nebola nájdená.";
     }
 
     private CryptoHistoryPriceDTO formatAndPrintResponse(String responseBody) throws JSONException {
