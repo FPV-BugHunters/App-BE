@@ -48,4 +48,7 @@ public class UserEntity {
     )
     private Set<RoleEntity> roles;
 
+    @OneToMany(mappedBy = "user")
+    private Set<UserPortfolioEntity> userPortfolios;
+
 }
