@@ -5,6 +5,7 @@ package com.umb.tradingapp.service; /**
 import java.util.ArrayList;
 import java.util.List;
 
+import com.umb.tradingapp.dto.CryptoHistoryPriceDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,9 @@ import jakarta.servlet.http.HttpServletResponse;
 @Service
 public class CryptoService {
 
+
+    @Autowired
+    ListingLatest ll;
     @Autowired
     private CryptoIdRepository cryptoIdRepo;
 
@@ -56,6 +60,23 @@ public class CryptoService {
         }
 
         return arrDto;
+    }
+
+    public CryptoHistoryPriceDTO listCryptoHistoricalPrice(String symbol,String timeframe) {
+        CryptoHistoryPriceDTO dto = new CryptoHistoryPriceDTO();
+       dto = ll.loadDataHistorical(symbol,timeframe);
+
+        return dto;
+            //CryptoIdEntity id = arrId.get(i);
+
+            //dto.setName(id.getName());
+            //  dto.setDataList();
+
+
+            //arrDto.add(dto);
+
+
+        //return arrDto;
     }
 
     public Double getCryptoPrice(Long cryptoId) {
