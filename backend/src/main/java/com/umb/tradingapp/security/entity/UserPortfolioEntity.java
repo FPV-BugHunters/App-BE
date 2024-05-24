@@ -1,5 +1,6 @@
 package com.umb.tradingapp.security.entity;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import jakarta.persistence.Column;
@@ -24,16 +25,10 @@ public class UserPortfolioEntity {
     @Id
     @GeneratedValue
     @Column(name = "id")
-    private Long portfolioId;
+    private Long id;
 
     @Column(name = "name")
     private String name;
-
-    @Column(name = "number_of_items")
-    private Integer numberOfItems;
-
-    @Column(name = "total_balance")
-    private Double totalBalance;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)

@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.umb.tradingapp.security.dto.UserPortfolioDTO;
-import com.umb.tradingapp.security.entity.UserPortfolioEntity;
 import com.umb.tradingapp.security.service.UserPortfolioService;
 import com.umb.tradingapp.security.service.UserService;
 
@@ -35,8 +34,10 @@ public class UserPortfolioController {
             return null;
         if (!userService.checkTokenExists(authentification, response))
             return null;
+
+        Long userId = userService.getUserId(authentification);
         
-        return userPortfolioService.createUserPortfolio(response, authentification, name);
+        return userPortfolioService.createUserPortfolio(response, userId, name);
     }
 
     @GetMapping("/api/user/user_portfolio")
@@ -46,8 +47,9 @@ public class UserPortfolioController {
             return null;
         if (!userService.checkTokenExists(authentification, response))
             return null;
-        
-        return userPortfolioService.listUserPortfolio(response, authentification);
+        Long userId = userService.getUserId(authentification); 
+
+        return userPortfolioService.listUserPortfolio(response, userId);
     }
 
     //TODO pridat moznost pre zmenu nazvu portfolia

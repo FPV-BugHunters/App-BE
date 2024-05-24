@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class BuyTransactionDTO {
     private Float amount;
     private Long cryptoId;
+    private Long userPortfolioId;
 }

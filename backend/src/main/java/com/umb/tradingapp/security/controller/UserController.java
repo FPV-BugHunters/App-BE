@@ -15,6 +15,7 @@ import com.umb.tradingapp.dto.CryptoPriceDTO;
 import com.umb.tradingapp.security.dto.BuyTransactionDTO;
 import com.umb.tradingapp.security.dto.PortfolioDTO;
 import com.umb.tradingapp.security.dto.TransactionDTO;
+import com.umb.tradingapp.security.service.UserPortfolioService;
 import com.umb.tradingapp.security.service.UserService;
 import com.umb.tradingapp.service.CryptoService;
 
@@ -32,6 +33,9 @@ public class UserController {
 
     @Autowired
     private CryptoService cryptoService;
+
+    @Autowired
+    private UserPortfolioService userPortfolioService;
 
     /*
     @Operation(summary = "DELETE user(token) - logout", description = "Logs out the user by removing the authentication token")
@@ -58,7 +62,9 @@ public class UserController {
                 return null;
             if (!userService.checkTokenExists(authentification, response))
                 return null;
-            return userService.balance(authentification, response);
+        
+            Long userId = userService.getUserId(authentification);
+            return userService.balance(userId, response);
     }
 
     @PostMapping("/api/user/balance/compare")
@@ -70,7 +76,9 @@ public class UserController {
             return null;
         if (!userService.checkDtoExists(dto, response))
             return null;
-        return userService.enoughBalance(dto, response, authentification);
+
+        Long userId = userService.getUserId(authentification);
+        return userService.checkEnoughBalance(dto, response, userId);
     }
 
     @PostMapping("/api/user/balance/add")
@@ -82,7 +90,9 @@ public class UserController {
             return null;
         if (!userService.checkDtoExists(dto, response))
             return null;
-        return userService.addBalance(dto, response, authentification);
+        
+        Long userId = userService.getUserId(authentification);
+        return userService.addBalance(dto, response, userId);
     }
 
     @PostMapping("/api/user/balance/remove")
@@ -92,11 +102,14 @@ public class UserController {
             return null;
         if (!userService.checkTokenExists(authentification, response))
             return null;
+
+        Long userId = userService.getUserId(authentification);
+
         if (!userService.checkDtoExists(dto, response))
             return null;
-        if (!userService.enoughBalance(dto, response, authentification))
+        if (!userService.checkEnoughBalance(dto, response, userId))
             return false;
-        return userService.removeBalance(dto, response, authentification);
+        return userService.removeBalance(dto, response, userId);
     }
 
     @PostMapping("/api/user/transaction/buy")
@@ -109,14 +122,20 @@ public class UserController {
         if (!userService.checkDtoExists(dto, response))
             return null;
 
+        Long userId = userService.getUserId(authentification);
         Double totalPrice = cryptoService.getCryptoPrice(dto.getCryptoId()) * dto.getAmount();
 
-        if (!userService.enoughBalance(totalPrice, response, authentification))
+        if (!userService.checkEnoughBalance(totalPrice, response, userId))
             return false;
 
-        userService.removeBalance(totalPrice, response, authentification);
+        if (!cryptoService.checkCryptoExists(dto.getCryptoId(), response))
+            return false;
 
-        //TODO implementovat
+        if (!userPortfolioService.checkPortfolioExists(response, userId, dto.getUserPortfolioId()))
+            return false;
+
+        userPortfolioService.buyCrypto(response, userId, dto);
+        userService.removeBalance(totalPrice, response, userId);
         return true; 
     }
 
@@ -129,8 +148,21 @@ public class UserController {
             return null;
         if (!userService.checkDtoExists(dto, response))
             return null;
-        
-        //TODO implementovat
+        Long userId = userService.getUserId(authentification);
+        Double totalPrice;
+
+        if (!cryptoService.checkCryptoExists(dto.getCryptoId(), response))
+            return false;
+
+        if (!userPortfolioService.checkPortfolioExists(response, userId, dto.getUserPortfolioId()))
+            return false;
+
+        if (!userPortfolioService.checkCryptoOwned(dto, response, userId))
+            return false;
+
+        totalPrice = userPortfolioService.sellCrypto(dto, response, userId);
+        userService.addBalance(totalPrice, response, userId);
+
         return true;
     }
 

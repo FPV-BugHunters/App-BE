@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.umb.tradingapp.security.entity.TokenEntity;
 import com.umb.tradingapp.security.entity.UserEntity;
-import com.umb.tradingapp.security.entity.UserPortfolioEntity;
 import com.umb.tradingapp.security.repo.TokenRepository;
 import com.umb.tradingapp.security.repo.UserPortfolioRepository;
 import com.umb.tradingapp.security.repo.UserRepository;
@@ -26,45 +25,37 @@ public class UserService {
 
     @Autowired
     UserPortfolioRepository userPortfolioRepo;
-    
-    public Double balance(Optional<String> authentification, HttpServletResponse response) {
-        String token = authentification.get().substring("Bearer".length()).trim();
-        Optional<TokenEntity> te = tokenRepository.findByToken(token);
-        Long userId = te.get().getUser().getId();
-        UserEntity entity = userRepository.getReferenceById(userId);
 
+    private final String BALANCE = "Balance";
+    
+    public Double balance(Long userId, HttpServletResponse response) {
+        UserEntity entity = userRepository.getReferenceById(userId);
         return entity.getBalance();
     }
 
-    public Boolean addBalance(Double dto, HttpServletResponse response, Optional<String> authentification) {
-        String token = authentification.get().substring("Bearer".length()).trim();
-        Optional<TokenEntity> te = tokenRepository.findByToken(token);
-        Long userId = te.get().getUser().getId();
+    public Boolean addBalance(Double dto, HttpServletResponse response, Long userId) {
         UserEntity entity = userRepository.getReferenceById(userId);
-
         entity.setBalance(entity.getBalance() + dto);
         userRepository.save(entity);
         return true;
     }
 
-    public Boolean removeBalance(Double dto, HttpServletResponse response, Optional<String> authentification) {
-        String token = authentification.get().substring("Bearer".length()).trim();
-        Optional<TokenEntity> te = tokenRepository.findByToken(token);
-        Long userId = te.get().getUser().getId();
+    public Boolean removeBalance(Double dto, HttpServletResponse response, Long userId) {
         UserEntity entity = userRepository.getReferenceById(userId);
-
         entity.setBalance(entity.getBalance() - dto);
         userRepository.save(entity);
         return true;
     }
 
-    public Boolean enoughBalance(Double dto, HttpServletResponse response, Optional<String> authentification) {
-        String token = authentification.get().substring("Bearer".length()).trim();
-        Optional<TokenEntity> te = tokenRepository.findByToken(token);
-        Long userId = te.get().getUser().getId();
+    public Boolean checkEnoughBalance(Double dto, HttpServletResponse response, Long userId) {
         UserEntity entity = userRepository.getReferenceById(userId);
-
-        return ((entity.getBalance() - dto < 0) ? false : true);
+        if (entity.getBalance() - dto < 0) {
+            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+            response.addHeader(BALANCE, "Not enough balance");
+            return false;
+        }
+        response.addHeader(BALANCE, "Enough balance");
+        return true;
     }
 
     public Boolean checkTokenGiven(Optional<String> authentification, HttpServletResponse response) {
@@ -95,5 +86,11 @@ public class UserService {
             return false;
         }
         return true;
+    }
+
+    public Long getUserId(Optional<String> authentification) {
+        String token = authentification.get().substring("Bearer".length()).trim();
+        Optional<TokenEntity> te = tokenRepository.findByToken(token);
+        return te.get().getUser().getId();
     }
 }

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.umb.tradingapp.dto.CryptoPriceDTO;
@@ -13,6 +14,8 @@ import com.umb.tradingapp.entity.CryptoIdEntity;
 import com.umb.tradingapp.entity.CryptoQuoteEntity;
 import com.umb.tradingapp.repo.CryptoIdRepository;
 import com.umb.tradingapp.repo.CryptoQuoteRepository;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 @Service
 public class CryptoService {
@@ -58,6 +61,15 @@ public class CryptoService {
     public Double getCryptoPrice(Long cryptoId) {
         CryptoQuoteEntity entity = cryptoQuoteRepo.getReferenceById(cryptoId);
         return entity.getPrice();
+    }
+
+    public boolean checkCryptoExists(Long cryptoId, HttpServletResponse response) {
+        if (!cryptoIdRepo.existsById(cryptoId)) {
+            response.setStatus(HttpStatus.NOT_FOUND.value());
+            response.addHeader("CryptoId", "cryptoId not found");
+            return false;
+        }
+        return true;
     }
 
 }
