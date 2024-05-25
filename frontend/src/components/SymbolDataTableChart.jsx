@@ -1,74 +1,32 @@
 import React, { Component } from 'react';
-import Chart from 'react-apexcharts'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-class SymbolDataTableChart extends Component {
-    constructor(props) {
-        super(props);
+function SymbolDataTableChart ({ data }) {
 
-        this.state = {
-            options: {
-                chart: {
-                    id: 'line',
-                    toolbar: {
-                        show: false
-                    }
-                },
-                stroke: {
-                    width: [ 4, 0, 0 ]
-                },
-                xaxis: {
-                    categories: [ 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999 ],
-                    labels: {
-                        show: false, // This line hides the x-axis labels
-                    },
-                    axisBorder: {
-                        show: false, // This line hides the x-axis line
-                    },
-                    axisTicks: {
-                        show: false, // This line hides the x-axis ticks
-                    },
+    const data2 = data.map(item => ({
+        date: new Date(item.timestamp),
+        priceUSD: item.priceUSD
+    }));
 
-                },
-                yaxis: {
-                    labels: {
-                        show: false, // This line hides the y-axis labels
-                    },
-                    axisBorder: {
-                        show: false, // This line hides the y-axis line
-                    },
-                    axisTicks: {
-                        show: false, // This line hides the y-axis ticks
-                    },
-                },
-                grid: {
-                    show: false,
-                },
-                legend: {
-                    show: false,
-                },
-                markers: {
-                    size: 0,
-                },
-                dataLabels: {
-                    enabled: false
-                  },
+    console.log(data2)
 
-            },
-            series: [ {
-                name: 'series-1',
-                type: "line",
-                data: [ 30, 40, 35, 50, 49, 60, 70, 91, 125 ]
-            } ]
-        }
+    const minX = Math.min(...data2.map(item => item.date));
+    const maxX = Math.max(...data2.map(item => item.date));
+    const minY = Math.min(...data2.map(item => item.priceUSD));
+    const maxY = Math.max(...data2.map(item => item.priceUSD));
 
-    }
-    render () {
-        return (
-            <div>
-            <Chart options={this.state.options} series={this.state.series} type="bar" width={100} height={100} />
-            </div>
-        )
-    }
+    return (
+        <>
+            <ResponsiveContainer width={200} height={50}>
+                <LineChart data={data2}>
+                    <XAxis dataKey="date" domain={[minX, maxX]} hide={true}></XAxis>
+                    <YAxis domain={[minY, maxY]} hide={true}></YAxis>
+                    <Tooltip position={{ y: -100 }}contentStyle={{backgroundColor: "#0b2948"}} />
+                    <Line type="monotone" isAnimationActive={false} dataKey="priceUSD" stroke="#8884d8" strokeWidth={2} dot={false} />
+                </LineChart>
+            </ResponsiveContainer>
+        </>
+    )
 }
 
 export default SymbolDataTableChart;

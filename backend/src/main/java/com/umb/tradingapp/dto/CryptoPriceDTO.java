@@ -21,7 +21,7 @@ public class CryptoPriceDTO {
     private Float h1;
     private Float h24;
     private Float d7;
-    private List<Double> priceHistoryUSD;
+    private List<CryptoPriceHistoryDTO> priceHistoryUSD;
     
     
 

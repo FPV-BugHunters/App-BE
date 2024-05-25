@@ -5,11 +5,13 @@ package com.umb.tradingapp.service; /**
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.codec.digest.Crypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.umb.tradingapp.dto.CryptoPriceDTO;
+import com.umb.tradingapp.dto.CryptoPriceHistoryDTO;
 import com.umb.tradingapp.entity.CryptoEntity;
 import com.umb.tradingapp.entity.CryptoQuoteEntity;
 import com.umb.tradingapp.repo.CryptoRepository;
@@ -57,35 +59,21 @@ public class CryptoService {
             cryptosPriceDTO.add(dto);
             List<CryptoQuoteEntity> history = cryptoQuoteRepo.findByCryptoIdOrderByLastUpdatedDesc(crypto.getId());
             if(history.size() > 0) {
-                List<Double> priceHistory = new ArrayList<>();
+                List<CryptoPriceHistoryDTO> priceHistory = new ArrayList<>();
                 for (CryptoQuoteEntity quote : history) {
-                   priceHistory.add(quote.getPrice()); 
+                    CryptoPriceHistoryDTO historyDTO = new CryptoPriceHistoryDTO();
+                    historyDTO.setPriceUSD(quote.getPrice());
+                    historyDTO.setTimestamp(quote.getLastUpdated());
+                    priceHistory.add(historyDTO);
                 }
                 dto.setPriceHistoryUSD(priceHistory);
+
             }
         }
 
         return cryptosPriceDTO;
     }
 
-    // public CryptoHistoryPriceDTO listCryptoHistoricalPrice(String symbol, String timeframe) {
-        
-    //     // CryptoHistoryPriceDTO dto = new CryptoHistoryPriceDTO();
-
-    //     // dto = ll.loadDataHistorical(symbol,timeframe);
-
-    //     // return dto;
-    //         //CryptoEntity id = arrId.get(i);
-
-    //         //dto.setName(id.getName());
-    //         //  dto.setDataList();
-
-
-    //         //arrDto.add(dto);
-
-
-    //     //return arrDto;
-    // }
 
     public Double getCryptoPrice(Long cryptoId) {
         CryptoQuoteEntity entity = cryptoQuoteRepo.getReferenceById(cryptoId);
