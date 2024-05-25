@@ -1,5 +1,6 @@
 package com.umb.tradingapp.entity;
 
+
 import java.util.Date;
 
 import jakarta.persistence.CascadeType;
@@ -39,12 +40,13 @@ public class CryptoQuoteEntity {
     private Float percentChange7d;
     private Date lastUpdated;
     
+    
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "crypto_id", referencedColumnName = "id")
-    private CryptoEntity cryptoId;
+    private CryptoEntity crypto;
 
-    // @OneToOne(mappedBy = "quote")
-    // private CryptoEntity cryptoEntity;
+    // @OneToOne(mappedBy = "cryptoEntity")
+    // private CryptoEntity crypto
     
     
 

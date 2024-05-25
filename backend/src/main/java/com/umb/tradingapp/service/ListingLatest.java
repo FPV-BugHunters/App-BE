@@ -131,6 +131,7 @@ public class ListingLatest {
                     cryptoQuote.setMarketCap(quote.getMarket_cap());
                     cryptoQuote.setMarketCapDominance(quote.getMarket_cap_dominance());
                     cryptoQuote.setFullyDilutedMarketCap(quote.getFully_diluted_market_cap());
+                    cryptoQuote.setCrypto(crypto);
                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                     String dateString = quote.getLast_updated();
 
@@ -143,10 +144,26 @@ public class ListingLatest {
 
                     crypto.getQuotes().add(cryptoQuote);
                     cryptoRepo.save(crypto);
-                    System.out.println("Quote updated: " + quote.getPrice() + " id " + data.getId());
+                    // System.out.println("Quote updated: " + quote.getPrice() + " id " + data.getId());
                 }
             }
         }
     }
 
+
+    @Transactional
+    public void removeOldQuotes() {
+
+        List<CryptoEntity> cryptos = cryptoRepo.findAll();
+        for (CryptoEntity crypto : cryptos) {
+            List<CryptoQuoteEntity> quotes = cryptoQuoteRepo.findByCryptoIdOrderByLastUpdatedDesc(crypto.getId());
+
+            for (int i = 0; i < quotes.size(); i++) {
+                if (i > 100) {
+                    cryptoQuoteRepo.delete(quotes.get(i));
+                    System.out.println("Quote deleted: " + quotes.get(i).getId());
+                }
+            }
+        }
+    }
 }

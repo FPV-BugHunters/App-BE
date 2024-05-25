@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CryptoRepository extends JpaRepository<CryptoEntity, Long> {
     Optional<CryptoEntity> findById(Long id);
+
 }

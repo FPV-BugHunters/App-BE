@@ -36,7 +36,7 @@ public class CryptoEntity {
     @JoinColumn(name = "platform_id", referencedColumnName = "id")
     private CryptoPlatformEntity platform;
     
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cryptoId", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "crypto", cascade = CascadeType.ALL)
     private List<CryptoQuoteEntity> quotes;
 
     

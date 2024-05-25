@@ -37,29 +37,35 @@ public class CryptoService {
     }
 
     public Iterable<CryptoPriceDTO> listAllCrypto() {
-        List<CryptoPriceDTO> arrDto = new ArrayList<>();
-        List<CryptoEntity> arrId = cryptoRepo.findAll();
-
-        for (int i = 0; i < arrId.size(); i++) {
+        List<CryptoPriceDTO> cryptosPriceDTO = new ArrayList<>();
+        List<CryptoEntity> cryptos = cryptoRepo.findAll();
+        
+        for (CryptoEntity crypto : cryptos) {
             CryptoPriceDTO dto = new CryptoPriceDTO();
-            CryptoEntity id = arrId.get(i);
+            dto.setId(crypto.getId());
+            dto.setName(crypto.getName());
+            dto.setSymbol(crypto.getSymbol());
+            CryptoQuoteEntity cryptoQuoteEntity = cryptoQuoteRepo.findByCryptoIdOrderByLastUpdatedDesc(crypto.getId()).get(0);
+            dto.setPriceUSD(cryptoQuoteEntity.getPrice());
+            dto.setH1(cryptoQuoteEntity.getPercentChange1h());
+            dto.setH24(cryptoQuoteEntity.getPercentChange24h());
+            dto.setD7(cryptoQuoteEntity.getPercentChange7d());
+            dto.setCirculatingSupply(cryptoQuoteEntity.getCirculatingSupply());
+            dto.setMarketCap(cryptoQuoteEntity.getMarketCap());
+            dto.setVolume(cryptoQuoteEntity.getVolume24h());
 
-            dto.setId(id.getId());
-            dto.setName(id.getName());
-            dto.setSymbol(id.getSymbol());
-            dto.setRank(id.getCmc_rank());
-            dto.setPriceUSD(id.getQuote().getPrice());
-            dto.setCirculatingSupply(id.getQuote().getCirculatingSupply());
-            dto.setMarketCap(id.getQuote().getMarketCap());
-            dto.setVolume(id.getQuote().getVolume24h());
-            dto.setH1(id.getQuote().getPercentChange1h());
-            dto.setH24(id.getQuote().getPercentChange24h());
-            dto.setD7(id.getQuote().getPercentChange7d());
-
-            arrDto.add(dto);
+            cryptosPriceDTO.add(dto);
+            List<CryptoQuoteEntity> history = cryptoQuoteRepo.findByCryptoIdOrderByLastUpdatedDesc(crypto.getId());
+            if(history.size() > 0) {
+                List<Double> priceHistory = new ArrayList<>();
+                for (CryptoQuoteEntity quote : history) {
+                   priceHistory.add(quote.getPrice()); 
+                }
+                dto.setPriceHistoryUSD(priceHistory);
+            }
         }
 
-        return arrDto;
+        return cryptosPriceDTO;
     }
 
     // public CryptoHistoryPriceDTO listCryptoHistoricalPrice(String symbol, String timeframe) {

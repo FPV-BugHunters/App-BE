@@ -23,10 +23,8 @@ public class DataScheduler {
         ListingLatestDTO listingLatestDTO = listingLatest.loadListingLatest();
         listingLatest.updateCryptos(listingLatestDTO);
         listingLatest.updateQuotes(listingLatestDTO);
+        listingLatest.removeOldQuotes();
         // System.out.println(listingLatestDTO);
-
-        
-        
         
         // ll.saveCryptoId();
         // ll.saveCryptoPlatform();
@@ -34,6 +32,6 @@ public class DataScheduler {
         // ll.saveCryptoRank();
         // ll.loadHistoricalPricies();
 
-        System.out.println("Task performed on: " + new Date() + "n" + "Thread's name: " + Thread.currentThread().getName());
+        System.out.println("Task performed on: " + new Date().toString() + "n" + "Thread's name: " + Thread.currentThread().getName());
     }
 }
