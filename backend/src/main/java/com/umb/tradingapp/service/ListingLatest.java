@@ -99,7 +99,6 @@ public class ListingLatest {
     public void updateCryptos(ListingLatestDTO listingLatestDTO) {
         for (ListingLatestCryptoDataDTO data : listingLatestDTO.getData()) {
             if (!cryptoRepo.existsById(data.getId())) {
-
                 CryptoEntity cryptoId = new CryptoEntity();
                 cryptoId.setId(data.getId());
                 cryptoId.setName(data.getName());
@@ -144,7 +143,6 @@ public class ListingLatest {
 
                     crypto.getQuotes().add(cryptoQuote);
                     cryptoRepo.save(crypto);
-                    // System.out.println("Quote updated: " + quote.getPrice() + " id " + data.getId());
                 }
             }
         }
