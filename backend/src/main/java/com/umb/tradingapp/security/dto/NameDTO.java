@@ -5,10 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class BuyTransactionDTO {
-    private Float amount;
-    private Long cryptoId;
-    private Long userPortfolioId;
+@NoArgsConstructor
+public class NameDTO {
+    private String name;
 }
