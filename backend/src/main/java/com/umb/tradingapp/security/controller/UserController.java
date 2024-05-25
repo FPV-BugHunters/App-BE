@@ -237,11 +237,11 @@ public class UserController {
             return null;
 
         List<CryptoPriceDTO> listDto = new ArrayList<>();
-        listDto.add(new CryptoPriceDTO(1l, "LBK", "woeur", 2, 12., 32432., 20948., 2340., 13.54f, -12f, 13f));
-        listDto.add(new CryptoPriceDTO(2l, "LBK", "woeur", 3, 12., 32432., 20948., 2340., 13.54f, -12f, 13f));
-        listDto.add(new CryptoPriceDTO(3l, "LBK", "woeur", 4, 12., 32432., 20948., 2340., 13.54f, -12f, 13f));
-        listDto.add(new CryptoPriceDTO(4l, "LBK", "woeur", 5, 12., 32432., 20948., 2340., 13.54f, -12f, 13f));
-        listDto.add(new CryptoPriceDTO(5l, "LBK", "woeur", 6, 12., 32432., 20948., 2340., 13.54f, -12f, 13f));
+        // listDto.add(new CryptoPriceDTO(1l, "LBK", "woeur", 2, 12., 32432., 20948., 2340., 13.54f, -12f, 13f));
+        // listDto.add(new CryptoPriceDTO(2l, "LBK", "woeur", 3, 12., 32432., 20948., 2340., 13.54f, -12f, 13f));
+        // listDto.add(new CryptoPriceDTO(3l, "LBK", "woeur", 4, 12., 32432., 20948., 2340., 13.54f, -12f, 13f));
+        // listDto.add(new CryptoPriceDTO(4l, "LBK", "woeur", 5, 12., 32432., 20948., 2340., 13.54f, -12f, 13f));
+        // listDto.add(new CryptoPriceDTO(5l, "LBK", "woeur", 6, 12., 32432., 20948., 2340., 13.54f, -12f, 13f));
         //TODO implementovat
 
         return listDto;

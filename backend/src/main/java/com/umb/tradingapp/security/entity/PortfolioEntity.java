@@ -1,6 +1,9 @@
 package com.umb.tradingapp.security.entity;
 
+import java.util.Comparator;
+
 import com.umb.tradingapp.entity.CryptoEntity;
+import com.umb.tradingapp.entity.CryptoQuoteEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,7 +24,7 @@ import lombok.NoArgsConstructor;
 public class PortfolioEntity {
     @Id
     @GeneratedValue
-    @Column(name = "portfolio_id")    
+    @Column(name = "portfolio_id")
     private Long id;
 
     @Column(name = "amount")
@@ -30,7 +33,7 @@ public class PortfolioEntity {
     @ManyToOne
     @JoinColumn(name = "crypto_id")
     private CryptoEntity crypto;
-    
+
     @ManyToOne
     @JoinColumn(name = "user_portfolio_id")
     private UserPortfolioEntity userPortfolio;
@@ -52,7 +55,13 @@ public class PortfolioEntity {
     }
 
     public Double getPricePerUnit() {
-        return this.crypto.getQuote().getPrice();
+        return this.getMostRecentQuote().getPrice();
     }
 
+    public CryptoQuoteEntity getMostRecentQuote() {
+        return this.crypto.getQuotes().stream()
+                .max(Comparator.comparing(CryptoQuoteEntity::getLastUpdated))
+                .orElse(null);
+
+    }
 }
