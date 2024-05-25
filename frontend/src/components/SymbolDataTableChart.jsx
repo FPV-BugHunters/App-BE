@@ -6,8 +6,8 @@ function CustomTooltip ({ payload, label, active }) {
     if (active && payload && payload.length) {
         return (
             <div className="custom-tooltip" style={{ backgroundColor: "#3f51b5", borderRadius: '10px', border: '1px solid white', padding: '0px 25px',  }}>
-                <p className="label">{`Date : ${moment(label).format("DD.MM.YYYY HH:mm")}`}</p>
-                <p className="intro">{`Price : ${payload[ 0 ].value}`}</p>
+                <p className="label">{`Date: ${moment(label).format("DD.MM.YYYY HH:mm")}`}</p>
+                <p className="intro">{`Price: ${payload[ 0 ].value}`}</p>
             </div>
         );
     }
