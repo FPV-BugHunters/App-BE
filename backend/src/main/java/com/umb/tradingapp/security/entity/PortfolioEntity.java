@@ -1,6 +1,6 @@
 package com.umb.tradingapp.security.entity;
 
-import com.umb.tradingapp.entity.CryptoIdEntity;
+import com.umb.tradingapp.entity.CryptoEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,7 +29,7 @@ public class PortfolioEntity {
 
     @ManyToOne
     @JoinColumn(name = "crypto_id")
-    private CryptoIdEntity crypto;
+    private CryptoEntity crypto;
     
     @ManyToOne
     @JoinColumn(name = "user_portfolio_id")

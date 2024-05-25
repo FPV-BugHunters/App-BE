@@ -3,12 +3,12 @@ package com.umb.tradingapp.dto;
 public class Coin {
     private String uuid;
     private String symbol;
-    private String nazov;
+    private String name;
 
-    public Coin(String uuid, String symbol, String nazov) {
+    public Coin(String uuid, String symbol, String name) {
         this.uuid = uuid;
         this.symbol = symbol;
-        this.nazov = nazov;
+        this.name = name;
     }
 
     public String getSymbol() {
@@ -19,7 +19,7 @@ public class Coin {
         return uuid;
     }
 
-    public String getNazov() {
-        return nazov;
+    public String getName() {
+        return name;
     }
 }

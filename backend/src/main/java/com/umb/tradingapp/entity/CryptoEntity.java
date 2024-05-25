@@ -1,5 +1,8 @@
 package com.umb.tradingapp.entity;
 
+import java.util.List;
+import java.util.Set;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,27 +12,43 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "crypto_id")
-public class CryptoIdEntity {
+@Table(name = "cryptos")
+public class CryptoEntity {
 
     @Id
     @Column(name = "id")
     private Long id;
+    
+    @Column()
     private String name;
+    
+    @Column()
     private String symbol;
+    
+    @Column()
     private String slug;
+    
+    @Column()
+    private int cmc_rank;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "quote_id", referencedColumnName = "id")
-    private CryptoQuoteEntity quote;
-
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "rank_id", referencedColumnName = "id")
-    private CryptoRankEntity rank;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "platform_id", referencedColumnName = "id")
     private CryptoPlatformEntity platform;
+    
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cryptoId", cascade = CascadeType.ALL)
+    private List<CryptoQuoteEntity> quotes;
+
+    
+    // @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    // @JoinColumn(name = "last_quote_id", referencedColumnName = "id")
+    // private CryptoQuoteEntity last_quote;
+
+    // @ManyToOne(cascade = CascadeType.ALL)
+    // @JoinColumn(name = "crypto_id", referencedColumnName = "id")
+    // private CryptoEntity cryptoId;
+
+   
 
     //@OneToMany(mappedBy = "platform")
     //Set<CryptoPlatformEntity> tokens;

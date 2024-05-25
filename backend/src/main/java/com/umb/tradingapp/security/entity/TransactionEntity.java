@@ -2,7 +2,7 @@ package com.umb.tradingapp.security.entity;
 
 import java.time.LocalDateTime;
 
-import com.umb.tradingapp.entity.CryptoIdEntity;
+import com.umb.tradingapp.entity.CryptoEntity;
 import com.umb.tradingapp.type.TransactionType;
 
 import jakarta.persistence.Column;
@@ -31,7 +31,7 @@ public class TransactionEntity {
     
     @ManyToOne
     @JoinColumn(name = "crypto_id")
-    private CryptoIdEntity crypto;
+    private CryptoEntity crypto;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

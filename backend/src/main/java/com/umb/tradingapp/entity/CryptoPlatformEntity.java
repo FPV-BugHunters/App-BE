@@ -24,7 +24,7 @@ public class CryptoPlatformEntity {
 
     @ManyToOne
     @JoinColumn(name = "platform", nullable = false, insertable = true, updatable = true)
-    private CryptoIdEntity platform;
+    private CryptoEntity platform;
 
 
 }

@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.umb.tradingapp.entity.CryptoIdEntity;
-import com.umb.tradingapp.repo.CryptoIdRepository;
+import com.umb.tradingapp.entity.CryptoEntity;
+import com.umb.tradingapp.repo.CryptoRepository;
 import com.umb.tradingapp.security.dto.BuyTransactionDTO;
 import com.umb.tradingapp.security.dto.UserPortfolioDTO;
 import com.umb.tradingapp.security.entity.PortfolioEntity;
@@ -38,7 +38,7 @@ public class UserPortfolioService {
     private PortfolioRepository portfolioRepo;
 
     @Autowired
-    private CryptoIdRepository cryptoIdRepo;
+    private CryptoRepository cryptoRepo;
 
     @Autowired
     private TransactionRepository transactionRepo;
@@ -91,7 +91,7 @@ public class UserPortfolioService {
     public void buyCrypto(HttpServletResponse response, Long userId, BuyTransactionDTO dto) {
         PortfolioEntity portfolioEntity;
         UserPortfolioEntity userPortfolioEntity = userPortfolioRepo.getReferenceById(dto.getUserPortfolioId());
-        CryptoIdEntity cryptoEntity = cryptoIdRepo.getReferenceById(dto.getCryptoId());
+        CryptoEntity cryptoEntity = cryptoRepo.getReferenceById(dto.getCryptoId());
         UserEntity userEntity = userRepo.getReferenceById(userId);
 
         if (portfolioRepo.existsByUserPortfolioIdAndCryptoId(dto.getUserPortfolioId(), dto.getCryptoId())) {
@@ -121,7 +121,7 @@ public class UserPortfolioService {
 
     public Double sellCrypto(BuyTransactionDTO dto, HttpServletResponse response, Long userId) {
         PortfolioEntity entity = portfolioRepo.getReferenceByUserPortfolioIdAndCryptoId(dto.getUserPortfolioId(), dto.getCryptoId());
-        CryptoIdEntity cryptoEntity = cryptoIdRepo.getReferenceById(dto.getCryptoId());
+        CryptoEntity cryptoEntity = cryptoRepo.getReferenceById(dto.getCryptoId());
         UserEntity userEntity = userRepo.getReferenceById(userId);
 
         Double priceTotal;
@@ -141,7 +141,7 @@ public class UserPortfolioService {
         return priceTotal;
     }
 
-    public void createTransaction(Float amount, CryptoIdEntity cryptoEntity, UserEntity userEntity, Double pricePerUnit, Double totalPrice, TransactionType type) {
+    public void createTransaction(Float amount, CryptoEntity cryptoEntity, UserEntity userEntity, Double pricePerUnit, Double totalPrice, TransactionType type) {
         TransactionEntity transactionEntity = new TransactionEntity();
         transactionEntity.setAmount(amount);
         transactionEntity.setCrypto(cryptoEntity);
