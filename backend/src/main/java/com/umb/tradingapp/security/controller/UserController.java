@@ -217,16 +217,17 @@ public class UserController {
         return userService.getUserWatchlist(userId);
     }
 
-    @GetMapping("/api/user/watchlist/{id}")
-    public CryptoPriceDTO getCryptoFromWatchlist(@PathVariable Integer id, HttpServletResponse response,
+    @GetMapping("/api/user/watchlist/{cryptoId}")
+    public CryptoPriceDTO getCryptoFromWatchlist(@PathVariable Long cryptoId, HttpServletResponse response,
     @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentification) {
         if (!userService.checkTokenGiven(authentification, response))
             return null;
         if (!userService.checkTokenExists(authentification, response))
             return null;
 
-        return new CryptoPriceDTO(5l, "LBK", "woeur", 6, 12., 32432., 20948., 2340., 13.54f, -12f, 13f);
-        //TODO implementovat
+        Long userId = userService.getUserId(authentification);
+
+        return userService.getUserWatchlistItem(cryptoId, userId);
     }
 
     @PostMapping("/api/user/watchlist")

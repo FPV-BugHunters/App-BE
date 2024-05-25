@@ -9,6 +9,6 @@ import com.umb.tradingapp.security.entity.WatchlistEntity;
 
 public interface WatchlistRepository extends JpaRepository<WatchlistEntity, Long>{
     public Optional<WatchlistEntity> findByUserIdAndCryptoId(Long userId, Long cryptoId);
-    public void deleteByUserIdAndCryptoId(Long userId, Long cryptoId);
     public List<WatchlistEntity> findAllByUserId(Long userId);
+    public WatchlistEntity getReferenceByUserIdAndCryptoId(Long userId, Long cryptoId);
 }

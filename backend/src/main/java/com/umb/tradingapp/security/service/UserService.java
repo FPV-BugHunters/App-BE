@@ -89,7 +89,6 @@ public class UserService {
     }
 
     public Boolean checkTokenExists(Optional<String> authentification, HttpServletResponse response) {
-        //TODO pridat overenie ci user existuje
         String token = authentification.get().substring("Bearer".length()).trim();
         Optional<TokenEntity> te;
         te = tokenRepository.findByToken(token);
@@ -209,6 +208,38 @@ public class UserService {
             ));
         }
         return dtoList;
+    }
+
+    public CryptoPriceDTO getUserWatchlistItem(Long cryptoId, Long userId) {
+        Optional<WatchlistEntity> optionalEntity = watchlistRepo.findByUserIdAndCryptoId(userId, cryptoId);
+        WatchlistEntity entity;
+        CryptoIdEntity cryptoIdEntity;
+        CryptoQuoteEntity cryptoQuote;
+        CryptoRankEntity cryptoRank;
+        CryptoPriceDTO dto;
+
+        //TODO doplnit upozornenie ze id je neplatne
+        if (optionalEntity.isEmpty())
+            return null;
+
+        entity = optionalEntity.get();
+        cryptoIdEntity = entity.getCrypto();
+        cryptoQuote = cryptoIdEntity.getQuote();
+        cryptoRank = cryptoIdEntity.getRank();
+        dto = new CryptoPriceDTO(
+            cryptoIdEntity.getId(),
+            cryptoIdEntity.getName(),
+            cryptoIdEntity.getSymbol(),
+            cryptoRank.getCmcRank(),
+            cryptoQuote.getPrice(),
+            cryptoQuote.getCirculatingSupply(),
+            cryptoQuote.getMarketCap(),
+            cryptoQuote.getVolume24h(),
+            cryptoQuote.getPercentChange1h(),
+            cryptoQuote.getPercentChange24h(),
+            cryptoQuote.getPercentChange7d()
+        );
+        return dto;
     }
 
 
