@@ -2,6 +2,7 @@ package com.umb.tradingapp.security.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.umb.tradingapp.entity.CryptoEntity;
+import com.umb.tradingapp.entity.CryptoQuoteEntity;
 import com.umb.tradingapp.repo.CryptoRepository;
 import com.umb.tradingapp.security.dto.BuyTransactionDTO;
 import com.umb.tradingapp.security.dto.UserPortfolioDTO;
@@ -103,7 +105,7 @@ public class UserPortfolioService {
             portfolioEntity.setCrypto(cryptoEntity);
             portfolioEntity.setUserPortfolio(userPortfolioEntity);
         }
-        Double price = cryptoEntity.getQuote().getPrice();
+        Double price = cryptoEntity.getQuotes().stream().max(Comparator.comparing(CryptoQuoteEntity::getLastUpdated)).orElse(null).getPrice();
         Double totalPrice = price * dto.getAmount();
         createTransaction(dto.getAmount(), cryptoEntity, userEntity, price, totalPrice, TransactionType.BUY);
         portfolioRepo.save(portfolioEntity);

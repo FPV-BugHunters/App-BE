@@ -255,7 +255,7 @@ public class UserController {
         if (!userService.checkTokenExists(authentification, response))
             return null;
 
-        return new CryptoPriceDTO(5l, "LBK", "woeur", 6, 12., 32432., 20948., 2340., 13.54f, -12f, 13f);
+        return new CryptoPriceDTO();
         //TODO implementovat
     }
 
