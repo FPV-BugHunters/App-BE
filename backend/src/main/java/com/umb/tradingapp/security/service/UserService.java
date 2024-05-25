@@ -2,8 +2,13 @@ package com.umb.tradingapp.security.service;
 
 import java.util.Optional;
 
+import com.umb.tradingapp.dto.CryptoPriceDTO;
+import com.umb.tradingapp.security.dto.UserBriefInfoDTO;
+import com.umb.tradingapp.security.dto.UserInfoDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.umb.tradingapp.security.entity.TokenEntity;
@@ -92,5 +97,61 @@ public class UserService {
         String token = authentification.get().substring("Bearer".length()).trim();
         Optional<TokenEntity> te = tokenRepository.findByToken(token);
         return te.get().getUser().getId();
+    }
+
+    public Boolean renameUser(Long userId,String newUserName, HttpServletResponse response) {
+        UserEntity entity = userRepository.getReferenceById(userId);
+        if (entity!=null){
+            entity.setUsername(newUserName);
+            userRepository.save(entity);
+            return true;
+        }else{
+            response.addHeader("Error", "User does not exists");
+            return false;
+        }
+    }
+
+    public Boolean changePassword(Long userId, String newPassword, HttpServletResponse response) {
+        UserEntity entity = userRepository.getReferenceById(userId);
+
+        if (entity!=null){
+            PasswordEncoder passwordEncoder;
+            passwordEncoder = new BCryptPasswordEncoder();
+
+            String encryptedPassword = passwordEncoder.encode(newPassword);
+
+            entity.setPasswordHash(encryptedPassword);
+            userRepository.save(entity);
+            return true;
+        }else{
+            response.addHeader("Error", "User does not exists");
+            return false;
+        }
+    }
+
+    public Boolean changeTelephoneNumber(Long userId, String newNumber, HttpServletResponse response) {
+        UserEntity entity = userRepository.getReferenceById(userId);
+
+        if (entity!=null){
+            entity.setPhoneNumber(newNumber);
+            userRepository.save(entity);
+            return true;
+        }else{
+            response.addHeader("Error", "User does not exists");
+            return false;
+        }
+    }
+
+    public UserBriefInfoDTO giveBriefInfoUser(Long userId, HttpServletResponse response) {
+        UserEntity entity = userRepository.getReferenceById(userId);
+
+        if (entity!=null){
+            UserBriefInfoDTO us = new UserBriefInfoDTO(entity.getUsername(),entity.getFirstName(),entity.getLastName(),entity.getEmail(),entity.getPhoneNumber());
+            return us;
+        }else{
+            response.addHeader("Error", "User does not exists");
+            return null;
+        }
+
     }
 }

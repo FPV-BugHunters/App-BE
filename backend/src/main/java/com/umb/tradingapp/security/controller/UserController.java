@@ -4,17 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import com.umb.tradingapp.security.dto.*;
+import com.umb.tradingapp.security.entity.TokenEntity;
+import com.umb.tradingapp.security.entity.UserEntity;
+import org.springframework.web.bind.annotation.*;
 
 import com.umb.tradingapp.dto.CryptoPriceDTO;
-import com.umb.tradingapp.security.dto.BuyTransactionDTO;
-import com.umb.tradingapp.security.dto.PortfolioDTO;
-import com.umb.tradingapp.security.dto.TransactionDTO;
 import com.umb.tradingapp.security.service.UserPortfolioService;
 import com.umb.tradingapp.security.service.UserService;
 import com.umb.tradingapp.service.CryptoService;
@@ -52,8 +47,6 @@ public class UserController {
 
                         }
                 )
-
-
     })*/
     @GetMapping("/api/user/balance")
     public Double balance(@Parameter(description = "User's authorization token (Bearer token)") 
@@ -66,6 +59,66 @@ public class UserController {
             Long userId = userService.getUserId(authentification);
             return userService.balance(userId, response);
     }
+    @PutMapping("/api/user/{newUserName}")
+    public Boolean changeUserName(@Parameter(description = "User's authorization token (Bearer token)")
+                          @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentification,@PathVariable String newUserName, HttpServletResponse response) {
+        if (!userService.checkTokenGiven(authentification, response))
+            return null;
+        if (!userService.checkTokenExists(authentification, response))
+            return null;
+
+        Long userId = userService.getUserId(authentification);
+
+        return userService.renameUser(userId,newUserName,response);
+    }
+
+    @PutMapping("/api/user/changePassword")
+    public Boolean changeUserPassword(@Parameter(description = "User's authorization token (Bearer token)")
+                                  @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentification,
+                                      @RequestBody String newPassword,
+                                      HttpServletResponse response) {
+        if (!userService.checkTokenGiven(authentification, response))
+            return null;
+        if (!userService.checkTokenExists(authentification, response))
+            return null;
+
+        Long userId = userService.getUserId(authentification);
+        System.out.println(newPassword);
+
+        return userService.changePassword(userId,newPassword,response);
+    }
+
+    @PutMapping("/api/user/changeTelephoneNumber")
+    public Boolean changeTelephoneNumber(@Parameter(description = "User's authorization token (Bearer token)")
+                                      @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentification,
+                                      @RequestBody String newNumber,
+                                      HttpServletResponse response) {
+        if (!userService.checkTokenGiven(authentification, response))
+            return null;
+        if (!userService.checkTokenExists(authentification, response))
+            return null;
+
+        Long userId = userService.getUserId(authentification);
+        System.out.println(newNumber);
+
+        return userService.changeTelephoneNumber(userId,newNumber,response);
+    }
+
+    @GetMapping("/api/user/briefInfoUser")
+    public UserBriefInfoDTO listBriefInfoUser(HttpServletResponse response,
+                                                     @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentification) {
+        if (!userService.checkTokenGiven(authentification, response))
+            return null;
+        if (!userService.checkTokenExists(authentification, response))
+            return null;
+        Long userId = userService.getUserId(authentification);
+
+        //List<UserBriefInfoDTO> listDto = new ArrayList<>();
+        //listDto.add(new UserBriefInfoDTO());
+
+        return userService.giveBriefInfoUser(userId,response);
+    }
+
 
     @PostMapping("/api/user/balance/compare")
     public Boolean enoughBalance(@RequestBody Double dto, HttpServletResponse response,
