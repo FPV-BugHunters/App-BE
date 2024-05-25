@@ -1,9 +1,9 @@
 package com.umb.tradingapp.security.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -166,26 +166,20 @@ public class UserController {
         return true;
     }
 
-    @GetMapping("/api/user/transactions")
-    public Iterable<TransactionDTO> listAllTransactions(HttpServletResponse response,
+    @GetMapping("/api/user/user_transactions")
+    public List<TransactionDTO> listAllTransactions(HttpServletResponse response,
     @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentification) {
         if (!userService.checkTokenGiven(authentification, response))
             return null;
         if (!userService.checkTokenExists(authentification, response))
             return null;
+        
+        Long userId = userService.getUserId(authentification);
 
-        List<TransactionDTO> listDto = new ArrayList<>();
-        listDto.add(new TransactionDTO(1l, 13.4f, 10., 134., 3145l, 1l, "Bitcoin", "BTC", "Sell"));
-        listDto.add(new TransactionDTO(2l, 33.4f, 1.68, 424., 3145l, 1l, "Bitcoin", "BTC", "Sell"));
-        listDto.add(new TransactionDTO(3l, 130.4f, 100., 134., 3145l, 1l, "Bitcoin", "BTC", "Buy"));
-        listDto.add(new TransactionDTO(4l, 67.4f, 300., 134., 3145l, 1l, "Bitcoin", "BTC", "Sell"));
-        listDto.add(new TransactionDTO(5l, 1.4f, 10.64, 134., 3145l, 1l, "Bitcoin", "BTC", "Buy"));
-
-        //TODO implementovat
-        return listDto;
+        return userService.getUserTransactions(userId);
     }
 
-    @GetMapping("/api/user/transactions/{id}")
+    @GetMapping("/api/user/user_transactions/{id}")
     public TransactionDTO getTransaction(@PathVariable Long id, HttpServletResponse response,
     @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentification) {
         if (!userService.checkTokenGiven(authentification, response))
@@ -193,27 +187,9 @@ public class UserController {
         if (!userService.checkTokenExists(authentification, response))
             return null;
 
-        //TODO implementovat
-        return new TransactionDTO(2l, 33.4f, 1.68, 424., 3145l, 1l, "Bitcoin", "BTC", "Sell");
-    }
+        Long userId = userService.getUserId(authentification);
 
-    @GetMapping("/api/user/portfolio")
-    public Iterable<PortfolioDTO> listPortfolio(HttpServletResponse response,
-    @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentification) {
-        if (!userService.checkTokenGiven(authentification, response))
-            return null;
-        if (!userService.checkTokenExists(authentification, response))
-            return null;
-
-        List<PortfolioDTO> listDto = new ArrayList<>();
-        listDto.add(new PortfolioDTO(1l, 1, "woeur", "LBK", 234., 12., 32432., 20948., 2340., 13.54f, -12f, 13f, 4f));
-        listDto.add(new PortfolioDTO(2l, 2, "woeur", "LBK", 234., 12., 32432., 20948., 2340., 13.54f, -12f, 13f, 4f));
-        listDto.add(new PortfolioDTO(3l, 3, "woeur", "LBK", 234., 12., 32432., 20948., 2340., 13.54f, -12f, 13f, 4f));
-        listDto.add(new PortfolioDTO(4l, 4, "woeur", "LBK", 234., 12., 32432., 20948., 2340., 13.54f, -12f, 13f, 4f));
-        listDto.add(new PortfolioDTO(5l, 5, "woeur", "LBK", 234., 12., 32432., 20948., 2340., 13.54f, -12f, 13f, 4f));
-        //TODO implementovat
-
-        return listDto;
+        return userService.getUserTransactionById(userId, id);
     }
 
     @GetMapping("/api/user/portfolio/{id}")
@@ -229,22 +205,16 @@ public class UserController {
     }
 
     @GetMapping("/api/user/watchlist")
-    public Iterable<CryptoPriceDTO> listWatchlist(HttpServletResponse response,
+    public List<CryptoPriceDTO> listWatchlist(HttpServletResponse response,
     @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentification) {
         if (!userService.checkTokenGiven(authentification, response))
             return null;
         if (!userService.checkTokenExists(authentification, response))
             return null;
 
-        List<CryptoPriceDTO> listDto = new ArrayList<>();
-        listDto.add(new CryptoPriceDTO(1l, "LBK", "woeur", 2, 12., 32432., 20948., 2340., 13.54f, -12f, 13f));
-        listDto.add(new CryptoPriceDTO(2l, "LBK", "woeur", 3, 12., 32432., 20948., 2340., 13.54f, -12f, 13f));
-        listDto.add(new CryptoPriceDTO(3l, "LBK", "woeur", 4, 12., 32432., 20948., 2340., 13.54f, -12f, 13f));
-        listDto.add(new CryptoPriceDTO(4l, "LBK", "woeur", 5, 12., 32432., 20948., 2340., 13.54f, -12f, 13f));
-        listDto.add(new CryptoPriceDTO(5l, "LBK", "woeur", 6, 12., 32432., 20948., 2340., 13.54f, -12f, 13f));
-        //TODO implementovat
-
-        return listDto;
+        Long userId = userService.getUserId(authentification);
+        
+        return userService.getUserWatchlist(userId);
     }
 
     @GetMapping("/api/user/watchlist/{id}")
@@ -259,7 +229,46 @@ public class UserController {
         //TODO implementovat
     }
 
+    @PostMapping("/api/user/watchlist")
+    public Boolean addToWatchlist(@RequestBody Long cryptoId, HttpServletResponse response,
+    @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentification) {
+        if (!userService.checkTokenGiven(authentification, response))
+            return null;
+        if (!userService.checkTokenExists(authentification, response))
+            return null;
+        if (!cryptoService.checkCryptoExists(cryptoId, response))
+            return null;
+        
+        Long userId = userService.getUserId(authentification);
 
+        //TODO pridat response header alebo responseBody
+        if (userService.inWatchlist(cryptoId, userId))
+            return false;
+        
+        return userService.addToWatchlist(cryptoId, userId);
+    }
+
+    @DeleteMapping("/api/user/watchlist")
+    public Boolean removeFromWatchlist(@RequestBody Long cryptoId, HttpServletResponse response,
+    @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentification) {
+        if (!userService.checkTokenGiven(authentification, response))
+            return null;
+        if (!userService.checkTokenExists(authentification, response))
+            return null;
+        if (!cryptoService.checkCryptoExists(cryptoId, response))
+            return null;
+
+        Long userId = userService.getUserId(authentification);
+
+        //TODO pridat response header alebo responseBody
+        if (!userService.inWatchlist(cryptoId, userId))
+            return false;
+
+        return userService.removeFromWatchlist(cryptoId, userId);
+    }
+
+
+    //TODO delte User_portfolio
 
     
 }

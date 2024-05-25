@@ -1,16 +1,28 @@
 package com.umb.tradingapp.security.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.umb.tradingapp.dto.CryptoPriceDTO;
+import com.umb.tradingapp.entity.CryptoIdEntity;
+import com.umb.tradingapp.entity.CryptoQuoteEntity;
+import com.umb.tradingapp.entity.CryptoRankEntity;
+import com.umb.tradingapp.repo.CryptoIdRepository;
+import com.umb.tradingapp.security.dto.TransactionDTO;
 import com.umb.tradingapp.security.entity.TokenEntity;
+import com.umb.tradingapp.security.entity.TransactionEntity;
 import com.umb.tradingapp.security.entity.UserEntity;
+import com.umb.tradingapp.security.entity.WatchlistEntity;
 import com.umb.tradingapp.security.repo.TokenRepository;
+import com.umb.tradingapp.security.repo.TransactionRepository;
 import com.umb.tradingapp.security.repo.UserPortfolioRepository;
 import com.umb.tradingapp.security.repo.UserRepository;
+import com.umb.tradingapp.security.repo.WatchlistRepository;
 
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -25,6 +37,15 @@ public class UserService {
 
     @Autowired
     UserPortfolioRepository userPortfolioRepo;
+
+    @Autowired
+    TransactionRepository transactionRepo;
+
+    @Autowired
+    WatchlistRepository watchlistRepo;
+
+    @Autowired
+    CryptoIdRepository cryptoIdRepo;
 
     private final String BALANCE = "Balance";
     
@@ -68,6 +89,7 @@ public class UserService {
     }
 
     public Boolean checkTokenExists(Optional<String> authentification, HttpServletResponse response) {
+        //TODO pridat overenie ci user existuje
         String token = authentification.get().substring("Bearer".length()).trim();
         Optional<TokenEntity> te;
         te = tokenRepository.findByToken(token);
@@ -93,4 +115,101 @@ public class UserService {
         Optional<TokenEntity> te = tokenRepository.findByToken(token);
         return te.get().getUser().getId();
     }
+
+    public List<TransactionDTO> getUserTransactions(Long userId) {
+        List<TransactionEntity> listEntity = transactionRepo.findByUserId(userId);
+        List<TransactionDTO> listDto = new ArrayList<>();
+        CryptoIdEntity idEntity;
+        
+        for (TransactionEntity e : listEntity) {
+            idEntity = e.getCrypto();
+            listDto.add(new TransactionDTO(
+                e.getId(),
+                e.getAmount(),
+                e.getPricePerUnit(),
+                e.getTotalPrice(),
+                e.getUser().getId(),
+                idEntity.getId(),
+                idEntity.getName(),
+                idEntity.getSymbol(),
+                ((e.getType() == null) ? "null" : e.getType().toString())
+            ));
+        }
+        return listDto;
+    }
+
+    public TransactionDTO getUserTransactionById(Long userId, Long transactionId) {
+        Optional<TransactionEntity> optional = transactionRepo.findById(transactionId);
+        TransactionEntity entity;
+        CryptoIdEntity idEntity;
+        TransactionDTO dto = new TransactionDTO();
+        if (optional.isEmpty())
+            return null;
+        entity = optional.get();
+        idEntity = entity.getCrypto();
+        dto.setAmount(entity.getAmount()); 
+        dto.setCryptoId(idEntity.getId());
+        dto.setCryptoName(idEntity.getName());
+        dto.setCryptoSymbol(idEntity.getSymbol());
+        dto.setId(entity.getId());
+        dto.setUserId(userId);
+        dto.setPricePerUnit(entity.getPricePerUnit());
+        dto.setTotalPrice(entity.getTotalPrice());
+        dto.setType(((entity.getType() == null) ? "null" : entity.getType().toString())); 
+    
+        return dto;
+    }
+
+    public Boolean addToWatchlist(Long cryptoId, Long userId) {
+        UserEntity userEntity = userRepository.getReferenceById(userId);
+        CryptoIdEntity cryptoIdEntity = cryptoIdRepo.getReferenceById(cryptoId);
+        WatchlistEntity entity = new WatchlistEntity();
+        entity.setCrypto(cryptoIdEntity);
+        entity.setUser(userEntity);
+        watchlistRepo.save(entity);
+        return true;
+    }
+
+    public Boolean removeFromWatchlist(Long cryptoId, Long userId) {
+        WatchlistEntity e = watchlistRepo.findByUserIdAndCryptoId(userId, cryptoId).get();
+        watchlistRepo.delete(e);
+        return true;
+    }
+
+    public boolean inWatchlist(Long cryptoId, Long userId) {
+        Optional<WatchlistEntity> entity = watchlistRepo.findByUserIdAndCryptoId(userId, cryptoId);
+        if (entity.isEmpty())
+            return false;
+        return true;
+    }
+
+    public List<CryptoPriceDTO> getUserWatchlist(Long userId) {
+        List<WatchlistEntity> entityList = watchlistRepo.findAllByUserId(userId);
+        List<CryptoPriceDTO> dtoList = new ArrayList<>();
+        CryptoIdEntity cryptoId;
+        CryptoQuoteEntity cryptoQuote;
+        CryptoRankEntity cryptoRank;
+
+        for (WatchlistEntity e : entityList) {
+            cryptoId = e.getCrypto();
+            cryptoQuote = cryptoId.getQuote();
+            cryptoRank = cryptoId.getRank();
+            dtoList.add(new CryptoPriceDTO(
+                cryptoId.getId(),
+                cryptoId.getName(),
+                cryptoId.getSymbol(),
+                cryptoRank.getCmcRank(),
+                cryptoQuote.getPrice(),
+                cryptoQuote.getCirculatingSupply(),
+                cryptoQuote.getMarketCap(),
+                cryptoQuote.getVolume24h(),
+                cryptoQuote.getPercentChange1h(),
+                cryptoQuote.getPercentChange24h(),
+                cryptoQuote.getPercentChange7d()
+            ));
+        }
+        return dtoList;
+    }
+
+
 }

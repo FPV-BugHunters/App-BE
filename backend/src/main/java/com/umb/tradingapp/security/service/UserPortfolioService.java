@@ -10,8 +10,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.umb.tradingapp.entity.CryptoIdEntity;
+import com.umb.tradingapp.entity.CryptoQuoteEntity;
+import com.umb.tradingapp.entity.CryptoRankEntity;
 import com.umb.tradingapp.repo.CryptoIdRepository;
 import com.umb.tradingapp.security.dto.BuyTransactionDTO;
+import com.umb.tradingapp.security.dto.PortfolioDTO;
 import com.umb.tradingapp.security.dto.UserPortfolioDTO;
 import com.umb.tradingapp.security.entity.PortfolioEntity;
 import com.umb.tradingapp.security.entity.TransactionEntity;
@@ -153,6 +156,36 @@ public class UserPortfolioService {
 
         transactionRepo.save(transactionEntity);
         
+    }
+
+    public Iterable<PortfolioDTO> listPortfolio(Long userPortfolioId) {
+        List<PortfolioEntity> listEntity = portfolioRepo.findByUserPortfolioId(userPortfolioId);
+        List<PortfolioDTO> listDto = new ArrayList<>();
+        CryptoIdEntity idEntity;
+        CryptoQuoteEntity quoteEntity;
+        CryptoRankEntity rankEntity;
+        for (PortfolioEntity e : listEntity) {
+            idEntity = e.getCrypto();
+            quoteEntity = idEntity.getQuote();
+            rankEntity = idEntity.getRank();
+            Double totalPrice = e.getTotalPrice();
+            listDto.add(new PortfolioDTO(
+                idEntity.getId(),
+                rankEntity.getCmcRank(),
+                idEntity.getName(),
+                idEntity.getSlug(),
+                totalPrice,
+                quoteEntity.getPrice(),
+                quoteEntity.getCirculatingSupply(),
+                quoteEntity.getMarketCap(),
+                quoteEntity.getVolume24h(),
+                e.getAmount(),
+                quoteEntity.getPercentChange1h(),
+                quoteEntity.getPercentChange24h(),
+                quoteEntity.getPercentChange7d()
+            ));
+        }
+        return listDto;
     }
 
 }

@@ -14,7 +14,7 @@ import com.umb.tradingapp.security.repo.TokenRepository;
 import com.umb.tradingapp.security.repo.UserRepository;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
+//import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class AuthenticationService {
-    private static final int TOKEN_VALIDITY_IN_MINUTES = 15;
+    //private static final int TOKEN_VALIDITY_IN_MINUTES = 15;
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
@@ -91,7 +91,7 @@ public class AuthenticationService {
         return user;
     }
 
-
+    /*
     private void validateTokenExpiration(TokenEntity token) {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime tokenExpiration = token.getCreatedAt().plus(TOKEN_VALIDITY_IN_MINUTES, ChronoUnit.MINUTES);
@@ -100,6 +100,7 @@ public class AuthenticationService {
             throw new AuthenticationCredentialsNotFoundException("Authentication failed!");
         }
     }
+     */
 
     @Transactional
     public void tokenRemove(String token) {
