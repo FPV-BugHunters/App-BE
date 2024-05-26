@@ -57,7 +57,7 @@ public class CryptoService {
             dto.setVolume(cryptoQuoteEntity.getVolume24h());
 
             cryptosPriceDTO.add(dto);
-            List<CryptoQuoteEntity> history = cryptoQuoteRepo.findByCryptoIdOrderByLastUpdatedDesc(crypto.getId());
+            List<CryptoQuoteEntity> history = cryptoQuoteRepo.findByCryptoIdOrderByLastUpdatedAsc(crypto.getId());
             if(history.size() > 0) {
                 List<CryptoPriceHistoryDTO> priceHistory = new ArrayList<>();
                 for (CryptoQuoteEntity quote : history) {

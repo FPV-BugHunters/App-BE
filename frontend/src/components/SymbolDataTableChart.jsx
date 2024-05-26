@@ -1,6 +1,12 @@
-import React, { Component } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import moment from 'moment';
+import PropTypes from 'prop-types';
+
+CustomTooltip.propTypes = {
+    payload: PropTypes.array,
+    label: PropTypes.string,
+    active: PropTypes.bool
+};
 
 function CustomTooltip ({ payload, label, active }) {
     if (active && payload && payload.length) {
@@ -14,6 +20,11 @@ function CustomTooltip ({ payload, label, active }) {
 
     return null;
 }
+
+SymbolDataTableChart.propTypes = {
+    data: PropTypes.array.isRequired
+};
+
 function SymbolDataTableChart ({ data }) {
 
     const data2 = data.map(item => ({
@@ -32,11 +43,10 @@ function SymbolDataTableChart ({ data }) {
         <>
             <ResponsiveContainer width={200} height={50}>
                 <LineChart data={data2}>
-                    <XAxis dataKey="date" domain={[ minX, maxX ]} hide={true} ></XAxis>
-                    <YAxis domain={[ minY, maxY ]} hide={true}></YAxis>
+                    <XAxis dataKey="date" domain={[ minX, maxX ]} hide={true} type="number" ></XAxis>
+                    <YAxis dataKey="priceUSD" domain={[ minY, maxY ]} hide={true} type="number" scale="time"></YAxis>
 
-
-                    <Tooltip position={{ y: -150 }} content={<CustomTooltip />} />
+                    <Tooltip position={{ x: -240 }} content={<CustomTooltip />} />
                     <Line type="monotone" isAnimationActive={false} dataKey="priceUSD" stroke="#8884d8" strokeWidth={2} dot={false} />
                 </LineChart>
             </ResponsiveContainer>

@@ -10,6 +10,7 @@ import com.umb.tradingapp.entity.CryptoQuoteEntity;
 public interface CryptoQuoteRepository extends JpaRepository<CryptoQuoteEntity, Long> {
     List<CryptoQuoteEntity> findByCryptoId(Long id);
     List<CryptoQuoteEntity> findByCryptoIdOrderByLastUpdatedDesc(Long id);
+    List<CryptoQuoteEntity> findByCryptoIdOrderByLastUpdatedAsc(Long id);
 
 }
 
