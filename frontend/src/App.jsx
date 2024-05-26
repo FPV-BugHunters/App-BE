@@ -2,8 +2,8 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 // import * as React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useState } from 'react';
 import TopNav from './components/TopNav';
 import LogIn from './components/LogIn';
 import Home from './pages/Home';
@@ -14,7 +14,7 @@ import CheckUser from './components/CheckUser';
 
 import Watchlist from './pages/Watchlist';
 import Portfolio from './pages/Portfolio';
-import { useNavigate } from 'react-router-dom';
+import User from './pages/User';
 
 const darkTheme = createTheme({
   palette: {
@@ -59,7 +59,7 @@ function App() {
                   <Route path="/login" element={<LogIn />} />
                   <Route path="/watchlist" element={<Watchlist />} /> 
                   <Route path="/portfolio" element={<Portfolio/>} />
-                  <Route path="/user" element={<Home/>} />
+                  <Route path="/user" element={<User/>} />
                 </Routes>
               </QueryClientProvider>
           </Router>

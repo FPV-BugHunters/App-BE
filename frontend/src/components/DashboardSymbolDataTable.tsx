@@ -61,9 +61,6 @@ export default function DashboardSymbolDataTable() {
     queryFn: getSymbols
   });
 
-  React.useEffect(() => {
-    console.log(data);
-  }, [data]);
 
   return (
     <>

@@ -20,6 +20,7 @@ import com.umb.tradingapp.dto.CryptoDTO;
 import com.umb.tradingapp.dto.CryptoPriceDTO;
 import com.umb.tradingapp.dto.PortfolioDTO;
 import com.umb.tradingapp.dto.TransactionDTO;
+import com.umb.tradingapp.repo.CryptoQuoteRepository;
 import com.umb.tradingapp.security.entity.UserEntity;
 import com.umb.tradingapp.service.CryptoService;
 import com.umb.tradingapp.service.UserPortfolioService;
@@ -41,6 +42,9 @@ public class UserController {
 
     @Autowired
     private UserPortfolioService userPortfolioService;
+
+    @Autowired
+    private CryptoQuoteRepository cryptoQuoteRepo;
 
     /*
      * @Operation(summary = "DELETE user(token) - logout", description =
@@ -104,9 +108,7 @@ public class UserController {
 
     @PostMapping("/api/user/check-crypto-exists")
     public Boolean checkCryptoExists(@RequestBody Long cryptoId, HttpServletResponse response) {
-        // return true;
         return cryptoService.checkCryptoExists(cryptoId, response);
-        // throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Not implemented");
     }
 
 
@@ -114,7 +116,7 @@ public class UserController {
     public Boolean buyTransaction(@RequestBody BuyTransactionDTO dto, HttpServletRequest request, HttpServletResponse response) {
         UserEntity userEntity = (UserEntity) request.getAttribute("user");
         //
-        Double totalPrice = cryptoService.getCryptoPrice(dto.getCryptoId()) * dto.getAmount();
+        Double totalPrice = cryptoQuoteRepo.findByCryptoIdOrderByLastUpdatedDesc(dto.getCryptoId()).get(0).getPrice() * dto.getAmount();
 
         if (!userService.checkEnoughBalance(totalPrice, userEntity.getId(), response))
             return false;

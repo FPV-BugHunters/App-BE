@@ -29,7 +29,7 @@ public class UserPortfolioController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/api/user/user_portfolio")
+    @PostMapping("/api/user/user-portfolio")
     public Boolean createUserPortfolio(@RequestBody String name, HttpServletResponse response, 
     @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentification) {
         Long userId = userService.getUserId(authentification);
@@ -37,7 +37,7 @@ public class UserPortfolioController {
         return userPortfolioService.createUserPortfolio(response, userId, name);
     }
 
-    @GetMapping("/api/user/user_portfolio")
+    @GetMapping("/api/user/user-portfolio")
     public List<UserPortfolioDTO> listUserPortfolio(HttpServletResponse response,
     @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentification) {
         Long userId = userService.getUserId(authentification); 
@@ -45,7 +45,7 @@ public class UserPortfolioController {
         return userPortfolioService.listUserPortfolio(response, userId);
     }
 
-    @GetMapping("/api/user/user_portfolio/{userPortfolioId}")
+    @GetMapping("/api/user/user-portfolio/{userPortfolioId}")
     public Iterable<PortfolioDTO> listPortfolio(@PathVariable Long userPortfolioId, HttpServletResponse response,
     @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentification) {
         Long userId = userService.getUserId(authentification);

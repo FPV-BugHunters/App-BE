@@ -32,13 +32,11 @@ function DashboardSymbolDataTableChart ({ data }) {
         priceUSD: item.priceUSD
     }));
 
-    console.log(data2)
 
     const minX = Math.min(...data2.map(item => item.date));
     const maxX = Math.max(...data2.map(item => item.date));
     const minY = Math.min(...data2.map(item => item.priceUSD));
     const maxY = Math.max(...data2.map(item => item.priceUSD));
-    console.log(minX, maxX, minY, maxY)
 
     return (
         <>

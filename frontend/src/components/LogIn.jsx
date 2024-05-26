@@ -60,7 +60,6 @@ export default function LogIn () {
     event.preventDefault();
 
     const data = new FormData(event.currentTarget);
-    console.log(data);
 
     if (isLoginInPage) {
 
@@ -98,7 +97,6 @@ export default function LogIn () {
       if (token !== null) {
         sessionStorage.setItem("token", token);
         setIsAuth(true);
-        console.log(userInfo());
         navigate("/");
       }
     })
