@@ -11,7 +11,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Symbol, SymbolResponse } from '../types';
 import Chart from 'react-apexcharts'
 import { getSymbols } from '../api/SymbolApi';
-import SymbolDataTableChart from './SymbolDataTableChart';
+import DashboardSymbolDataTableChart from './DashboardSymbolDataTableChart';
 import { Style } from '@mui/icons-material';
 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -50,55 +50,10 @@ export type SymbolResponse = {
   d7: number;
 }
 
-export default function SymbolDataTable() {
+export default function DashboardSymbolDataTable() {
 
   const [open, setOpen] = React.useState(false);
 
-  const queryClient = useQueryClient();
-  const dataChart = [
-    {
-      name: 'Page A',
-      uv: 4000,
-      pv: 2400,
-      amt: 2400,
-    },
-    {
-      name: 'Page B',
-      uv: 3000,
-      pv: 1398,
-      amt: 2210,
-    },
-    {
-      name: 'Page C',
-      uv: 2000,
-      pv: 9800,
-      amt: 2290,
-    },
-    {
-      name: 'Page D',
-      uv: 2780,
-      pv: 3908,
-      amt: 2000,
-    },
-    {
-      name: 'Page E',
-      uv: 1890,
-      pv: 4800,
-      amt: 2181,
-    },
-    {
-      name: 'Page F',
-      uv: 2390,
-      pv: 3800,
-      amt: 2500,
-    },
-    {
-      name: 'Page G',
-      uv: 3490,
-      pv: 4300,
-      amt: 2100,
-    },
-  ];
 
   const { data, isError, isLoading, isSuccess } = useQuery({
     queryKey: ["symbol"],
@@ -109,20 +64,10 @@ export default function SymbolDataTable() {
     console.log(data);
   }, [data]);
 
-  // const { mutate } = useMutation(deleteCar, {
-  //   onSuccess: () => {
-  //     setOpen(true);
-  //     queryClient.invalidateQueries({ queryKey: ['cars'] });
-  //   },
-  //   onError: (err) => {
-  //     console.error(err);
-  //   },
-  // }); 
-  // 
   return (
     <>
       <TableContainer component={Paper} sx={{ padding: 4, borderRadius: { topLeft: 2, topRight: 1, bottomRight: 2, bottomLeft: 1 } }}>
-        <Table sx={{ minWidth: 700 }} aria-label="customized table">
+        <Table sx={{ minWidth: 100 }} aria-label="customized table">
           <TableHead>
             <TableRow>
 
@@ -152,9 +97,8 @@ export default function SymbolDataTable() {
                 <StyledTableCell>${parseFloat(row.marketCap).toFixed(0)}</StyledTableCell>
                 <StyledTableCell>${parseFloat(row.volume).toFixed(0)}</StyledTableCell>
                 <StyledTableCell>{parseFloat(row.circulatingSupply).toFixed(2) + ' ' + row.symbol}</StyledTableCell>
-                <StyledTableCell>
-                  <SymbolDataTableChart data={row.priceHistoryUSD}></SymbolDataTableChart>
-
+                <StyledTableCell style={{ paddingTop:3, paddingBotton:3 }}>
+                  <DashboardSymbolDataTableChart data={row.priceHistoryUSD}></DashboardSymbolDataTableChart>
                 </StyledTableCell>
 
 

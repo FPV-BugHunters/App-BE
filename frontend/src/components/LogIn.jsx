@@ -14,7 +14,6 @@ import { useState } from 'react';
 import axios from 'axios';
 import IsAuthContext from '../contexts/IsAuthContext';
 import { useNavigate } from "react-router-dom";
-import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
 import { userInfo } from '../api/UserApi';
 

@@ -17,8 +17,8 @@ import IsAuthContext from '../contexts/IsAuthContext';
 import UserContext from '../contexts/UserContex';
 import { logoutUser } from '../api/UserApi';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 const pages = [ 'Dashboard' ];
-const settings = [ 'Profile', 'Account', 'Dashboard', 'Logout' ];
 
 function TopNav () {
   const [ anchorElNav, setAnchorElNav ] = useState(null);
@@ -27,7 +27,17 @@ function TopNav () {
   const { isAuth, setIsAuth } = useContext(IsAuthContext);
   const { user, setUser } = useContext(UserContext);
   
-  console.log(isAuth);
+  const navigate = useNavigate();
+  const AuthRequiredUrl = ['/watchlist', '/portfolio'];
+
+  useEffect(() => {
+      const actualUrl = window.location.pathname;
+      if ( AuthRequiredUrl.includes(actualUrl) && !isAuth) {
+          navigate('/login');
+      }
+  }, [ isAuth, navigate ]);
+  
+  
   const location = useLocation();
 
   const handlePageChange = () => {
@@ -144,9 +154,11 @@ function TopNav () {
           <Link to="/" style={{ textDecoration: 'none', color: 'white', display: 'block', marginRight: 10 }}>TRADER</Link>
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            <Link to="/dashboard" style={{ textDecoration: 'none', color: 'white', display: 'block', marginRight: 10 }}>Dashboard</Link>
+            <Link to="/dashboard" style={{ textDecoration: 'none', color: 'white', display: 'block', marginRight: 20 }}>Dashboard</Link>
 
-            <Link to="/watchlist" style={{ textDecoration: 'none', color: 'white', display: 'block', marginRight: 10 }}>Watchlist</Link>
+            <Link to="/watchlist" style={{ textDecoration: 'none', color: 'white', display: 'block', marginRight: 20 }}>Watchlist</Link>
+
+            <Link to="/portfolio" style={{ textDecoration: 'none', color: 'white', display: 'block', marginRight: 20 }}>Portfolio</Link>
 
           </Box>
 

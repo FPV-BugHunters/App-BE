@@ -41,10 +41,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/login").permitAll()
                 .requestMatchers(HttpMethod.POST, "/registration").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/cryptos").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/cryptos/history").permitAll()
-				// .requestMatchers(HttpMethod.GET, "/api/user").permitAll()
-				.requestMatchers(HttpMethod.GET, "/api/authentication").permitAll()
-				.requestMatchers(HttpMethod.DELETE, "/api/logout").permitAll()
+
 				.requestMatchers("/", "/**.html", "/assets/*.css", "/assets/*.js", "/assets/**", "/vite.svg" ).permitAll()
 
                 .requestMatchers(SWAGGER_PATHS).permitAll()

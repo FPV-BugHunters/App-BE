@@ -21,11 +21,11 @@ function CustomTooltip ({ payload, label, active }) {
     return null;
 }
 
-SymbolDataTableChart.propTypes = {
+DashboardSymbolDataTableChart.propTypes = {
     data: PropTypes.array.isRequired
 };
 
-function SymbolDataTableChart ({ data }) {
+function DashboardSymbolDataTableChart ({ data }) {
 
     const data2 = data.map(item => ({
         date: new Date(item.timestamp),
@@ -57,4 +57,4 @@ function SymbolDataTableChart ({ data }) {
     )
 }
 
-export default SymbolDataTableChart;
+export default DashboardSymbolDataTableChart;

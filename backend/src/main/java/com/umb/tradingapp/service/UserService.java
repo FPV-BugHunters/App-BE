@@ -3,11 +3,13 @@ package com.umb.tradingapp.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.umb.tradingapp.dto.CryptoDTO;
 import com.umb.tradingapp.dto.CryptoPriceDTO;
 import com.umb.tradingapp.dto.TransactionDTO;
 import com.umb.tradingapp.entity.CryptoEntity;
@@ -51,7 +53,7 @@ public class UserService {
     CryptoRepository cryptoIdRepo;
 
     private final String BALANCE = "Balance";
-    
+
     public Double balance(Long userId, HttpServletResponse response) {
         UserEntity entity = userRepository.getReferenceById(userId);
         return entity.getBalance();
@@ -85,7 +87,7 @@ public class UserService {
     public Boolean checkTokenGiven(Optional<String> authentification, HttpServletResponse response) {
         if (authentification.isEmpty()) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.addHeader("Error", "token not sent"); 
+            response.addHeader("Error", "token not sent");
             return false;
         }
         return true;
@@ -98,7 +100,7 @@ public class UserService {
         if (te.isEmpty()) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.addHeader("Error", "user does not exists");
-            return false; 
+            return false;
         }
         return true;
     }
@@ -122,20 +124,19 @@ public class UserService {
         List<TransactionEntity> listEntity = transactionRepo.findByUserId(userId);
         List<TransactionDTO> listDto = new ArrayList<>();
         CryptoEntity idEntity;
-        
+
         for (TransactionEntity e : listEntity) {
             idEntity = e.getCrypto();
             listDto.add(new TransactionDTO(
-                e.getId(),
-                e.getAmount(),
-                e.getPricePerUnit(),
-                e.getTotalPrice(),
-                e.getUser().getId(),
-                idEntity.getId(),
-                idEntity.getName(),
-                idEntity.getSymbol(),
-                ((e.getType() == null) ? "null" : e.getType().toString())
-            ));
+                    e.getId(),
+                    e.getAmount(),
+                    e.getPricePerUnit(),
+                    e.getTotalPrice(),
+                    e.getUser().getId(),
+                    idEntity.getId(),
+                    idEntity.getName(),
+                    idEntity.getSymbol(),
+                    ((e.getType() == null) ? "null" : e.getType().toString())));
         }
         return listDto;
     }
@@ -149,7 +150,7 @@ public class UserService {
             return null;
         entity = optional.get();
         idEntity = entity.getCrypto();
-        dto.setAmount(entity.getAmount()); 
+        dto.setAmount(entity.getAmount());
         dto.setCryptoId(idEntity.getId());
         dto.setCryptoName(idEntity.getName());
         dto.setCryptoSymbol(idEntity.getSymbol());
@@ -157,8 +158,8 @@ public class UserService {
         dto.setUserId(userId);
         dto.setPricePerUnit(entity.getPricePerUnit());
         dto.setTotalPrice(entity.getTotalPrice());
-        dto.setType(((entity.getType() == null) ? "null" : entity.getType().toString())); 
-    
+        dto.setType(((entity.getType() == null) ? "null" : entity.getType().toString()));
+
         return dto;
     }
 
@@ -185,6 +186,28 @@ public class UserService {
         return true;
     }
 
+    public List<CryptoDTO> getCryptoNotInWatchlist(Long userId) {
+
+        List<CryptoEntity> cryptoList = cryptoIdRepo.findAll();
+        List<WatchlistEntity> watchlist = watchlistRepo.findAllByUserId(userId);
+
+        List<CryptoEntity> notInWatchlist = cryptoList.stream()
+                .filter(crypto -> watchlist.stream()
+                        .noneMatch(watchlistEntity -> watchlistEntity.getCrypto().getId().equals(crypto.getId())))
+                .collect(Collectors.toList());
+
+        List<CryptoDTO> dtoList = new ArrayList<>();
+        for (CryptoEntity e : notInWatchlist) {
+            CryptoDTO crypto = new CryptoDTO();
+            crypto.setCrypto_id(e.getId());
+            crypto.setName(e.getName());
+            crypto.setSymbol(e.getSymbol());
+            dtoList.add(crypto);
+        }
+
+        return dtoList;
+    }
+
     public List<CryptoPriceDTO> getUserWatchlist(Long userId) {
         List<WatchlistEntity> entityList = watchlistRepo.findAllByUserId(userId);
         List<CryptoPriceDTO> dtoList = new ArrayList<>();
@@ -195,19 +218,18 @@ public class UserService {
             cryptoId = e.getCrypto();
             cryptoQuote = cryptoQuoteRepo.findByCryptoIdOrderByLastUpdatedDesc(cryptoId.getId()).get(0);
             dtoList.add(new CryptoPriceDTO(
-                cryptoId.getId(),
-                cryptoId.getName(),
-                cryptoId.getSymbol(),
-                cryptoId.getCmc_rank(),
-                cryptoQuote.getPrice(),
-                cryptoQuote.getCirculatingSupply(),
-                cryptoQuote.getMarketCap(),
-                cryptoQuote.getVolume24h(),
-                cryptoQuote.getPercentChange1h(),
-                cryptoQuote.getPercentChange24h(),
-                cryptoQuote.getPercentChange7d(),
-                null
-            ));
+                    cryptoId.getId(),
+                    cryptoId.getName(),
+                    cryptoId.getSymbol(),
+                    cryptoId.getCmc_rank(),
+                    cryptoQuote.getPrice(),
+                    cryptoQuote.getCirculatingSupply(),
+                    cryptoQuote.getMarketCap(),
+                    cryptoQuote.getVolume24h(),
+                    cryptoQuote.getPercentChange1h(),
+                    cryptoQuote.getPercentChange24h(),
+                    cryptoQuote.getPercentChange7d(),
+                    null));
         }
         return dtoList;
     }
@@ -216,10 +238,10 @@ public class UserService {
         Optional<WatchlistEntity> optionalEntity = watchlistRepo.findByUserIdAndCryptoId(userId, cryptoId);
         WatchlistEntity entity;
         CryptoEntity cryptoIdEntity;
-        CryptoQuoteEntity cryptoQuote;  
+        CryptoQuoteEntity cryptoQuote;
         CryptoPriceDTO dto;
 
-        //TODO doplnit upozornenie ze id je neplatne
+        // TODO doplnit upozornenie ze id je neplatne
         if (optionalEntity.isEmpty())
             return null;
 
@@ -227,21 +249,19 @@ public class UserService {
         cryptoIdEntity = entity.getCrypto();
         cryptoQuote = cryptoQuoteRepo.findByCryptoIdOrderByLastUpdatedDesc(cryptoIdEntity.getId()).get(0);
         dto = new CryptoPriceDTO(
-            cryptoIdEntity.getId(),
-            cryptoIdEntity.getName(),
-            cryptoIdEntity.getSymbol(),
-            cryptoIdEntity.getCmc_rank(),
-            cryptoQuote.getPrice(),
-            cryptoQuote.getCirculatingSupply(),
-            cryptoQuote.getMarketCap(),
-            cryptoQuote.getVolume24h(),
-            cryptoQuote.getPercentChange1h(),
-            cryptoQuote.getPercentChange24h(),
-            cryptoQuote.getPercentChange7d(),
-            null
-        );
+                cryptoIdEntity.getId(),
+                cryptoIdEntity.getName(),
+                cryptoIdEntity.getSymbol(),
+                cryptoIdEntity.getCmc_rank(),
+                cryptoQuote.getPrice(),
+                cryptoQuote.getCirculatingSupply(),
+                cryptoQuote.getMarketCap(),
+                cryptoQuote.getVolume24h(),
+                cryptoQuote.getPercentChange1h(),
+                cryptoQuote.getPercentChange24h(),
+                cryptoQuote.getPercentChange7d(),
+                null);
         return dto;
     }
-
 
 }

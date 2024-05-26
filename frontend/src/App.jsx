@@ -7,11 +7,14 @@ import { useState, useEffect } from 'react';
 import TopNav from './components/TopNav';
 import LogIn from './components/LogIn';
 import Home from './pages/Home';
-import Watchlist from './pages/Watchlist';
 import { grey } from '@mui/material/colors';
 import IsAuthContext from './contexts/IsAuthContext';
 import UserContex from './contexts/UserContex';
 import CheckUser from './components/CheckUser';
+
+import Watchlist from './pages/Watchlist';
+import Portfolio from './pages/Portfolio';
+import { useNavigate } from 'react-router-dom';
 
 const darkTheme = createTheme({
   palette: {
@@ -36,6 +39,7 @@ function App() {
 
   const [ isAuth, setIsAuth ] = useState(false); 
   const [ user, setUser] = useState({});
+
   
 
   
@@ -54,6 +58,7 @@ function App() {
                   <Route path="/dashboard" element={<Home />} />
                   <Route path="/login" element={<LogIn />} />
                   <Route path="/watchlist" element={<Watchlist />} /> 
+                  <Route path="/portfolio" element={<Portfolio/>} />
                 </Routes>
               </QueryClientProvider>
           </Router>

@@ -65,16 +65,6 @@ public class AuthenticationController {
         response.addHeader(AUTHORIZATION_HEADER, "Bearer " + token);
     }
 
-
-    @GetMapping("/api/authentication")// funkčne ale nepouživa sa
-    public UserRolesDto getRoles(@RequestHeader(HttpHeaders.AUTHORIZATION) String auth) {
-
-        String token = auth.substring("Bearer".length()).trim();
-
-
-        return authenticationService.authenticate(token);
-    }
-
     @Operation(summary = "DELETE user(token) - logout", description = "Logs out the user by removing the authentication token")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully logged off",
@@ -94,7 +84,7 @@ public class AuthenticationController {
     })
     
 
-    
+
     @DeleteMapping("/api/logout") // funguje
     public void logout(@Parameter(description = "User's authorization token (Bearer token), (swagger-ui, hore zamok na endpointe treba pouzit)")
                            @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentication, HttpServletResponse response) {

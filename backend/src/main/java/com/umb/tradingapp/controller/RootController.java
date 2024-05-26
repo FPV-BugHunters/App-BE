@@ -18,7 +18,7 @@ public class RootController {
     private final Resource indexHtml = new FileSystemResource("static/index.html");
 
 
-    @GetMapping(value={"/", "/dashboard", "/watchlist", "/portfolio"})
+    @GetMapping(value={"/", "/dashboard", "/watchlist", "/portfolio", "/login"})
     @ResponseBody
     public Resource serveFrontend(HttpServletRequest request) throws IOException {
         return indexHtml;
