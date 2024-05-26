@@ -1,7 +1,6 @@
 package com.umb.tradingapp.entity;
 
 import java.util.List;
-import java.util.Set;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

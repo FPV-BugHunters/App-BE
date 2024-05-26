@@ -1,54 +1,32 @@
 package com.umb.tradingapp.service;
 
-import java.io.BufferedReader;
-
 /**
 * This example uses the Apache HTTPComponents library.
 */
 
 import java.util.Date;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import com.umb.tradingapp.dto.CryptoHistoryPriceDTO;
 import com.umb.tradingapp.dto.ListingLatestCryptoDataDTO;
 import com.umb.tradingapp.dto.ListingLatestDTO;
 import com.umb.tradingapp.dto.ListingLatestQuoteDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.umb.tradingapp.dto.Coin;
-import com.umb.tradingapp.dto.TimestampPrice;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpHeaders;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.umb.tradingapp.entity.CryptoEntity;
-import com.umb.tradingapp.entity.CryptoPlatformEntity;
 import com.umb.tradingapp.entity.CryptoQuoteEntity;
-import com.umb.tradingapp.repo.CryptoPlatformRepository;
 import com.umb.tradingapp.repo.CryptoQuoteRepository;
 import com.umb.tradingapp.repo.CryptoRepository;
-
-import io.swagger.v3.oas.models.responses.ApiResponse;
 
 @Service
 public class ListingLatest {
@@ -60,16 +38,11 @@ public class ListingLatest {
     private CryptoRepository cryptoRepo;
 
     @Autowired
-    private CryptoPlatformRepository cryptoPlatformRepo;
-
-    @Autowired
     private CryptoQuoteRepository cryptoQuoteRepo;
 
     @Autowired
     private ApiCall apiCall;
 
-    private JSONArray dataArray;
-    private CryptoHistoryPriceDTO cp;
 
     public ListingLatestDTO loadListingLatest() {
 

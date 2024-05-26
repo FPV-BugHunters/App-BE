@@ -30,11 +30,6 @@ public class ApiCall {
     @Value("${coinrankingUri}")
     private String coinrankingUri;
     
-
-    private String uri;
-    private List<NameValuePair> parameters;
-
-
     public StringBuffer execute(String uri, List<NameValuePair> parameters) throws URISyntaxException, IOException {
 
         // Client

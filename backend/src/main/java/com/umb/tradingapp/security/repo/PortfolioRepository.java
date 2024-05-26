@@ -1,5 +1,6 @@
 package com.umb.tradingapp.security.repo;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,6 +20,7 @@ public interface PortfolioRepository extends JpaRepository<PortfolioEntity, Long
     @Query(value = "SELECT COUNT(user_portfolio_id) FROM portfolio WHERE user_portfolio_id = ?1",
     nativeQuery = true)
     public Integer getItemCount(Long userPortfolioId);
+    public List<PortfolioEntity> findByUserPortfolioId(Long userPortfolioId);
 }
 
 
