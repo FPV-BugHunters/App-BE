@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.umb.tradingapp.dto.BuyTransactionDTO;
 import com.umb.tradingapp.dto.CryptoDTO;
@@ -23,7 +25,6 @@ import com.umb.tradingapp.service.CryptoService;
 import com.umb.tradingapp.service.UserPortfolioService;
 import com.umb.tradingapp.service.UserService;
 
-import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -73,65 +74,59 @@ public class UserController {
      * })
      */
     @GetMapping("/api/user/balance")
-    public Double balance(
-            @Parameter(description = "User's authorization token (Bearer token)") @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentification,
-            HttpServletResponse response) {
-        Long userId = userService.getUserId(authentification);
-        return userService.balance(userId, response);
+    public Double balance(HttpServletRequest request, HttpServletResponse response) {
+
+        UserEntity userEntity = (UserEntity) request.getAttribute("user");
+        return userService.balance(userEntity.getId(), response);
     }
 
     @PostMapping("/api/user/balance/compare")
-    public Boolean enoughBalance(@RequestBody Double price, HttpServletResponse response,
-            @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentification) {
-        if (!userService.checkDtoExists(price, response))
-            return null;
+    public Boolean enoughBalance(@RequestBody Double price, HttpServletRequest request , HttpServletResponse response) {
 
-        Long userId = userService.getUserId(authentification);
-        return userService.checkEnoughBalance(price, response, userId);
+        UserEntity userEntity = (UserEntity) request.getAttribute("user");
+        return userService.checkEnoughBalance(price, userEntity.getId(), response);
     }
 
     @PostMapping("/api/user/balance/add")
-    public Boolean addBalance(@RequestBody Double price, HttpServletResponse response,
-            @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentification) {
-        if (!userService.checkDtoExists(price, response))
-            return null;
-
-        Long userId = userService.getUserId(authentification);
-        return userService.addBalance(price, response, userId);
+    public Boolean addBalance(@RequestBody Double price, HttpServletRequest request, HttpServletResponse response) {
+        UserEntity userEntity = (UserEntity) request.getAttribute("user");
+        return userService.addBalance(price, userEntity.getId(), response);
     }
 
     @PostMapping("/api/user/balance/remove")
-    public Boolean removeBalance(@RequestBody Double price, HttpServletResponse response,
-            @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentification) {
-        Long userId = userService.getUserId(authentification);
+    public Boolean removeBalance(@RequestBody Double price, HttpServletResponse response, HttpServletRequest request) {
+        UserEntity userEntity = (UserEntity) request.getAttribute("user");
 
-        if (!userService.checkDtoExists(price, response))
-            return null;
-        if (!userService.checkEnoughBalance(price, response, userId))
+        if (!userService.checkEnoughBalance(price, userEntity.getId(), response))
             return false;
-        return userService.removeBalance(price, response, userId);
+        return userService.removeBalance(price, response, userEntity.getId());
     }
 
-    @PostMapping("/api/user/transaction/buy")
-    public Boolean buyTransaction(@RequestBody BuyTransactionDTO dto, HttpServletResponse response,
-            @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentification) {
-        if (!userService.checkDtoExists(dto, response))
-            return null;
+    @PostMapping("/api/user/check-crypto-exists")
+    public Boolean checkCryptoExists(@RequestBody Long cryptoId, HttpServletResponse response) {
+        // return true;
+        return cryptoService.checkCryptoExists(cryptoId, response);
+        // throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED, "Not implemented");
+    }
 
-        Long userId = userService.getUserId(authentification);
+
+    @PostMapping("/api/user/transaction/buy")
+    public Boolean buyTransaction(@RequestBody BuyTransactionDTO dto, HttpServletRequest request, HttpServletResponse response) {
+        UserEntity userEntity = (UserEntity) request.getAttribute("user");
+        //
         Double totalPrice = cryptoService.getCryptoPrice(dto.getCryptoId()) * dto.getAmount();
 
-        if (!userService.checkEnoughBalance(totalPrice, response, userId))
+        if (!userService.checkEnoughBalance(totalPrice, userEntity.getId(), response))
             return false;
 
         if (!cryptoService.checkCryptoExists(dto.getCryptoId(), response))
             return false;
 
-        if (!userPortfolioService.checkPortfolioExists(response, userId, dto.getUserPortfolioId()))
+        if (!userPortfolioService.checkPortfolioExists(response, userEntity.getId(), dto.getUserPortfolioId()))
             return false;
 
-        userPortfolioService.buyCrypto(response, userId, dto);
-        userService.removeBalance(totalPrice, response, userId);
+        userPortfolioService.buyCrypto(response, userEntity.getId(), dto);
+        userService.removeBalance(totalPrice, response, userEntity.getId());
         return true;
     }
 
@@ -153,12 +148,12 @@ public class UserController {
             return false;
 
         totalPrice = userPortfolioService.sellCrypto(dto, response, userId);
-        userService.addBalance(totalPrice, response, userId);
+        userService.addBalance(totalPrice, userId, response);
 
         return true;
     }
 
-    @GetMapping("/api/user/user_transactions")
+    @GetMapping("/api/user/user-transactions")
     public List<TransactionDTO> listAllTransactions(HttpServletResponse response,
             @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentification) {
         Long userId = userService.getUserId(authentification);
@@ -166,7 +161,7 @@ public class UserController {
         return userService.getUserTransactions(userId);
     }
 
-    @GetMapping("/api/user/user_transactions/{id}")
+    @GetMapping("/api/user/user-transactions/{id}")
     public TransactionDTO getTransaction(@PathVariable Long id, HttpServletResponse response,
             @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentification) {
         Long userId = userService.getUserId(authentification);

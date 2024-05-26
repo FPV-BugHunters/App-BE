@@ -15,5 +15,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleAuthenticationCredentialsNotFoundException(AuthenticationCredentialsNotFoundException ex) {
         // You can log the exception here
         return new ResponseEntity<>("Username and/or password do not match!", HttpStatus.UNAUTHORIZED);
+        
+
     }
 }

@@ -59,6 +59,7 @@ function App() {
                   <Route path="/login" element={<LogIn />} />
                   <Route path="/watchlist" element={<Watchlist />} /> 
                   <Route path="/portfolio" element={<Portfolio/>} />
+                  <Route path="/user" element={<Home/>} />
                 </Routes>
               </QueryClientProvider>
           </Router>

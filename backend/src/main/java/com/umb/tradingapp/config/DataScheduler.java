@@ -31,6 +31,6 @@ public class DataScheduler {
         // ll.saveCryptoRank();
         // ll.loadHistoricalPricies();
 
-        System.out.println("Task performed on: " + new Date().toString() + "n" + "Thread's name: " + Thread.currentThread().getName());
+        // System.out.println("Task performed on: " + new Date().toString() + "n" + "Thread's name: " + Thread.currentThread().getName());
     }
 }

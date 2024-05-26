@@ -34,6 +34,10 @@ export default function Watchlist () {
     }
     // addSymbolToWatchlist
     const handleAddCryptoClose = (value) => {
+        if (value === null || value === undefined || value === "") {
+            setWatchlistDialogOpen(false);
+            return;
+        }
         setWatchlistDialogOpen(false);
         setWatchlistDialogCrypto(value);
         addSymbolToWatchlist(value);
@@ -46,7 +50,6 @@ export default function Watchlist () {
     });
 
     const handleRemoveCrypto = (value) => {
-
         removeSymbolFromWatchlist(value).then(() => {
             refetch();
         });

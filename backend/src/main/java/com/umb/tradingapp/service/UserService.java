@@ -60,7 +60,7 @@ public class UserService {
         return entity.getBalance();
     }
 
-    public Boolean addBalance(Double dto, HttpServletResponse response, Long userId) {
+    public Boolean addBalance(Double dto,  Long userId, HttpServletResponse response) {
         UserEntity entity = userRepository.getReferenceById(userId);
         entity.setBalance(entity.getBalance() + dto);
         userRepository.save(entity);
@@ -74,9 +74,9 @@ public class UserService {
         return true;
     }
 
-    public Boolean checkEnoughBalance(Double dto, HttpServletResponse response, Long userId) {
+    public Boolean checkEnoughBalance(Double balance,  Long userId, HttpServletResponse response) {
         UserEntity entity = userRepository.getReferenceById(userId);
-        if (entity.getBalance() - dto < 0) {
+        if (entity.getBalance() - balance < 0) {
             response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
             response.addHeader(BALANCE, "Not enough balance");
             return false;

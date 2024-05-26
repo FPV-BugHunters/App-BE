@@ -10,6 +10,8 @@ import { blue } from '@mui/material/colors';
 import { getSymbolsNotInWatchlist } from '../api/SymbolApi';
 import { useQuery } from '@tanstack/react-query';
 import { Style } from '@mui/icons-material';
+import ClearIcon from '@mui/icons-material/Clear';
+
 
 export interface WatchlistAddDialogProps {
     open: boolean;
@@ -67,9 +69,11 @@ export default function WatchlistAddDialog(props: WatchlistAddDialogProps) {
     return (
         <Dialog onClose={handleClose} open={open} sx={{ maxHeight: '70%', justifyContent: 'center', marginTop:10 }}>
             <Box sx={{ margin: 5, }}>
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}><ClearIcon onClick={() => handleListItemClick(null)} sx={{ cursor: 'pointer' }} /></Box>
                 <DialogTitle>Add Crypto to your Watchlist</DialogTitle>
                 <Box sx={{}}>
                     <TableContainer sx={{ maxHeight: 440 }}>
+                    
                         <Table stickyHeader aria-label="sticky table">
                             <TableHead>
                                 <TableRow>
@@ -92,29 +96,6 @@ export default function WatchlistAddDialog(props: WatchlistAddDialogProps) {
                     </TableContainer>
                 </Box>
             </Box>
-            {/* <List sx={{ pt: 0 }}>
-                {data.map((crypto) => (
-                    <ListItem disableGutters key={crypto}>
-                        <ListItemButton onClick={() => handleListItemClick(crypto)}>
-                        
-                            <ListItemText primary={crypto.id} secondary={crypto.name} />
-                        </ListItemButton>
-                    </ListItem>
-                ))}
-                <ListItem disableGutters>
-                    <ListItemButton
-                        autoFocus
-                        onClick={() => handleListItemClick('addAccount')}
-                    >
-                        <ListItemAvatar>
-                            <Avatar>
-                                <AddIcon />
-                            </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText primary="Add account" />
-                    </ListItemButton>
-                </ListItem>
-            </List> */}
         </Dialog>
     );
 }
