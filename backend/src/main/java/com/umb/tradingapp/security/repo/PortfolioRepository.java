@@ -12,7 +12,7 @@ public interface PortfolioRepository extends JpaRepository<PortfolioEntity, Long
     public Boolean existsByUserPortfolioIdAndCryptoId(Long userPortfolioId, Long cryptoId);
     public PortfolioEntity getReferenceByUserPortfolioIdAndCryptoId(Long userPortfolioId, Long cryptoId);
 
-    @Query(value = "SELECT SUM(price * amount) FROM portfolio p join crypto_quote c ON p.crypto_id = c.id WHERE p.user_portfolio_id = ?1",
+    @Query(value = "SELECT SUM(price * amount) FROM portfolio p join crypto_quotes c ON p.crypto_id = c.id WHERE p.user_portfolio_id = ?1",
     nativeQuery = true)
     public Double getTotalPrice(Long userPortfolioId);
 
