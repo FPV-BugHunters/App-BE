@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.umb.tradingapp.dto.CryptoDTO;
 import com.umb.tradingapp.dto.CryptoPriceDTO;
+import com.umb.tradingapp.dto.CryptoPriceHistoryDTO;
 import com.umb.tradingapp.dto.TransactionDTO;
 import com.umb.tradingapp.entity.CryptoEntity;
 import com.umb.tradingapp.entity.CryptoQuoteEntity;
@@ -50,7 +51,7 @@ public class UserService {
     WatchlistRepository watchlistRepo;
 
     @Autowired
-    CryptoRepository cryptoIdRepo;
+    CryptoRepository cryptoRepo;
 
     private final String BALANCE = "Balance";
 
@@ -165,7 +166,7 @@ public class UserService {
 
     public Boolean addToWatchlist(Long cryptoId, Long userId) {
         UserEntity userEntity = userRepository.getReferenceById(userId);
-        CryptoEntity cryptoIdEntity = cryptoIdRepo.getReferenceById(cryptoId);
+        CryptoEntity cryptoIdEntity = cryptoRepo.getReferenceById(cryptoId);
         WatchlistEntity entity = new WatchlistEntity();
         entity.setCrypto(cryptoIdEntity);
         entity.setUser(userEntity);
@@ -188,7 +189,7 @@ public class UserService {
 
     public List<CryptoDTO> getCryptoNotInWatchlist(Long userId) {
 
-        List<CryptoEntity> cryptoList = cryptoIdRepo.findAll();
+        List<CryptoEntity> cryptoList = cryptoRepo.findAll();
         List<WatchlistEntity> watchlist = watchlistRepo.findAllByUserId(userId);
 
         List<CryptoEntity> notInWatchlist = cryptoList.stream()
@@ -216,23 +217,36 @@ public class UserService {
 
         for (WatchlistEntity e : entityList) {
             cryptoId = e.getCrypto();
+            CryptoPriceDTO cryptoPriceDTO = new CryptoPriceDTO();
+
+            cryptoPriceDTO.setId(cryptoId.getId());
+            cryptoPriceDTO.setName(cryptoId.getName());
+            cryptoPriceDTO.setSymbol(cryptoId.getSymbol());
             cryptoQuote = cryptoQuoteRepo.findByCryptoIdOrderByLastUpdatedDesc(cryptoId.getId()).get(0);
-            dtoList.add(new CryptoPriceDTO(
-                    cryptoId.getId(),
-                    cryptoId.getName(),
-                    cryptoId.getSymbol(),
-                    cryptoId.getCmc_rank(),
-                    cryptoQuote.getPrice(),
-                    cryptoQuote.getCirculatingSupply(),
-                    cryptoQuote.getMarketCap(),
-                    cryptoQuote.getVolume24h(),
-                    cryptoQuote.getPercentChange1h(),
-                    cryptoQuote.getPercentChange24h(),
-                    cryptoQuote.getPercentChange7d(),
-                    null));
+            cryptoPriceDTO.setPriceUSD(cryptoQuote.getPrice());
+            cryptoPriceDTO.setH1(cryptoQuote.getPercentChange1h());
+            cryptoPriceDTO.setH24(cryptoQuote.getPercentChange24h());
+            cryptoPriceDTO.setD7(cryptoQuote.getPercentChange7d());
+            cryptoPriceDTO.setCirculatingSupply(cryptoQuote.getCirculatingSupply());
+            cryptoPriceDTO.setMarketCap(cryptoQuote.getMarketCap());
+            cryptoPriceDTO.setVolume(cryptoQuote.getVolume24h());
+
+            List<CryptoQuoteEntity> history = cryptoQuoteRepo.findByCryptoIdOrderByLastUpdatedAsc(cryptoId.getId());
+            if(history.size() > 0) {
+                List<CryptoPriceHistoryDTO> priceHistory = new ArrayList<>();
+                for (CryptoQuoteEntity quote : history) {
+                    CryptoPriceHistoryDTO historyDTO = new CryptoPriceHistoryDTO();
+                    historyDTO.setPriceUSD(quote.getPrice());
+                    historyDTO.setTimestamp(quote.getLastUpdated());
+                    priceHistory.add(historyDTO);
+                }
+                cryptoPriceDTO.setPriceHistoryUSD(priceHistory);
+            }
+            dtoList.add(cryptoPriceDTO);
         }
         return dtoList;
     }
+
 
     public CryptoPriceDTO getUserWatchlistItem(Long cryptoId, Long userId) {
         Optional<WatchlistEntity> optionalEntity = watchlistRepo.findByUserIdAndCryptoId(userId, cryptoId);

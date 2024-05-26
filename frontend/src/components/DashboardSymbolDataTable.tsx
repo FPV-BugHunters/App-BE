@@ -15,6 +15,7 @@ import DashboardSymbolDataTableChart from './DashboardSymbolDataTableChart';
 import { Style } from '@mui/icons-material';
 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Box } from '@mui/material';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -66,8 +67,9 @@ export default function DashboardSymbolDataTable() {
 
   return (
     <>
-      <TableContainer component={Paper} sx={{ padding: 4, borderRadius: { topLeft: 2, topRight: 1, bottomRight: 2, bottomLeft: 1 } }}>
-        <Table sx={{ minWidth: 100 }} aria-label="customized table">
+      <Box >
+      <TableContainer component={Paper} >
+        <Table  aria-label="customized table">
           <TableHead>
             <TableRow>
 
@@ -89,7 +91,6 @@ export default function DashboardSymbolDataTable() {
               <StyledTableRow key={row.name}>
                 <StyledTableCell>{row.id}</StyledTableCell>
                 <StyledTableCell>{row.name}</StyledTableCell>
-
                 <StyledTableCell>${parseFloat(row.priceUSD).toFixed(2)}</StyledTableCell>
                 <StyledTableCell>{parseFloat(row.h1).toFixed(2)}%</StyledTableCell>
                 <StyledTableCell>{parseFloat(row.h24).toFixed(2)}%</StyledTableCell>
@@ -109,7 +110,7 @@ export default function DashboardSymbolDataTable() {
         </Table>
 
       </TableContainer>
-
+      </Box>
     </>
   );
 }

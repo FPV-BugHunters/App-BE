@@ -182,8 +182,7 @@ public class UserController {
     }
 
     @GetMapping("/api/user/watchlist")
-    public List<CryptoPriceDTO> listWatchlist(HttpServletResponse response, HttpServletRequest request,
-            @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentification) {
+    public List<CryptoPriceDTO> listWatchlist(HttpServletRequest request) {
 
         UserEntity userEntity = (UserEntity) request.getAttribute("user");
         return userService.getUserWatchlist(userEntity.getId());
@@ -192,7 +191,6 @@ public class UserController {
 
     @GetMapping("/api/user/watchlist/not-in-watchlist")
     public List<CryptoDTO> getCryptoNotInWatchlist(HttpServletRequest request) {
-        System.out.println("/api/user/watchlist/not-in-watchlist/");
         
         UserEntity user = (UserEntity) request.getAttribute("user");
         return userService.getCryptoNotInWatchlist(user.getId());
@@ -201,11 +199,10 @@ public class UserController {
         
 
     @GetMapping("/api/user/watchlist/{cryptoId}")
-    public CryptoPriceDTO getCryptoFromWatchlist(@PathVariable Long cryptoId, HttpServletResponse response,
-            @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentification) {
-        Long userId = userService.getUserId(authentification);
+    public CryptoPriceDTO getCryptoFromWatchlist(@PathVariable Long cryptoId, HttpServletRequest request) {
 
-        return userService.getUserWatchlistItem(cryptoId, userId);
+        UserEntity user = (UserEntity) request.getAttribute("user");
+        return userService.getUserWatchlistItem(cryptoId, user.getId());
     }
 
     @PostMapping("/api/user/watchlist")

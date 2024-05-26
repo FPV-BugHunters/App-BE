@@ -6,6 +6,7 @@ import { styled } from '@mui/material/styles';
 import { Alert, Typography, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, tableCellClasses } from '@mui/material';
 import { Symbol, SymbolResponse } from '../types';
 import DeleteIcon from '@mui/icons-material/Delete';
+import DashboardSymbolDataTableChart from './DashboardSymbolDataTableChart';
 
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -55,14 +56,21 @@ export default function WatchlistTable({ data, isError, isLoading, isSuccess, ha
 
   return (
     <>
-      <TableContainer component={Paper} sx={{ padding: 4, borderRadius: { topLeft: 2, topRight: 1, bottomRight: 2, bottomLeft: 1 } }}>
-        <Table sx={{ minWidth: 700 }} aria-label="customized table">
+      <TableContainer component={Paper} >
+        <Table /* sx={{ minWidth: 700 }} */ aria-label="customized table">
           <TableHead >
-            {/* <TableRow sx={{ bgcolor: 'black', height:5 }}> */}
-            <TableRow sx={{ bgcolor: 'black', height: '50px' }}>
+            <TableRow /* sx={{ bgcolor: 'black', height: '50px' }} */>
 
-              <StyledTableCell >ID</StyledTableCell>
+              <StyledTableCell>ID</StyledTableCell>
               <StyledTableCell>Name</StyledTableCell>
+              <StyledTableCell>Price </StyledTableCell>
+              <StyledTableCell>1h %</StyledTableCell>
+              <StyledTableCell>24h %</StyledTableCell>
+              <StyledTableCell>7d %</StyledTableCell>
+              <StyledTableCell>Market Cap</StyledTableCell>
+              <StyledTableCell>Volume(24h)</StyledTableCell>
+              <StyledTableCell>Circulating Supply</StyledTableCell>
+              <StyledTableCell>Chart</StyledTableCell>
               <StyledTableCell></StyledTableCell>
             </TableRow>
           </TableHead>
@@ -72,9 +80,20 @@ export default function WatchlistTable({ data, isError, isLoading, isSuccess, ha
               <StyledTableRow key={row.name}>
                 <StyledTableCell>{row.id}</StyledTableCell>
                 <StyledTableCell>{row.name}</StyledTableCell>
+                <StyledTableCell>${parseFloat(row.priceUSD).toFixed(2)}</StyledTableCell>
+                <StyledTableCell>{parseFloat(row.h1).toFixed(2)}%</StyledTableCell>
+                <StyledTableCell>{parseFloat(row.h24).toFixed(2)}%</StyledTableCell>
+                <StyledTableCell>{parseFloat(row.d7).toFixed(2)}%</StyledTableCell>
+                <StyledTableCell>${parseFloat(row.marketCap).toFixed(0)}</StyledTableCell>
+                <StyledTableCell>${parseFloat(row.volume).toFixed(0)}</StyledTableCell>
+                <StyledTableCell>{parseFloat(row.circulatingSupply).toFixed(2) + ' ' + row.symbol}</StyledTableCell>
+                <StyledTableCell style={{ paddingTop:3, paddingBotton:3 }}>
+                  <DashboardSymbolDataTableChart data={row.priceHistoryUSD}></DashboardSymbolDataTableChart>
+                </StyledTableCell>
+
                 <StyledTableCell onClick={() => handleRemoveCrypto(row.id)}><DeleteIcon sx={{ color: 'white' }} /></StyledTableCell>
               </StyledTableRow>
-            ))}
+              ))}
           </TableBody>
 
         </Table>
