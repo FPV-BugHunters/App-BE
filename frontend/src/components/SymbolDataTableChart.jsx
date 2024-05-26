@@ -38,13 +38,16 @@ function SymbolDataTableChart ({ data }) {
     const maxX = Math.max(...data2.map(item => item.date));
     const minY = Math.min(...data2.map(item => item.priceUSD));
     const maxY = Math.max(...data2.map(item => item.priceUSD));
+    console.log(minX, maxX, minY, maxY)
 
     return (
         <>
             <ResponsiveContainer width={200} height={50}>
                 <LineChart data={data2}>
-                    <XAxis dataKey="date" domain={[ minX, maxX ]} hide={true} type="number" ></XAxis>
-                    <YAxis dataKey="priceUSD" domain={[ minY, maxY ]} hide={true} type="number" scale="time"></YAxis>
+                    <XAxis dataKey="date" domain={[ minX, maxX ]} hide={true} type="number" scale="time"></XAxis>
+                    <YAxis dataKey="priceUSD" domain={[ minY, maxY ]} hide={true} type="number" 
+                            tickFormatter={(value) => (value / Math.pow(10, 9)).toFixed(9)}
+                    ></YAxis>
 
                     <Tooltip position={{ x: -240 }} content={<CustomTooltip />} />
                     <Line type="monotone" isAnimationActive={false} dataKey="priceUSD" stroke="#8884d8" strokeWidth={2} dot={false} />
