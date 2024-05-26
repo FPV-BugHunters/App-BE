@@ -2,7 +2,6 @@ package com.umb.tradingapp.security.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,8 +11,10 @@ import org.springframework.stereotype.Service;
 
 import com.umb.tradingapp.entity.CryptoEntity;
 import com.umb.tradingapp.entity.CryptoQuoteEntity;
+import com.umb.tradingapp.repo.CryptoQuoteRepository;
 import com.umb.tradingapp.repo.CryptoRepository;
 import com.umb.tradingapp.security.dto.BuyTransactionDTO;
+import com.umb.tradingapp.security.dto.PortfolioDTO;
 import com.umb.tradingapp.security.dto.UserPortfolioDTO;
 import com.umb.tradingapp.security.entity.PortfolioEntity;
 import com.umb.tradingapp.security.entity.TransactionEntity;
@@ -29,6 +30,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Service
 public class UserPortfolioService {
+
+    @Autowired
+    private CryptoQuoteRepository cryptoQuoteRepo;
 
     @Autowired
     private UserPortfolioRepository userPortfolioRepo;
@@ -105,7 +109,7 @@ public class UserPortfolioService {
             portfolioEntity.setCrypto(cryptoEntity);
             portfolioEntity.setUserPortfolio(userPortfolioEntity);
         }
-        Double price = cryptoEntity.getQuotes().stream().max(Comparator.comparing(CryptoQuoteEntity::getLastUpdated)).orElse(null).getPrice();
+        Double price = cryptoQuoteRepo.findByCryptoIdOrderByLastUpdatedDesc(cryptoEntity.getId()).get(0).getPrice();
         Double totalPrice = price * dto.getAmount();
         createTransaction(dto.getAmount(), cryptoEntity, userEntity, price, totalPrice, TransactionType.BUY);
         portfolioRepo.save(portfolioEntity);
@@ -155,6 +159,34 @@ public class UserPortfolioService {
 
         transactionRepo.save(transactionEntity);
         
+    }
+
+    public Iterable<PortfolioDTO> listPortfolio(Long userPortfolioId) {
+        List<PortfolioEntity> listEntity = portfolioRepo.findByUserPortfolioId(userPortfolioId);
+        List<PortfolioDTO> listDto = new ArrayList<>();
+        CryptoEntity idEntity;
+        CryptoQuoteEntity quoteEntity;
+        for (PortfolioEntity e : listEntity) {
+            idEntity = e.getCrypto();
+            quoteEntity = cryptoQuoteRepo.findByCryptoIdOrderByLastUpdatedDesc(idEntity.getId()).get(0);
+            Double totalPrice = e.getTotalPrice();
+            listDto.add(new PortfolioDTO(
+                idEntity.getId(),
+                idEntity.getCmc_rank(),
+                idEntity.getName(),
+                idEntity.getSlug(),
+                totalPrice,
+                quoteEntity.getPrice(),
+                quoteEntity.getCirculatingSupply(),
+                quoteEntity.getMarketCap(),
+                quoteEntity.getVolume24h(),
+                e.getAmount(),
+                quoteEntity.getPercentChange1h(),
+                quoteEntity.getPercentChange24h(),
+                quoteEntity.getPercentChange7d()
+            ));
+        }
+        return listDto;
     }
 
 }

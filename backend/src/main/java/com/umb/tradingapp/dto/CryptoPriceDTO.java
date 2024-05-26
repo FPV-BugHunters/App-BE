@@ -13,7 +13,7 @@ public class CryptoPriceDTO {
     private Long id;
     private String name;
     private String symbol;
-    private Integer rank;
+    private int rank;
     private Double priceUSD;
     private Double circulatingSupply;
     private Double marketCap;

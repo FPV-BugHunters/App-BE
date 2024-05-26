@@ -1,7 +1,6 @@
 package com.umb.tradingapp.config;
 
 import com.umb.tradingapp.dto.ListingLatestDTO;
-import com.umb.tradingapp.service.CryptoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
