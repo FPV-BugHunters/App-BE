@@ -1,6 +1,6 @@
-package com.umb.tradingapp.security.entity;
+package com.umb.tradingapp.entity;
 
-import com.umb.tradingapp.entity.CryptoEntity;
+import com.umb.tradingapp.security.entity.UserEntity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

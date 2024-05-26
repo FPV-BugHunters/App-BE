@@ -1,6 +1,8 @@
-package com.umb.tradingapp.security.entity;
+package com.umb.tradingapp.entity;
 
 import java.util.Set;
+
+import com.umb.tradingapp.security.entity.UserEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

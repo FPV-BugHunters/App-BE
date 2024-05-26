@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.ManyToMany;
 import java.util.Set;
 
+import com.umb.tradingapp.entity.UserPortfolioEntity;
+
 @Entity(name = "users")
 @Data
 @NoArgsConstructor

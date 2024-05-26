@@ -1,6 +1,6 @@
 package com.umb.tradingapp.security.service;
 
-import com.umb.tradingapp.security.dto.RegisterUserDTO;
+import com.umb.tradingapp.dto.RegisterUserDTO;
 import com.umb.tradingapp.security.entity.RoleEntity;
 import com.umb.tradingapp.security.entity.UserEntity;
 import com.umb.tradingapp.security.repo.RoleRepository;

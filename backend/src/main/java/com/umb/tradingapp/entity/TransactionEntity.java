@@ -1,8 +1,8 @@
-package com.umb.tradingapp.security.entity;
+package com.umb.tradingapp.entity;
 
 import java.time.LocalDateTime;
 
-import com.umb.tradingapp.entity.CryptoEntity;
+import com.umb.tradingapp.security.entity.UserEntity;
 import com.umb.tradingapp.type.TransactionType;
 
 import jakarta.persistence.Column;

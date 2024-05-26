@@ -1,9 +1,6 @@
-package com.umb.tradingapp.security.entity;
+package com.umb.tradingapp.entity;
 
 import java.util.Comparator;
-
-import com.umb.tradingapp.entity.CryptoEntity;
-import com.umb.tradingapp.entity.CryptoQuoteEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
