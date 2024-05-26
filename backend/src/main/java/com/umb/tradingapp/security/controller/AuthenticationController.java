@@ -92,6 +92,9 @@ public class AuthenticationController {
 
 
     })
+    
+
+    
     @DeleteMapping("/api/logout") // funguje
     public void logout(@Parameter(description = "User's authorization token (Bearer token), (swagger-ui, hore zamok na endpointe treba pouzit)")
                            @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentication, HttpServletResponse response) {
