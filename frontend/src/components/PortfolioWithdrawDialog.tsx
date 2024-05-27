@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles';
 import {
     Dialog, DialogTitle, List, ListItem, ListItemButton, ListItemAvatar, Avatar, Autocomplete,
     ListItemText, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, tableCellClasses, Button, Grid, TextField,
-    Typography,
+    Typography, Alert,
     Input
 } from '@mui/material';
 import { withdrawBalance } from '../api/SymbolApi';
@@ -22,6 +22,7 @@ export interface PortfolioWithdrawDialogProps {
 export default function PortfolioWithdrawDialog(props: PortfolioWithdrawDialogProps) {
 
     const { onClose, open, type, selectedPortfolio, balance } = props;
+    const [notificationSellError, setNotificationSellError] = React.useState(false);
 
     const handleClose = () => {
         onClose();
@@ -30,9 +31,17 @@ export default function PortfolioWithdrawDialog(props: PortfolioWithdrawDialogPr
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
-        withdrawBalance(Number(formData.get('amount')))
-        handleClose();
+        withdrawBalance(Number(formData.get('amount'))).then(() => {
+            handleClose();
+        }).catch((error) => {
+            console.log(error);
+            setNotificationSellError(true);
+        });
     };
+    React.useEffect(() => {
+        setNotificationSellError(false);
+    }, [open]);
+
 
 
     return (
@@ -46,6 +55,8 @@ export default function PortfolioWithdrawDialog(props: PortfolioWithdrawDialogPr
                     <TextField type="number" margin="normal" label="Amount" name="amount"> </TextField>
 
                     <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }} >Buy</Button>
+
+                    {notificationSellError && <Alert severity="error">An error occurred</Alert>}
                 </Box>
             </Box>
         </Dialog>
