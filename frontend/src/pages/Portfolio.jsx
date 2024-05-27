@@ -28,9 +28,6 @@ export default function Portfolio () {
     const [ createWithdrawDialogOpen, setCreateWithdrawDialogOpen ] = React.useState(false);
     
     // const [ portfolioValue, setPortfolioValue ] = React.useState(0);
-    
-
-
 
     // list user portfolios
     const { data: listuserPortfolioData, refetch:listUserPortfolioRefetch } = useQuery({
@@ -98,9 +95,6 @@ export default function Portfolio () {
             console.log(balanceHistory)
         }, 300);
     }
-    
-
-
 
     React.useEffect(() => {
         if (listuserPortfolioData && listuserPortfolioData.length > 0) {
@@ -108,9 +102,6 @@ export default function Portfolio () {
             refresh();
         }
     }, [ listuserPortfolioData ]);
-
-
-
 
 
     const handleSelectPortfolio = (e) => {
@@ -140,11 +131,11 @@ export default function Portfolio () {
                             ))}
                         </Select>
                     </FormControl>
-                    <Button viariant="contained" color="primary" onClick={() => setCreatePortfolioDialogOpen(true)} sx={{ bgcolor: theme.palette.primary.main, color: 'white' }}>Create portfolio</Button>
-                    <PortfolioCreateDialog open={createPorfolioDialogOpen} onClose={() => setCreatePortfolioDialogOpen(false)} ></PortfolioCreateDialog>
+                    <Button viariant="contained" color="primary" onClick={() => { setCreatePortfolioDialogOpen(true); refresh();}} sx={{ bgcolor: theme.palette.primary.main, color: 'white' }}>Create portfolio</Button>
+                    <PortfolioCreateDialog open={createPorfolioDialogOpen} onClose={() => { setCreatePortfolioDialogOpen(false); refresh(); }} ></PortfolioCreateDialog>
                     <PortfolioCreateBuyTransactionDialog
                         selectedPortfolio={selectedPortfolio}
-                        open={createBuyTransactionDialogOpen} onClose={() => {setCreateBuyTransactionDialogOpen(false) ; refresh();}}
+                        open={createBuyTransactionDialogOpen} onClose={() => {setCreateBuyTransactionDialogOpen(false); refresh();}}
                         balance={balance}
                     ></PortfolioCreateBuyTransactionDialog>
                     <PortfolioCreateSellTransactionDialog
