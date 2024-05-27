@@ -12,4 +12,8 @@ import com.umb.tradingapp.entity.PortfolioValueHistoryEntity;
 @Repository
 public interface PortfolioValueHistoryRepository  extends JpaRepository<PortfolioValueHistoryEntity, Long> {
     List<PortfolioValueHistoryEntity> findByUserIdOrderByDateTimeAsc(Long userId);
+    List<PortfolioValueHistoryEntity> findByUserPortfolioIdOrderByDateTimeDesc(Long userPortfolioId);
 }
+
+
+

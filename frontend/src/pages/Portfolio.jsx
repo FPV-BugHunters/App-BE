@@ -4,8 +4,7 @@ import {
     Button, Container, Grid, Paper, Box, useTheme,
     FormControl, InputLabel, Select, MenuItem, Alert, Typography
 } from '@mui/material';
-import WatchlistAddDialog from '../components/WatchlistAddDialog';
-import { listUserPortfolio, getBalance, listPortfolio, getTransactionByPortfolioId, getBalanceHistory, getPortfolioValueHistory } from '../api/SymbolApi';
+import { listUserPortfolio, getBalance, listPortfolio, getTransactionByPortfolioId, getBalanceHistory, getPortfolioValueHistory,  getPortfolioValue } from '../api/SymbolApi';
 import { useQuery } from '@tanstack/react-query';
 import PortfolioCreateDialog from '../components/PortfolioCreateDialog';
 import PortfolioCreateSellTransactionDialog from '../components/PortfolioCreateSellTransactionDialog';
@@ -27,6 +26,10 @@ export default function Portfolio () {
     
     const [ createDepositDialogOpen, setCreateDepositDialogOpen ] = React.useState(false);
     const [ createWithdrawDialogOpen, setCreateWithdrawDialogOpen ] = React.useState(false);
+    
+    // const [ portfolioValue, setPortfolioValue ] = React.useState(0);
+    
+
 
 
     // list user portfolios
@@ -71,6 +74,15 @@ export default function Portfolio () {
             return isNaN(portfolioId) ? Promise.resolve(null) : getPortfolioValueHistory(portfolioId);
         }
     });
+
+    const { data: portfolioValueData, refetch: portfolioValueRefetch } = useQuery({
+        queryKey: [ "portfolioValue" ],
+        queryFn: () => {
+            if (!selectedPortfolio || selectedPortfolio === '' || selectedPortfolio == 0 ) return Promise.resolve(null);
+            const portfolioId = Number(selectedPortfolio);
+            return isNaN(portfolioId) ? Promise.resolve(null) : getPortfolioValue(portfolioId);
+        }
+    });
     
 // getPortfolioValueHistory
     
@@ -82,6 +94,7 @@ export default function Portfolio () {
             transactionsRefetch();
             balanceHistoryRefetch();
             portfolioValueHistoryRefetch();
+            portfolioValueRefetch();
             console.log(balanceHistory)
         }, 300);
     }
@@ -151,7 +164,7 @@ export default function Portfolio () {
 
                     <Grid item xs={12} md={8} lg={6}>
                         <Paper sx={{ p: 2, display: 'flex', flexDirection:'column', height: 240, }} >
-                            <Typography variant="h6" component="h2" gutterBottom>Total Portfolio Value:</Typography>
+                            <Typography variant="h6" component="h2" gutterBottom>Total Portfolio Value:  ${portfolioValueData?.value?.toFixed(2)}</Typography>
                             <PortfolioValueHistoryChart data={portfolioValueHistory}></PortfolioValueHistoryChart>
                         </Paper>
                     </Grid>

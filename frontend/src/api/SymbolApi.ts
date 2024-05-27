@@ -105,7 +105,11 @@ export const depositBalance = (amount: number): Promise<boolean> => {
     .catch(error => { throw error; });
 }
 
-
+export const getPortfolioValue = (portfolioId: number): Promise<PortfolioValueHistory> => {
+  return axios.get(`${import.meta.env.VITE_API_URL}/api/user/portfolio-value-history/${portfolioId}`, getAxiosConfig())
+    .then(response => response.data)
+    .catch(error => { throw error; });
+}
 
 
 

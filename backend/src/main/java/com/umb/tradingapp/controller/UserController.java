@@ -222,6 +222,13 @@ public class UserController {
 
         return portfolioValueHistory.getPortfolioValueHistory(user.getId(), portfolioId);
     }
+    
+
+    @GetMapping("/api/user/portfolio-value-history/{portfolioId}")
+    public PortfolioValueHistoryDTO getPortfolioValue(@PathVariable Long portfolioId, HttpServletRequest request) {
+        UserEntity user = (UserEntity) request.getAttribute("user");
+        return portfolioValueHistory.getPortfolioValue(portfolioId, user.getId());
+    }
 
         
 

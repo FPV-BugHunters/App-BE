@@ -12,6 +12,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sound.sampled.Port;
+
 import com.umb.tradingapp.dto.BalanceHistoryDTO;
 import com.umb.tradingapp.dto.ListingLatestCryptoDataDTO;
 import com.umb.tradingapp.dto.ListingLatestDTO;
@@ -94,11 +96,12 @@ public class PortfolioValueHistoryService {
     }
     
     public List<PortfolioValueHistoryDTO> getPortfolioValueHistory(Long userId, Long userPortfolioId) {
+        
         List<PortfolioValueHistoryDTO> portfolioValueHistoryDTO = new ArrayList<>();
         Pageable pageable = PageRequest.of(0, 100, Sort.by(Sort.Direction.DESC, "dateTime"));
         List<PortfolioValueHistoryEntity> portfolioValueHistory = portfolioValueHistoryRepo .findAll(pageable).getContent();
         for (PortfolioValueHistoryEntity portfolio : portfolioValueHistory) {
-            if (portfolio.getUserPortfolio().getId() == userPortfolioId) {
+            if (portfolio.getUserPortfolio().getId() == userPortfolioId && portfolio.getUserPortfolio().getUser().getId() == userId) {
                 PortfolioValueHistoryDTO portfolioDTO = new PortfolioValueHistoryDTO();
                 portfolioDTO.setId(portfolio.getId());
                 portfolioDTO.setValue(portfolio.getValue());
@@ -107,6 +110,25 @@ public class PortfolioValueHistoryService {
             }
         }
         return portfolioValueHistoryDTO;
+    }
+    
+
+    public PortfolioValueHistoryDTO getPortfolioValue(Long userPortfolioId, Long userId) {
+        PortfolioValueHistoryEntity portfolioValueHistory = portfolioValueHistoryRepo .findByUserPortfolioIdOrderByDateTimeDesc(userPortfolioId).get(0);
+        
+        // if(portfolioValueHistory == null) {
+        //     return null;
+        // }
+
+        // if (portfolioValueHistory.getUserPortfolio().getUser().getId() != userPortfolioId) {
+        //     return null;
+        // }
+        
+        PortfolioValueHistoryDTO dto = new PortfolioValueHistoryDTO();
+        dto.setId(portfolioValueHistory.getId());
+        dto.setValue(portfolioValueHistory.getValue());
+        dto.setDateTime(portfolioValueHistory.getDateTime());
+        return dto;
     }
 
 }
