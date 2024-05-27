@@ -91,7 +91,20 @@ public class BalanceHistoryService {
         return balanceHistoryDTO;
     }
 
-
-
+    @Transactional
+    public void removeOldBalanceHistory() {
+        
+        Number size = 300;
+        List<UserEntity> users = userRepo.findAll();
+        for (UserEntity user : users) {
+            List<BalanceHistoryEntity> balanceHistory = balanceHistoryRepo.findByUserIdOrderByDateTimeAsc(user.getId());
+            if (balanceHistory.size() > size.intValue()) {
+                for (int i = 0; i < balanceHistory.size() - size.intValue(); i++) {
+                    balanceHistoryRepo.delete(balanceHistory.get(i));
+                    System.out.println("Deleted balance history: " + balanceHistory.get(i).getId());
+                }
+            }
+        }
+    }
 
 }

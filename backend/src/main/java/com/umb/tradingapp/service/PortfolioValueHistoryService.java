@@ -126,5 +126,25 @@ public class PortfolioValueHistoryService {
         dto.setDateTime(portfolioValueHistory.getDateTime());
         return dto;
     }
+    
+
+
+    @Transactional
+    public void removeOldPortfolioValues() {
+        
+        List<UserPortfolioEntity> userPortfolios = userPortfolioRepo.findAll();
+        System.out.println("User Portfolio size: " + userPortfolios.size());
+        
+        for(UserPortfolioEntity userPortfolio : userPortfolios) {
+            List<PortfolioValueHistoryEntity> portfolioValues = portfolioValueHistoryRepo.findByUserPortfolioIdOrderByDateTimeDesc(userPortfolio.getId());
+            System.out.println("Portfolio Values size: " + portfolioValues.size());
+            for (int i = 0; i < portfolioValues.size(); i++) {
+                if (i > 300) {
+                    System.out.println("Deleting: " + portfolioValues.get(i).getId());
+                    portfolioValueHistoryRepo.delete(portfolioValues.get(i));
+                }
+            }
+        }
+    }
 
 }

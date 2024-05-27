@@ -121,20 +121,18 @@ public class ListingLatest {
     }
 
 
-    @Transactional
-    public void removeOldQuotes() {
-        // TODO
-        
-        // List<CryptoEntity> cryptos = cryptoRepo.findAll();
-        // for (CryptoEntity crypto : cryptos) {
-        //     List<CryptoQuoteEntity> quotes = cryptoQuoteRepo.findByCryptoIdOrderByLastUpdatedDesc(crypto.getId());
 
-        //     for (int i = 0; i < quotes.size(); i++) {
-        //         if (i > 100) {
-        //             cryptoQuoteRepo.delete(quotes.get(i));
-        //             System.out.println("Quote deleted: " + quotes.get(i).getId());
-        //         }
-        //     }
-        // }
+    public void removeOldQuotes() {
+        
+        List<CryptoEntity> cryptos = cryptoRepo.findAll();
+        for (CryptoEntity crypto : cryptos) {
+            List<CryptoQuoteEntity> quotes = cryptoQuoteRepo.findByCryptoIdOrderByLastUpdatedDesc(crypto.getId());
+
+            for (int i = 0; i < quotes.size(); i++) {
+                if (i > 300) {
+                    cryptoQuoteRepo.delete(quotes.get(i));
+                }
+            }
+        }
     }
 }

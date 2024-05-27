@@ -40,7 +40,7 @@ public class CryptoQuoteEntity {
     private Date lastUpdated;
     
     
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "crypto_id", referencedColumnName = "id")
     private CryptoEntity crypto;
 

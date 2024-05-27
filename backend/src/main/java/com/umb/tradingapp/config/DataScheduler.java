@@ -37,8 +37,10 @@ public class DataScheduler {
         listingLatest.removeOldQuotes();
 
         balanceHistory.saveBalance();
+        balanceHistory.removeOldBalanceHistory();
         
         portfolioValueHistoryService.savePortfolioValue();
+        portfolioValueHistoryService.removeOldPortfolioValues();
         
 
         
