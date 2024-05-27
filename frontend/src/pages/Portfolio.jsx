@@ -38,7 +38,7 @@ export default function Portfolio () {
         queryFn: listUserPortfolio
     });
 
-    const { data:listPortfolioData, refetch: listPortfolioRefetch  } = useQuery({
+    const { data: listPortfolioData, refetch: listPortfolioRefetch  } = useQuery({
         queryKey: [ "portfolio" ],
         queryFn: () => {
             if(!selectedPortfolio || selectedPortfolio === ''|| selectedPortfolio == 0) return Promise.resolve(null);
@@ -150,6 +150,7 @@ export default function Portfolio () {
                     <PortfolioCreateSellTransactionDialog
                         selectedPortfolio={selectedPortfolio}
                         balance={balance}
+                        listPortfolioData={listPortfolioData}
                         open={createSellTransactionDialogOpen} onClose={() => { setCreateSellTransactionDialogOpen(false); refresh();}}
                     ></PortfolioCreateSellTransactionDialog>
                     <PortfolioDepositDialog open={createDepositDialogOpen} onClose={() => { setCreateDepositDialogOpen(false); refresh(); }} balance={balance} ></PortfolioDepositDialog>
@@ -185,7 +186,7 @@ export default function Portfolio () {
 
                     <Grid item xs={12} md={12} lg={12}>
                         <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', maxHeight: 800, }} >
-                            <Typography variant="h6" component="h2" gutterBottom>Transakcions:</Typography>
+                            <Typography variant="h6" component="h2" gutterBottom>Transactions: </Typography>
                             <PortfolioShowTransactions selectedPortfolio={selectedPortfolio} transactions={transactions}></PortfolioShowTransactions>
                             {/* <PortfolioShowTable selectedPortfolio={selectedPortfolio} ></PortfolioShowTable> */}
                         </Paper>

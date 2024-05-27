@@ -4,6 +4,7 @@ import axios from 'axios';
 import { BalanceHistory, PortfolioValueHistory, SymbolResponse, UserPortfolio } from '../types';
 import { BalanceHistoryDTO } from '../types';
 import { PortfolioValueHistory} from '../types';
+import { Portfolio } from '../types';
 
 
 export const getSymbols = (): Promise<SymbolResponse[]> => {
@@ -49,7 +50,7 @@ export const createUserPortfolio = (name: string): Promise<boolean> => {
 }
 
 
-export const listPortfolio = (userPortfolioId: number): Promise<UserPortfolio[]> => { 
+export const listPortfolio = (userPortfolioId: number): Promise<Portfolio[]> => { 
   return axios.get(`${import.meta.env.VITE_API_URL}/api/user/user-portfolio/${userPortfolioId}`, getAxiosConfig())
     .then(response => response.data)
     .catch(error => { throw error; });

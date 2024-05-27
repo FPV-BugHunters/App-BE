@@ -9,6 +9,7 @@ import {
 
 import { sellTransaction, buyTransaction, getSymbols } from '../api/SymbolApi';
 import { useQuery } from '@tanstack/react-query';
+import { Portfolio } from '../types';
 
 export interface PortfolioCreateTransactionDialogProps {
     type: string;
@@ -16,6 +17,7 @@ export interface PortfolioCreateTransactionDialogProps {
     onClose: () => void;
     selectedPortfolio: number;
     balance: number;
+    listPortfolioData: Portfolio[];
 }
 
 type CryptoList = {
@@ -23,11 +25,13 @@ type CryptoList = {
     symbol: string;
     label: string;
     priceUSD: number;
+    totalPrice: number;
+    amount: number;
 }
 
 export default function PortfolioCreateSellTransactionDialog(props: PortfolioCreateTransactionDialogProps) {
 
-    const { onClose, open, type, selectedPortfolio, balance } = props;
+    const { onClose, open, type, selectedPortfolio, balance, listPortfolioData} = props;
     const [cryptoList2, setCryptoList2] = React.useState<CryptoList[]>([]);
     const [selectedCrypto, setSelectedCrypto] = React.useState<CryptoList | null>(null);
     const [availableAmount, setAvailableAmount] = React.useState<number>(0);
@@ -45,16 +49,17 @@ export default function PortfolioCreateSellTransactionDialog(props: PortfolioCre
     };
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
 
-        if (type === "buy" && selectedCrypto && amount) {
+        if (selectedCrypto && amount) {
             const data = {
                 id: selectedCrypto.id,
                 amount: Number(formData.get("amount")),
                 portfolio: selectedPortfolio
             };
-            buyTransaction(data.id, data.portfolio, data.amount).then(() => {
+            sellTransaction(data.id, data.portfolio, data.amount).then(() => {
                 console.log("buy success");
                 onClose();
             }).then(() => {
@@ -64,41 +69,33 @@ export default function PortfolioCreateSellTransactionDialog(props: PortfolioCre
         }
     };
 
-    const { data: cryptoList, isError, isLoading, isSuccess } = useQuery({
-        queryKey: ["symbol2"],
-        queryFn: getSymbols
-    });
 
     const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(event.target.value);
         const value = parseFloat(event.target.value);
-        console.log('handleAmountChange', value);   
         if ((value >= 0 && value <= availableAmount) || event.target.value == "") {
-            
             setAmount(event.target.value)
         }
 
-        // if (value >= 0 && value <= availableAmount) {
-        //     setAmount(value.toString());
-        // }
     }
 
     React.useEffect(() => {
-        if (cryptoList) {
-            const newCryptoList2 = cryptoList.map((crypto) => ({
-                id: crypto.id,
-                symbol: crypto.symbol,
-                label: crypto.symbol,
-                priceUSD: crypto.priceUSD
+        if (listPortfolioData) {
+            const newPortfolio = listPortfolioData.map((crypto) => ({
+                id: crypto.cryptoId,
+                symbol: crypto.slug,
+                label: crypto.name + " - Total price $" + (crypto.totalPrice && crypto.totalPrice.toFixed(2)) + " - Amount " + crypto.amount,
+                priceUSD: crypto.price,
+                totalPrice: crypto.totalPrice,
+                amount: crypto.amount
             }));
-            setCryptoList2(newCryptoList2);
+            setCryptoList2(newPortfolio);
         }
-    }, [cryptoList]);
+    }, [listPortfolioData ]);
 
 
     const setCrypo = (event: React.ChangeEvent<HTMLInputElement>, value) => {
         setSelectedCrypto(value);
-        const availableAmount2 = (balance / value.priceUSD) * 0.99;
+        const availableAmount2 = value.amount * 0.99;
         setAvailableAmount(availableAmount2);
         availableAmount2 && setAmount(availableAmount2.toFixed(2));
     }
@@ -110,7 +107,7 @@ export default function PortfolioCreateSellTransactionDialog(props: PortfolioCre
         <Dialog onClose={handleClose} open={open} sx={{ maxHeight: '70%', justifyContent: 'center', marginTop: 10 }}>
             <Box sx={{ margin: 5, }}>
                 <Typography variant="h4" component="div">Sell Crypto</Typography>
-                <Typography variant="h6" component="div" sx={{marginTop:"10px"}}>{balance && "Balance: $" + balance.toFixed(2)}</Typography>
+                {/* <Typography variant="h6" component="div" sx={{marginTop:"10px"}}>{balance && "Balance: $" + balance.toFixed(2)}</Typography> */}
 
                 <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
                     <Autocomplete

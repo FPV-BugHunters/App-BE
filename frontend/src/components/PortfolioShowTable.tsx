@@ -75,8 +75,10 @@ export default function PortfolioShowTable(props: PortfolioShowTableProps) {
               <StyledTableCell>Name</StyledTableCell>
               <StyledTableCell>Amount </StyledTableCell>
               <StyledTableCell>Price </StyledTableCell>
+              <StyledTableCell>Total Price</StyledTableCell>
               <StyledTableCell>Market Cap</StyledTableCell>
               <StyledTableCell>Volume(24h)</StyledTableCell>
+
               {/* <StyledTableCell>Chart</StyledTableCell> */}
             </TableRow>
           </TableHead>
@@ -89,6 +91,7 @@ export default function PortfolioShowTable(props: PortfolioShowTableProps) {
                     <StyledTableCell>{row.name}</StyledTableCell>
                     <StyledTableCell>{row.amount.toFixed(2)}</StyledTableCell>
                     <StyledTableCell>{row.price.toFixed(2)}</StyledTableCell>
+                    <StyledTableCell>{row.totalPrice.toFixed(2)}</StyledTableCell>
                     <StyledTableCell>{row.marketCap.toFixed(2)}</StyledTableCell>
                     <StyledTableCell>{row.volume.toFixed(2)}</StyledTableCell>
                     {/* <StyledTableCell><DashboardSymbolDataTableChart cryptoId={row.cryptoId} /></StyledTableCell> */}

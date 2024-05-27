@@ -144,13 +144,13 @@ public class UserController {
     }
 
     @PostMapping("/api/user/transaction/sell")
-    public Boolean sellTransaction(BuyTransactionDTO dto, HttpServletResponse response,
-            @RequestHeader(value = AUTHORIZATION_HEADER, required = false) Optional<String> authentification) {
+    public Boolean sellTransaction(@RequestBody BuyTransactionDTO dto, HttpServletResponse response, HttpServletRequest request) {
+        UserEntity user = (UserEntity) request.getAttribute("user");
+        Long userId = user.getId();
+        System.out.println("User ID: " + dto + " " + userId);
         if (!userService.checkDtoExists(dto, response))
             return null;
-        Long userId = userService.getUserId(authentification);
         Double totalPrice;
-
         if (!cryptoService.checkCryptoExists(dto.getCryptoId(), response))
             return false;
 
