@@ -106,8 +106,8 @@ export default function PortfolioShowTransactions(props: PortfolioShowTransactio
                   <TableRow hover role="checkbox" tabIndex={-1} key={row.cryptoId}>
                     <StyledTableCell>{row.id}</StyledTableCell>
                     <StyledTableCell>{row.amount}</StyledTableCell>
-                    <StyledTableCell>{row.pricePerUnit.toFixed(2)}</StyledTableCell>
                     <StyledTableCell>{row.totalPrice.toFixed(2)}</StyledTableCell>
+                    <StyledTableCell>{row.pricePerUnit.toFixed(2)}</StyledTableCell>
                     <StyledTableCell>{row.cryptoName}</StyledTableCell>
                     <StyledTableCell>{row.cryptoSymbol}</StyledTableCell>
                     <StyledTableCell>{row.type}</StyledTableCell>
