@@ -69,8 +69,8 @@ export default function WatchlistAddDialog(props: WatchlistAddDialogProps) {
     return (
         <Dialog onClose={handleClose} open={open} sx={{ maxHeight: '70%', justifyContent: 'center', marginTop:10 }}>
             <Box sx={{ margin: 5, }}>
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}><ClearIcon onClick={() => handleListItemClick(null)} sx={{ cursor: 'pointer' }} /></Box>
-                <DialogTitle>Add Crypto to your Watchlist</DialogTitle>
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}> <DialogTitle>Add Crypto to your Watchlist</DialogTitle> <ClearIcon onClick={() => handleListItemClick(null)} sx={{ cursor: 'pointer' }} /></Box>
+                
                 <Box sx={{}}>
                     <TableContainer sx={{ maxHeight: 440 }}>
                     

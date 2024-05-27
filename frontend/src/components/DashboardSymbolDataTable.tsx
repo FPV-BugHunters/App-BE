@@ -72,7 +72,7 @@ export default function DashboardSymbolDataTable() {
           <TableHead>
             <TableRow>
 
-              <StyledTableCell>ID</StyledTableCell>
+              {/* <StyledTableCell>ID</StyledTableCell> */}
               <StyledTableCell>Name</StyledTableCell>
               <StyledTableCell>Price </StyledTableCell>
               <StyledTableCell>1h %</StyledTableCell>
@@ -88,7 +88,7 @@ export default function DashboardSymbolDataTable() {
           <TableBody>
             {data && data.map((row) => (
               <StyledTableRow key={row.name}>
-                <StyledTableCell>{row.id}</StyledTableCell>
+                {/* <StyledTableCell>{row.id}</StyledTableCell> */}
                 <StyledTableCell>{row.name}</StyledTableCell>
                 <StyledTableCell>${parseFloat(row.priceUSD).toFixed(2)}</StyledTableCell>
                 <StyledTableCell>{parseFloat(row.h1).toFixed(2)}%</StyledTableCell>

@@ -72,12 +72,12 @@ export default function Portfolio () {
     const refresh = async () => {
 
         console.log('refresh');
-        await listUserPortfolioRefetch();
-        await balanceRefetch(); 
-        await listPortfolioRefetch();
-        await transactionsRefetch();
-        await balanceHistoryRefetch();
-        await portfolioValueHistoryRefetch();
+        listUserPortfolioRefetch();
+        balanceRefetch(); 
+        listPortfolioRefetch();
+        transactionsRefetch();
+        balanceHistoryRefetch();
+        portfolioValueHistoryRefetch();
         console.log(balanceHistory)
     }
     

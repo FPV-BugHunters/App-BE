@@ -5,7 +5,7 @@ import { Button, Container, Grid, Paper, Box } from '@mui/material';
 export default function Home(){
     return (
         <div>
-            <Container  maxWidth="lg" sx={{ mt: 10, mb: 4,  }}>
+            <Container  maxWidth="lg"  sx={{ mt: 4, mb: 4,  }} >
                 <DashboardSymbolDataTable />
             </Container>
         </div>

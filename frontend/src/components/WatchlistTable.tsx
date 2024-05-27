@@ -61,7 +61,7 @@ export default function WatchlistTable({ data, isError, isLoading, isSuccess, ha
           <TableHead >
             <TableRow /* sx={{ bgcolor: 'black', height: '50px' }} */>
 
-              <StyledTableCell>ID</StyledTableCell>
+              {/* <StyledTableCell>ID</StyledTableCell> */}
               <StyledTableCell>Name</StyledTableCell>
               <StyledTableCell>Price </StyledTableCell>
               <StyledTableCell>1h %</StyledTableCell>
@@ -78,7 +78,7 @@ export default function WatchlistTable({ data, isError, isLoading, isSuccess, ha
           <TableBody>
             {data && data.map((row) => (
               <StyledTableRow key={row.name}>
-                <StyledTableCell>{row.id}</StyledTableCell>
+                {/* <StyledTableCell>{row.id}</StyledTableCell> */}
                 <StyledTableCell>{row.name}</StyledTableCell>
                 <StyledTableCell>${parseFloat(row.priceUSD).toFixed(2)}</StyledTableCell>
                 <StyledTableCell>{parseFloat(row.h1).toFixed(2)}%</StyledTableCell>
