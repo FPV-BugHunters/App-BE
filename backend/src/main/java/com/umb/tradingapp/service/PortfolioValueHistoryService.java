@@ -118,7 +118,7 @@ public class PortfolioValueHistoryService {
         PortfolioValueHistoryEntity portfolioValueHistory = portfolioValueHistoryRepo .findByUserPortfolioIdOrderByDateTimeDesc(userPortfolioId).get(0);
         
          if (portfolioValueHistory == null) {
-            throw new NoSuchElementException("No PortfolioValue found with id " + id);
+            throw new NoSuchElementException("No PortfolioValue found with id " + userPortfolioId);
         }
         PortfolioValueHistoryDTO dto = new PortfolioValueHistoryDTO();
         dto.setId(portfolioValueHistory.getId());
