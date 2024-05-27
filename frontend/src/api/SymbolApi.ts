@@ -73,4 +73,10 @@ export const getBalance = (): Promise<number> => {
     .catch(error => { throw error; });
 }
 
+export const getTransactionByPortfolioId = (userPortfolioId: number): Promise<UserPortfolio[]> => {
+  return axios.get(`${import.meta.env.VITE_API_URL}/api/user/user-transactions/portfolio/${userPortfolioId}`, getAxiosConfig())
+    .then(response => response.data)
+    .catch(error => { throw error; });
+}
+
 

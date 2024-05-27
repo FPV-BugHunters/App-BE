@@ -2,6 +2,7 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'rec
 import moment from 'moment';
 import PropTypes from 'prop-types';
 
+import {useTheme} from '@mui/material/styles';
 CustomTooltip.propTypes = {
     payload: PropTypes.array,
     label: PropTypes.string,
@@ -9,11 +10,13 @@ CustomTooltip.propTypes = {
 };
 
 function CustomTooltip ({ payload, label, active }) {
+
+    const theme = useTheme();
     if (active && payload && payload.length) {
         return (
-            <div className="custom-tooltip" style={{ backgroundColor: "#3f51b5", borderRadius: '10px', border: '1px solid white', padding: '0px 25px',  }}>
+            <div className="custom-tooltip" style={{ backgroundColor: theme.palette.primary.dark, borderRadius: '10px', border: '1px solid white', padding: '0px 25px',  }}>
                 <p className="label">{`Date: ${moment(label).format("DD.MM.YYYY HH:mm")}`}</p>
-                <p className="intro">{`Price: ${payload[ 0 ].value}`}</p>
+                <p className="intro">{`Price: $${payload[ 0 ].value}`}</p>
             </div>
         );
     }
@@ -26,7 +29,7 @@ DashboardSymbolDataTableChart.propTypes = {
 };
 
 function DashboardSymbolDataTableChart ({ data }) {
-
+    const theme = useTheme();
     const data2 = data.map(item => ({
         date: new Date(item.timestamp),
         priceUSD: item.priceUSD
@@ -48,7 +51,7 @@ function DashboardSymbolDataTableChart ({ data }) {
                     ></YAxis>
 
                     <Tooltip position={{ x: -240 }} content={<CustomTooltip />} />
-                    <Line type="monotone" isAnimationActive={false} dataKey="priceUSD" stroke="#8884d8" strokeWidth={2} dot={false} />
+                    <Line type="monotone" isAnimationActive={false} dataKey="priceUSD" stroke="white" strokeWidth={2} dot={false} />
                 </LineChart>
             </ResponsiveContainer>
         </>

@@ -51,8 +51,8 @@ public class ListingLatest {
         parameters.add(new BasicNameValuePair("limit", "100"));
 
         try {
-            StringBuffer response = apiCall.execute(coinmarketcapUri + "/v1/cryptocurrency/listings/latest",
-                    parameters);
+            StringBuffer response = apiCall.execute(coinmarketcapUri + "/v1/cryptocurrency/listings/latest", parameters);
+            System.out.println("Response: " + response.toString());
 
             ObjectMapper objectMapper = new ObjectMapper();
             ListingLatestDTO result = objectMapper.readValue(response.toString(), ListingLatestDTO.class);
@@ -104,6 +104,8 @@ public class ListingLatest {
                     cryptoQuote.setMarketCapDominance(quote.getMarket_cap_dominance());
                     cryptoQuote.setFullyDilutedMarketCap(quote.getFully_diluted_market_cap());
                     cryptoQuote.setCrypto(crypto);
+                    cryptoQuote.setCirculatingSupply(data.getCirculating_supply());
+                    System.out.println("Quote updated: " + quote);
                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                     String dateString = quote.getLast_updated();
 
@@ -124,17 +126,18 @@ public class ListingLatest {
 
     @Transactional
     public void removeOldQuotes() {
+        // TODO
+        
+        // List<CryptoEntity> cryptos = cryptoRepo.findAll();
+        // for (CryptoEntity crypto : cryptos) {
+        //     List<CryptoQuoteEntity> quotes = cryptoQuoteRepo.findByCryptoIdOrderByLastUpdatedDesc(crypto.getId());
 
-        List<CryptoEntity> cryptos = cryptoRepo.findAll();
-        for (CryptoEntity crypto : cryptos) {
-            List<CryptoQuoteEntity> quotes = cryptoQuoteRepo.findByCryptoIdOrderByLastUpdatedDesc(crypto.getId());
-
-            for (int i = 0; i < quotes.size(); i++) {
-                if (i > 100) {
-                    cryptoQuoteRepo.delete(quotes.get(i));
-                    System.out.println("Quote deleted: " + quotes.get(i).getId());
-                }
-            }
-        }
+        //     for (int i = 0; i < quotes.size(); i++) {
+        //         if (i > 100) {
+        //             cryptoQuoteRepo.delete(quotes.get(i));
+        //             System.out.println("Quote deleted: " + quotes.get(i).getId());
+        //         }
+        //     }
+        // }
     }
 }

@@ -1,7 +1,7 @@
 package com.umb.tradingapp.service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -111,7 +111,8 @@ public class UserPortfolioService {
         }
         Double price = cryptoQuoteRepo.findByCryptoIdOrderByLastUpdatedDesc(cryptoEntity.getId()).get(0).getPrice();
         Double totalPrice = price * dto.getAmount();
-        createTransaction(dto.getAmount(), cryptoEntity, userEntity, price, totalPrice, TransactionType.BUY);
+        
+        createTransaction(dto.getAmount(), cryptoEntity, userEntity, price, totalPrice, TransactionType.BUY, userPortfolioEntity);
         portfolioRepo.save(portfolioEntity);
         userPortfolioRepo.save(userPortfolioEntity);
     }
@@ -136,26 +137,27 @@ public class UserPortfolioService {
             priceTotal = entity.getTotalPrice();
             pricePerUnit = entity.getPricePerUnit();
             portfolioRepo.delete(entity);
-            createTransaction(entity.getAmount(), cryptoEntity, userEntity, pricePerUnit, priceTotal, TransactionType.SELL);
+            createTransaction(entity.getAmount(), cryptoEntity, userEntity, pricePerUnit, priceTotal, TransactionType.SELL, entity.getUserPortfolio());
             return priceTotal;
         }
         entity.decreaseAmount(dto.getAmount());
         priceTotal = entity.getPrice(dto.getAmount());
         pricePerUnit = entity.getPricePerUnit();
         portfolioRepo.save(entity);
-        createTransaction(dto.getAmount(), cryptoEntity, userEntity, pricePerUnit, priceTotal, TransactionType.SELL);
+        createTransaction(dto.getAmount(), cryptoEntity, userEntity, pricePerUnit, priceTotal, TransactionType.SELL, entity.getUserPortfolio());
         return priceTotal;
     }
 
-    public void createTransaction(Float amount, CryptoEntity cryptoEntity, UserEntity userEntity, Double pricePerUnit, Double totalPrice, TransactionType type) {
+    public void createTransaction(Float amount, CryptoEntity cryptoEntity, UserEntity userEntity, Double pricePerUnit, Double totalPrice, TransactionType type, UserPortfolioEntity userPortfolioEntity) {
         TransactionEntity transactionEntity = new TransactionEntity();
         transactionEntity.setAmount(amount);
         transactionEntity.setCrypto(cryptoEntity);
         transactionEntity.setUser(userEntity);
         transactionEntity.setPricePerUnit(pricePerUnit);
         transactionEntity.setTotalPrice(totalPrice);
-        transactionEntity.setDateTime(LocalDateTime.now());
+        transactionEntity.setDateTime(new Date());
         transactionEntity.setType(type);
+        transactionEntity.setUserPortfolio(userPortfolioEntity);
 
         transactionRepo.save(transactionEntity);
         

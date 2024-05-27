@@ -17,19 +17,16 @@ import Portfolio from './pages/Portfolio';
 import User from './pages/User';
 
 const darkTheme = createTheme({
-  palette: {
+ palette: {
+    mode: 'dark',
     primary: {
       main: '#3f51b5',
     },
-    background: {
-      default: '#0b2948',
-      paper: '#0b2948'
-    },
-    text: {
-      primary: '#fff',
-      secondary: grey[500],
+    secondary: {
+      main: '#f50057',
     },
   },
+// 0b2948
   
 });
 

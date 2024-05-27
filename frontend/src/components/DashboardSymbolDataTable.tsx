@@ -7,6 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import useTheme from '@mui/material/styles/useTheme';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Symbol, SymbolResponse } from '../types';
 import Chart from 'react-apexcharts'
@@ -19,7 +20,7 @@ import { Box } from '@mui/material';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: theme.palette.primary.dark,
     color: theme.palette.common.white,
   },
   [`&.${tableCellClasses.body}`]: {
@@ -56,6 +57,7 @@ export default function DashboardSymbolDataTable() {
   const [open, setOpen] = React.useState(false);
 
 
+  const theme = useTheme();
   const { data, isError, isLoading, isSuccess } = useQuery({
     queryKey: ["symbol"],
     queryFn: getSymbols

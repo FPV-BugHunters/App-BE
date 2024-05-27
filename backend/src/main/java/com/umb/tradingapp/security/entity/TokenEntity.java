@@ -1,11 +1,13 @@
 package com.umb.tradingapp.security.entity;
 
+
+import java.util.Date;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 
 @Entity(name = "token")
 @Data
@@ -26,6 +28,6 @@ public class TokenEntity {
     private UserEntity user;
 
     @Column(name = "valid_until", columnDefinition = "TIMESTAMP")
-    private LocalDateTime createdAt;
+    private Date createdAt;
 
 }

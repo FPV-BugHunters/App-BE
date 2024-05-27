@@ -1,5 +1,9 @@
 package com.umb.tradingapp.dto;
 
+
+
+import java.util.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,4 +21,5 @@ public class TransactionDTO {
     private String cryptoName;
     private String cryptoSymbol;
     private String type;
+    private Date dateTime;
 }

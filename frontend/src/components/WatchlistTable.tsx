@@ -11,7 +11,7 @@ import DashboardSymbolDataTableChart from './DashboardSymbolDataTableChart';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: theme.palette.primary.dark,
     color: theme.palette.common.white,
   },
   [`&.${tableCellClasses.body}`]: {

@@ -128,16 +128,42 @@ public class UserService {
 
         for (TransactionEntity e : listEntity) {
             idEntity = e.getCrypto();
-            listDto.add(new TransactionDTO(
-                    e.getId(),
-                    e.getAmount(),
-                    e.getPricePerUnit(),
-                    e.getTotalPrice(),
-                    e.getUser().getId(),
-                    idEntity.getId(),
-                    idEntity.getName(),
-                    idEntity.getSymbol(),
-                    ((e.getType() == null) ? "null" : e.getType().toString())));
+            TransactionDTO transactionDTO = new TransactionDTO();
+            transactionDTO.setId(e.getId());
+            transactionDTO.setAmount(e.getAmount());
+            transactionDTO.setPricePerUnit(e.getPricePerUnit());
+            transactionDTO.setTotalPrice(e.getTotalPrice());
+            transactionDTO.setUserId(e.getUser().getId());
+            transactionDTO.setCryptoId(idEntity.getId());
+            transactionDTO.setCryptoName(idEntity.getName());
+            transactionDTO.setCryptoSymbol(idEntity.getSymbol());
+            transactionDTO.setType(((e.getType() == null) ? "null" : e.getType().toString()));
+            transactionDTO.setDateTime(e.getDateTime());
+            listDto.add(transactionDTO);
+        }
+        return listDto;
+    }
+
+    public List<TransactionDTO> getUserTransactionsByPortfolioId(Long userId, Long portfolioId) {
+        List<TransactionEntity> listEntity = transactionRepo.findByUserIdAndUserPortfolioIdOrderByDateTimeDesc(userId, portfolioId);
+        List<TransactionDTO> listDto = new ArrayList<>();
+        CryptoEntity idEntity;
+
+        for (TransactionEntity e : listEntity) {
+            idEntity = e.getCrypto();
+            TransactionDTO transactionDTO = new TransactionDTO();
+            transactionDTO.setId(e.getId());
+            transactionDTO.setAmount(e.getAmount());
+            transactionDTO.setPricePerUnit(e.getPricePerUnit());
+            transactionDTO.setTotalPrice(e.getTotalPrice());
+            transactionDTO.setUserId(e.getUser().getId());
+            transactionDTO.setCryptoId(idEntity.getId());
+            transactionDTO.setCryptoName(idEntity.getName());
+            transactionDTO.setCryptoSymbol(idEntity.getSymbol());
+            transactionDTO.setType(((e.getType() == null) ? "null" : e.getType().toString()));
+            transactionDTO.setDateTime(e.getDateTime());
+            System.out.println(transactionDTO);
+            listDto.add(transactionDTO);
         }
         return listDto;
     }

@@ -13,7 +13,7 @@ import com.umb.tradingapp.security.entity.UserEntity;
 import com.umb.tradingapp.security.repo.TokenRepository;
 import com.umb.tradingapp.security.repo.UserRepository;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -53,7 +53,7 @@ public class AuthenticationService {
         String randomString = UUID.randomUUID().toString();
         token.setToken(randomString);
         token.setUser(optionalUser.get());
-        token.setCreatedAt(LocalDateTime.now());
+        token.setCreatedAt(new Date());
         tokenRepository.save(token);
         System.out.println("token id: " + token.getToken());
 

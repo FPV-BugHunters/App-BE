@@ -1,8 +1,6 @@
 import * as React from 'react';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useState } from 'react';
 import IsAuthContext from '../contexts/IsAuthContext';
 import { useNavigate } from "react-router-dom";
 import { userInfo } from '../api/UserApi';

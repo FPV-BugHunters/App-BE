@@ -25,7 +25,7 @@ type CryptoList = {
     priceUSD: number;
 }
 
-export default function PortfolioCreateTransactionDialog(props: PortfolioCreateTransactionDialogProps) {
+export default function PortfolioCreateSellTransactionDialog(props: PortfolioCreateTransactionDialogProps) {
 
     const { onClose, open, type, selectedPortfolio, balance } = props;
     const [cryptoList2, setCryptoList2] = React.useState<CryptoList[]>([]);
@@ -109,7 +109,7 @@ export default function PortfolioCreateTransactionDialog(props: PortfolioCreateT
 
         <Dialog onClose={handleClose} open={open} sx={{ maxHeight: '70%', justifyContent: 'center', marginTop: 10 }}>
             <Box sx={{ margin: 5, }}>
-                <Typography variant="h4" component="div">{type.toUpperCase()} crypto</Typography>
+                <Typography variant="h4" component="div">Sell Crypto</Typography>
                 <Typography variant="h6" component="div" sx={{marginTop:"10px"}}>{balance && "Balance: $" + balance.toFixed(2)}</Typography>
 
                 <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>

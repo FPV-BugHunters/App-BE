@@ -5,22 +5,6 @@ import WatchlistAddDialog from '../components/WatchlistAddDialog';
 import { addSymbolToWatchlist, removeSymbolFromWatchlist, getWatchlist } from '../api/SymbolApi';
 import { useQuery } from '@tanstack/react-query';
 
-// const darkTheme = createTheme({
-//   palette: {
-//     primary: {
-//       main: '#3f51b5',
-//     },
-//     background: {
-//       default: '#0b2948',
-//       paper: '#0b2948'
-//     },
-//     text: {
-//       primary: '#fff',
-//       secondary: grey[500],
-//     },
-//   },
-  
-// });
 
 export default function Watchlist () {
     const theme = useTheme();

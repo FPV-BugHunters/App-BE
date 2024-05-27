@@ -20,8 +20,10 @@ import com.umb.tradingapp.dto.CryptoDTO;
 import com.umb.tradingapp.dto.CryptoPriceDTO;
 import com.umb.tradingapp.dto.PortfolioDTO;
 import com.umb.tradingapp.dto.TransactionDTO;
+import com.umb.tradingapp.entity.BalanceHistoryEntity;
 import com.umb.tradingapp.repo.CryptoQuoteRepository;
 import com.umb.tradingapp.security.entity.UserEntity;
+import com.umb.tradingapp.service.BalanceHistoryService;
 import com.umb.tradingapp.service.CryptoService;
 import com.umb.tradingapp.service.UserPortfolioService;
 import com.umb.tradingapp.service.UserService;
@@ -45,6 +47,9 @@ public class UserController {
 
     @Autowired
     private CryptoQuoteRepository cryptoQuoteRepo;
+
+    @Autowired
+    private BalanceHistoryService balanceHistory;
 
     /*
      * @Operation(summary = "DELETE user(token) - logout", description =
@@ -162,6 +167,12 @@ public class UserController {
 
         return userService.getUserTransactions(userId);
     }
+    
+    @GetMapping("/api/user/user-transactions/portfolio/{id}")
+    public List<TransactionDTO> getUserTransactionsByPortfolioId(@PathVariable Long id, HttpServletResponse response, HttpServletRequest request) {
+        UserEntity user = (UserEntity) request.getAttribute("user");
+        return userService.getUserTransactionsByPortfolioId(user.getId(), id);
+    }
 
     @GetMapping("/api/user/user-transactions/{id}")
     public TransactionDTO getTransaction(@PathVariable Long id, HttpServletResponse response,
@@ -191,6 +202,12 @@ public class UserController {
         
         UserEntity user = (UserEntity) request.getAttribute("user");
         return userService.getCryptoNotInWatchlist(user.getId());
+    }
+
+    @GetMapping("/api/user/balance-history")
+    public List<BalanceHistoryEntity> getBalanceHistory(HttpServletRequest request) {
+        UserEntity user = (UserEntity) request.getAttribute("user");
+        return balanceHistory.getBalanceHistory(user.getId());
     }
 
         

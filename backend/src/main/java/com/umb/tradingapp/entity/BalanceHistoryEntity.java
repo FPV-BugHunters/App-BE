@@ -1,6 +1,7 @@
 package com.umb.tradingapp.entity;
 
-import java.util.Set;
+
+import java.util.Date;
 
 import com.umb.tradingapp.security.entity.UserEntity;
 
@@ -10,7 +11,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,27 +18,25 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "user_portfolio")
-public class UserPortfolioEntity {
-
+@NoArgsConstructor
+@Table(name = "balance_history")
+public class BalanceHistoryEntity {
     @Id
     @GeneratedValue
     @Column(name = "id")
     private Long id;
+    
+    @Column(name = "balance")
+    private Double balance;
+    
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "date_time", columnDefinition = "TIMESTAMP")
+    private Date dateTime;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private UserEntity user;
-
-    @OneToMany(mappedBy = "userPortfolio")
-    private Set<PortfolioEntity> portfolios;
     
-    @OneToMany(mappedBy = "userPortfolio")
-    private Set<TransactionEntity> transactions;
 
 }

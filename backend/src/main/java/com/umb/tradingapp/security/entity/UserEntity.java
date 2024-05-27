@@ -5,9 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import jakarta.persistence.ManyToMany;
+
+import java.util.List;
 import java.util.Set;
 
+import com.umb.tradingapp.entity.BalanceHistoryEntity;
 import com.umb.tradingapp.entity.UserPortfolioEntity;
+import com.umb.tradingapp.service.BalanceHistoryService;
 
 @Entity(name = "users")
 @Data
@@ -53,4 +57,7 @@ public class UserEntity {
     @OneToMany(mappedBy = "user")
     private Set<UserPortfolioEntity> userPortfolios;
 
+    
+    @OneToMany(mappedBy = "user")
+    private List<BalanceHistoryEntity> historyBalances;
 }

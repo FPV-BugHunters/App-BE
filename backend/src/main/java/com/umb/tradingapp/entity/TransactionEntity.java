@@ -1,6 +1,7 @@
 package com.umb.tradingapp.entity;
 
-import java.time.LocalDateTime;
+
+import java.util.Date;
 
 import com.umb.tradingapp.security.entity.UserEntity;
 import com.umb.tradingapp.type.TransactionType;
@@ -36,6 +37,10 @@ public class TransactionEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
+    
+    @ManyToOne
+    @JoinColumn(name = "user_portfolio_id")
+    private UserPortfolioEntity userPortfolio;
 
     @Column(name = "amount")
     private Float amount;
@@ -47,7 +52,7 @@ public class TransactionEntity {
     private Double pricePerUnit;
 
     @Column(name = "date_time", columnDefinition = "TIMESTAMP")
-    private LocalDateTime dateTime;
+    private Date dateTime;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type")
