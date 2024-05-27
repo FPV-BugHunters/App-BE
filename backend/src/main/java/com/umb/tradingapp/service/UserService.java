@@ -60,21 +60,29 @@ public class UserService {
         return entity.getBalance();
     }
 
-    public Boolean addBalance(Double dto,  Long userId, HttpServletResponse response) {
+    public Boolean addBalance(Double dto, Long userId, HttpServletResponse response) {
         UserEntity entity = userRepository.getReferenceById(userId);
-        entity.setBalance(entity.getBalance() + dto);
+        Double currentBalance = entity.getBalance();
+        if (currentBalance == null) {
+            currentBalance = 0.0;
+        }
+        entity.setBalance(currentBalance + dto);
         userRepository.save(entity);
         return true;
     }
 
     public Boolean removeBalance(Double dto, HttpServletResponse response, Long userId) {
         UserEntity entity = userRepository.getReferenceById(userId);
-        entity.setBalance(entity.getBalance() - dto);
+        Double currentBalance = entity.getBalance();
+        if (currentBalance == null) {
+            currentBalance = 0.0;
+        }
+        entity.setBalance(currentBalance - dto);
         userRepository.save(entity);
         return true;
     }
 
-    public Boolean checkEnoughBalance(Double balance,  Long userId, HttpServletResponse response) {
+    public Boolean checkEnoughBalance(Double balance, Long userId, HttpServletResponse response) {
         UserEntity entity = userRepository.getReferenceById(userId);
         if (entity.getBalance() - balance < 0) {
             response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
@@ -145,7 +153,8 @@ public class UserService {
     }
 
     public List<TransactionDTO> getUserTransactionsByPortfolioId(Long userId, Long portfolioId) {
-        List<TransactionEntity> listEntity = transactionRepo.findByUserIdAndUserPortfolioIdOrderByDateTimeDesc(userId, portfolioId);
+        List<TransactionEntity> listEntity = transactionRepo.findByUserIdAndUserPortfolioIdOrderByDateTimeDesc(userId,
+                portfolioId);
         List<TransactionDTO> listDto = new ArrayList<>();
         CryptoEntity idEntity;
 
@@ -258,7 +267,7 @@ public class UserService {
             cryptoPriceDTO.setVolume(cryptoQuote.getVolume24h());
 
             List<CryptoQuoteEntity> history = cryptoQuoteRepo.findByCryptoIdOrderByLastUpdatedAsc(cryptoId.getId());
-            if(history.size() > 0) {
+            if (history.size() > 0) {
                 List<CryptoPriceHistoryDTO> priceHistory = new ArrayList<>();
                 for (CryptoQuoteEntity quote : history) {
                     CryptoPriceHistoryDTO historyDTO = new CryptoPriceHistoryDTO();
@@ -272,7 +281,6 @@ public class UserService {
         }
         return dtoList;
     }
-
 
     public CryptoPriceDTO getUserWatchlistItem(Long cryptoId, Long userId) {
         Optional<WatchlistEntity> optionalEntity = watchlistRepo.findByUserIdAndCryptoId(userId, cryptoId);
