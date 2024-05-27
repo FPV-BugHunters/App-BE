@@ -155,6 +155,7 @@ public class UserPortfolioService {
         pricePerUnit = entity.getPricePerUnit();
         portfolioRepo.save(entity);
         createTransaction(dto.getAmount(), cryptoEntity, userEntity, pricePerUnit, priceTotal, TransactionType.SELL, entity.getUserPortfolio());
+        
         portfolioValueHistory.savePortfolioValue();
         balanceHistory.saveBalance();
         return priceTotal;

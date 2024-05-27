@@ -11,6 +11,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import javax.sound.sampled.Port;
 
@@ -116,14 +117,9 @@ public class PortfolioValueHistoryService {
     public PortfolioValueHistoryDTO getPortfolioValue(Long userPortfolioId, Long userId) {
         PortfolioValueHistoryEntity portfolioValueHistory = portfolioValueHistoryRepo .findByUserPortfolioIdOrderByDateTimeDesc(userPortfolioId).get(0);
         
-        // if(portfolioValueHistory == null) {
-        //     return null;
-        // }
-
-        // if (portfolioValueHistory.getUserPortfolio().getUser().getId() != userPortfolioId) {
-        //     return null;
-        // }
-        
+         if (portfolioValueHistory == null) {
+            throw new NoSuchElementException("No PortfolioValue found with id " + id);
+        }
         PortfolioValueHistoryDTO dto = new PortfolioValueHistoryDTO();
         dto.setId(portfolioValueHistory.getId());
         dto.setValue(portfolioValueHistory.getValue());
