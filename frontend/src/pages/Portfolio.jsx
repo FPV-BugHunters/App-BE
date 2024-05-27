@@ -14,6 +14,8 @@ import PortfolioShowTable from '../components/PortfolioShowTable';
 import PortfolioShowTransactions from '../components/PortfolioShowTransactions';
 import PortfolioBalanceHistoryChart from '../components/PortfolioBalanceHistoryChart';
 import PortfolioValueHistoryChart from '../components/PortfolioValueHistoryChart';
+import PortfolioDepositDialog from '../components/PortfolioDepositDialog';
+import PortfolioWithdrawDialog from '../components/PortfolioWithdrawDialog';
 
 export default function Portfolio () {
     const theme = useTheme();
@@ -22,6 +24,9 @@ export default function Portfolio () {
 
     const [ createBuyTransactionDialogOpen, setCreateBuyTransactionDialogOpen ] = React.useState(false);
     const [ createSellTransactionDialogOpen, setCreateSellTransactionDialogOpen ] = React.useState(false);
+    
+    const [ createDepositDialogOpen, setCreateDepositDialogOpen ] = React.useState(false);
+    const [ createWithdrawDialogOpen, setCreateWithdrawDialogOpen ] = React.useState(false);
 
 
     // list user portfolios
@@ -70,15 +75,15 @@ export default function Portfolio () {
 // getPortfolioValueHistory
     
     const refresh = async () => {
-
-        console.log('refresh');
-        listUserPortfolioRefetch();
-        balanceRefetch(); 
-        listPortfolioRefetch();
-        transactionsRefetch();
-        balanceHistoryRefetch();
-        portfolioValueHistoryRefetch();
-        console.log(balanceHistory)
+        setTimeout(() => {
+            listUserPortfolioRefetch();
+            balanceRefetch(); 
+            listPortfolioRefetch();
+            transactionsRefetch();
+            balanceHistoryRefetch();
+            portfolioValueHistoryRefetch();
+            console.log(balanceHistory)
+        }, 300);
     }
     
 
@@ -104,8 +109,13 @@ export default function Portfolio () {
         <>
             <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: '20px', height: '50px' }}>
-                    <Button viariant="contained" color="primary" onClick={() => setCreateBuyTransactionDialogOpen(true) && refresh()} sx={{ bgcolor: theme.palette.primary.main, color: 'white' }}>Buy</Button>
-                    <Button viariant="contained" color="primary" onClick={() => setCreateSellTransactionDialogOpen(true) && refresh()} sx={{ bgcolor: theme.palette.primary.main, color: 'white' }}>Sell</Button>
+        
+                    <Button viariant="contained" color="primary" onClick={() => { setCreateDepositDialogOpen(true); refresh() ; }} sx={{ bgcolor: theme.palette.primary.main, color: 'white' }}>Deposit</Button>
+                    <Button viariant="contained" color="primary" onClick={() => { setCreateWithdrawDialogOpen(true); refresh(); }} sx={{ bgcolor: theme.palette.primary.main, color: 'white' }}>Withdraw</Button>
+
+                    <Button viariant="contained" color="primary" onClick={() => { setCreateBuyTransactionDialogOpen(true); refresh(); }} sx={{ bgcolor: theme.palette.primary.main, color: 'white' }}>Buy</Button>
+                    <Button viariant="contained" color="primary" onClick={() => { setCreateSellTransactionDialogOpen(true); refresh(); }} sx={{ bgcolor: theme.palette.primary.main, color: 'white' }}>Sell</Button>
+
                     {listuserPortfolioData && listuserPortfolioData.length === 0 && <Alert variant="filled" severity="error"> Create a portfolio to get started </Alert>}
                     <FormControl sx={{ minWidth: 100 }} >
 
@@ -121,15 +131,16 @@ export default function Portfolio () {
                     <PortfolioCreateDialog open={createPorfolioDialogOpen} onClose={() => setCreatePortfolioDialogOpen(false)} ></PortfolioCreateDialog>
                     <PortfolioCreateBuyTransactionDialog
                         selectedPortfolio={selectedPortfolio}
-                        open={createBuyTransactionDialogOpen} onClose={() => setCreateBuyTransactionDialogOpen(false) && refresh()}
+                        open={createBuyTransactionDialogOpen} onClose={() => {setCreateBuyTransactionDialogOpen(false) ; refresh();}}
                         balance={balance}
                     ></PortfolioCreateBuyTransactionDialog>
                     <PortfolioCreateSellTransactionDialog
                         selectedPortfolio={selectedPortfolio}
                         balance={balance}
-                        open={createSellTransactionDialogOpen} onClose={() => setCreateSellTransactionDialogOpen(false) && refresh()}
+                        open={createSellTransactionDialogOpen} onClose={() => { setCreateSellTransactionDialogOpen(false); refresh();}}
                     ></PortfolioCreateSellTransactionDialog>
-
+                    <PortfolioDepositDialog open={createDepositDialogOpen} onClose={() => { setCreateDepositDialogOpen(false); refresh(); }} balance={balance} ></PortfolioDepositDialog>
+                    <PortfolioWithdrawDialog open={createWithdrawDialogOpen} onClose={() => { setCreateWithdrawDialogOpen(false); refresh();}} balance={balance}></PortfolioWithdrawDialog>
 
                 </Box>
             </Container>

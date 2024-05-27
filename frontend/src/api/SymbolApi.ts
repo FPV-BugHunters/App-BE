@@ -93,7 +93,17 @@ export const getPortfolioValueHistory = (portfolioId: number): Promise<Portfolio
     .catch(error => { throw error; });
 }
 
+export const withdrawBalance = (amount: number): Promise<boolean> => {
+  return axios.post(`${import.meta.env.VITE_API_URL}/api/user/balance/remove`, amount, getAxiosConfig())
+    .then(response => response.data)
+    .catch(error => { throw error; });
+}
 
+export const depositBalance = (amount: number): Promise<boolean> => {
+  return axios.post(`${import.meta.env.VITE_API_URL}/api/user/balance/add`, amount, getAxiosConfig())
+    .then(response => response.data)
+    .catch(error => { throw error; });
+}
 
 
 
