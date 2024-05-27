@@ -11,6 +11,7 @@ export default function User () {
 
     const { isAuth, setIsAuth } = useContext(IsAuthContext);
     const { user, setUser } = useContext(UserContext);
+    console.log("user", user);
 
     return (
         <>

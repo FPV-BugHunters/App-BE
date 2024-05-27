@@ -20,14 +20,13 @@ export default function CheckUser () {
       .then((response) => {
         setUser(response.data);
         setIsAuth(true);
-
       })
       .catch((error) => {
         setUser(null);
         setIsAuth(false);
       });
-  }, []);
-  
-};
+  }, [isAuth]);
+
+}
 
 
