@@ -22,6 +22,11 @@ import org.apache.http.message.BasicNameValuePair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,6 +60,7 @@ public class BalanceHistoryService {
     @Autowired
     private BalanceHistoryRepository balanceHistoryRepo;
 
+    @Async
     @Transactional
     public void saveBalance() {
         List<UserEntity> users = userRepo.findAll();
@@ -69,8 +75,10 @@ public class BalanceHistoryService {
     
 
     public List<BalanceHistoryDTO> getBalanceHistory(Long userId) {
+
+        Pageable pageable = PageRequest.of(0, 100, Sort.by(Sort.Direction.DESC, "dateTime"));
         List<BalanceHistoryDTO> balanceHistoryDTO = new ArrayList<>();
-        List<BalanceHistoryEntity> balanceHistory = balanceHistoryRepo.findAll();   
+        List<BalanceHistoryEntity> balanceHistory = balanceHistoryRepo.findAll(pageable).getContent();
         for (BalanceHistoryEntity balance : balanceHistory) {
             if (balance.getUser().getId() == userId) {
                 BalanceHistoryDTO balanceDTO = new BalanceHistoryDTO();

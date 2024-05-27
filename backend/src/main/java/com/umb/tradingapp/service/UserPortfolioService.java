@@ -49,6 +49,12 @@ public class UserPortfolioService {
     @Autowired
     private TransactionRepository transactionRepo;
 
+    @Autowired
+    private BalanceHistoryService balanceHistory;
+
+    @Autowired
+    private PortfolioValueHistoryService portfolioValueHistory;
+
     public Boolean createUserPortfolio(HttpServletResponse response, Long userId, String name) {
         UserEntity user = userRepo.getReferenceById(userId);
         UserPortfolioEntity portfolio = new UserPortfolioEntity();
@@ -115,6 +121,10 @@ public class UserPortfolioService {
         createTransaction(dto.getAmount(), cryptoEntity, userEntity, price, totalPrice, TransactionType.BUY, userPortfolioEntity);
         portfolioRepo.save(portfolioEntity);
         userPortfolioRepo.save(userPortfolioEntity);
+
+        portfolioValueHistory.savePortfolioValue();
+        balanceHistory.saveBalance();
+
     }
 
     public boolean checkCryptoOwned(BuyTransactionDTO dto, HttpServletResponse response, Long userId) {
@@ -145,6 +155,8 @@ public class UserPortfolioService {
         pricePerUnit = entity.getPricePerUnit();
         portfolioRepo.save(entity);
         createTransaction(dto.getAmount(), cryptoEntity, userEntity, pricePerUnit, priceTotal, TransactionType.SELL, entity.getUserPortfolio());
+        portfolioValueHistory.savePortfolioValue();
+        balanceHistory.saveBalance();
         return priceTotal;
     }
 

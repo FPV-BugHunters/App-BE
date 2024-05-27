@@ -52,6 +52,12 @@ public class UserService {
 
     @Autowired
     CryptoRepository cryptoRepo;
+    
+    @Autowired
+    PortfolioValueHistoryService portfolioValueHistoryService;
+
+    @Autowired
+    BalanceHistoryService balanceHistoryService;
 
     private final String BALANCE = "Balance";
 
@@ -68,6 +74,7 @@ public class UserService {
         }
         entity.setBalance(currentBalance + dto);
         userRepository.save(entity);
+        balanceHistoryService.saveBalance();
         return true;
     }
 
@@ -79,6 +86,7 @@ public class UserService {
         }
         entity.setBalance(currentBalance - dto);
         userRepository.save(entity);
+        balanceHistoryService.saveBalance();
         return true;
     }
 

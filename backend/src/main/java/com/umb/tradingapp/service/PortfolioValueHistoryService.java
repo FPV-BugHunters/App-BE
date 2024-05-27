@@ -24,6 +24,8 @@ import org.hibernate.mapping.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
+import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +43,8 @@ import com.umb.tradingapp.repo.PortfolioValueHistoryRepository;
 import com.umb.tradingapp.repo.UserPortfolioRepository;
 import com.umb.tradingapp.security.entity.UserEntity;
 import com.umb.tradingapp.security.repo.UserRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 @Service
 public class PortfolioValueHistoryService {
@@ -62,7 +66,7 @@ public class PortfolioValueHistoryService {
     private PortfolioValueHistoryRepository portfolioValueHistoryRepo;
     
 
-
+    @Async
     @Transactional
     public void savePortfolioValue() { 
         List<UserPortfolioEntity> userPortfolios = userPortfolioRepo.findAll();
@@ -90,11 +94,9 @@ public class PortfolioValueHistoryService {
     }
     
     public List<PortfolioValueHistoryDTO> getPortfolioValueHistory(Long userId, Long userPortfolioId) {
-
-
-
         List<PortfolioValueHistoryDTO> portfolioValueHistoryDTO = new ArrayList<>();
-        List<PortfolioValueHistoryEntity> portfolioValueHistory = portfolioValueHistoryRepo.findAll();   
+        Pageable pageable = PageRequest.of(0, 100, Sort.by(Sort.Direction.DESC, "dateTime"));
+        List<PortfolioValueHistoryEntity> portfolioValueHistory = portfolioValueHistoryRepo .findAll(pageable).getContent();
         for (PortfolioValueHistoryEntity portfolio : portfolioValueHistory) {
             if (portfolio.getUserPortfolio().getId() == userPortfolioId) {
                 PortfolioValueHistoryDTO portfolioDTO = new PortfolioValueHistoryDTO();
