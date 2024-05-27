@@ -1,8 +1,9 @@
 
 import { getAxiosConfig } from '../config/AxiosConfig';
 import axios from 'axios';
-import { SymbolResponse, UserPortfolio } from '../types';
-
+import { BalanceHistory, PortfolioValueHistory, SymbolResponse, UserPortfolio } from '../types';
+import { BalanceHistoryDTO } from '../types';
+import { PortfolioValueHistory} from '../types';
 
 
 export const getSymbols = (): Promise<SymbolResponse[]> => {
@@ -78,5 +79,25 @@ export const getTransactionByPortfolioId = (userPortfolioId: number): Promise<Us
     .then(response => response.data)
     .catch(error => { throw error; });
 }
+
+export const getBalanceHistory = (): Promise<BalanceHistory[]> => {
+  return axios.get(`${import.meta.env.VITE_API_URL}/api/user/balance-history`, getAxiosConfig())
+    .then(response => response.data)
+    .catch(error => { throw error; });
+}
+
+
+export const getPortfolioValueHistory = (portfolioId: number): Promise<PortfolioValueHistory[]> => {
+  return axios.get(`${import.meta.env.VITE_API_URL}/api/user/portfolio-value-history?portfolioId=${portfolioId}`, getAxiosConfig())
+    .then(response => response.data)
+    .catch(error => { throw error; });
+}
+
+
+
+
+
+
+
 
 

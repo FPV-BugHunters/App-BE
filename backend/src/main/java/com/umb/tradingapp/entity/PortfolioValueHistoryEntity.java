@@ -22,24 +22,25 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "balance_history")
-public class BalanceHistoryEntity {
+@Table(name = "portfolio_value_history")
+public class PortfolioValueHistoryEntity {
     @Id
     @GeneratedValue
     @Column(name = "id")
     private Long id;
     
     @Column(name = "balance")
-    private Double balance;
-    
+    private Double value;
 
     @Column(name = "date_time", columnDefinition = "TIMESTAMP")
     private Date dateTime;
-
 
     @ManyToOne()
     @JoinColumn(name = "user_id")
     private UserEntity user;
     
-
+    
+    @ManyToOne()
+    @JoinColumn(name = "portfolio_id")
+    private UserPortfolioEntity userPortfolio;
 }

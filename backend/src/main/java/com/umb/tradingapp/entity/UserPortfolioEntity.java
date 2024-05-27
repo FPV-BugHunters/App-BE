@@ -1,5 +1,6 @@
 package com.umb.tradingapp.entity;
 
+import java.util.List;
 import java.util.Set;
 
 import com.umb.tradingapp.security.entity.UserEntity;
@@ -36,9 +37,9 @@ public class UserPortfolioEntity {
     private UserEntity user;
 
     @OneToMany(mappedBy = "userPortfolio")
-    private Set<PortfolioEntity> portfolios;
+    private List<PortfolioEntity> portfolios;
     
     @OneToMany(mappedBy = "userPortfolio")
-    private Set<TransactionEntity> transactions;
+    private List<TransactionEntity> transactions;
 
 }

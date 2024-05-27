@@ -15,16 +15,19 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import com.umb.tradingapp.dto.BalanceHistoryDTO;
 import com.umb.tradingapp.dto.BuyTransactionDTO;
 import com.umb.tradingapp.dto.CryptoDTO;
 import com.umb.tradingapp.dto.CryptoPriceDTO;
 import com.umb.tradingapp.dto.PortfolioDTO;
+import com.umb.tradingapp.dto.PortfolioValueHistoryDTO;
 import com.umb.tradingapp.dto.TransactionDTO;
 import com.umb.tradingapp.entity.BalanceHistoryEntity;
 import com.umb.tradingapp.repo.CryptoQuoteRepository;
 import com.umb.tradingapp.security.entity.UserEntity;
 import com.umb.tradingapp.service.BalanceHistoryService;
 import com.umb.tradingapp.service.CryptoService;
+import com.umb.tradingapp.service.PortfolioValueHistoryService;
 import com.umb.tradingapp.service.UserPortfolioService;
 import com.umb.tradingapp.service.UserService;
 
@@ -50,6 +53,9 @@ public class UserController {
 
     @Autowired
     private BalanceHistoryService balanceHistory;
+
+    @Autowired
+    private PortfolioValueHistoryService portfolioValueHistory;
 
     /*
      * @Operation(summary = "DELETE user(token) - logout", description =
@@ -205,9 +211,16 @@ public class UserController {
     }
 
     @GetMapping("/api/user/balance-history")
-    public List<BalanceHistoryEntity> getBalanceHistory(HttpServletRequest request) {
+    public List<BalanceHistoryDTO> getBalanceHistory(HttpServletRequest request) {
         UserEntity user = (UserEntity) request.getAttribute("user");
         return balanceHistory.getBalanceHistory(user.getId());
+    }
+    
+    @GetMapping("/api/user/portfolio-value-history")
+    public List<PortfolioValueHistoryDTO> getPortfolioValueHistory(HttpServletRequest request, HttpServletResponse response, Long portfolioId) {
+        UserEntity user = (UserEntity) request.getAttribute("user");
+
+        return portfolioValueHistory.getPortfolioValueHistory(user.getId(), portfolioId);
     }
 
         

@@ -54,7 +54,7 @@ public class UserEntity {
     )
     private Set<RoleEntity> roles;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user")
     private Set<UserPortfolioEntity> userPortfolios;
 
     

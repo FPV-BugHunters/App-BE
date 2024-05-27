@@ -52,7 +52,6 @@ public class ListingLatest {
 
         try {
             StringBuffer response = apiCall.execute(coinmarketcapUri + "/v1/cryptocurrency/listings/latest", parameters);
-            System.out.println("Response: " + response.toString());
 
             ObjectMapper objectMapper = new ObjectMapper();
             ListingLatestDTO result = objectMapper.readValue(response.toString(), ListingLatestDTO.class);
@@ -79,7 +78,6 @@ public class ListingLatest {
                 cryptoId.setSlug(data.getSlug());
                 cryptoId.setCmc_rank(data.getCmc_rank());
                 cryptoRepo.save(cryptoId);
-                System.out.println("Crypto updated: " + data.getName());
             }
         }
     }
@@ -105,7 +103,6 @@ public class ListingLatest {
                     cryptoQuote.setFullyDilutedMarketCap(quote.getFully_diluted_market_cap());
                     cryptoQuote.setCrypto(crypto);
                     cryptoQuote.setCirculatingSupply(data.getCirculating_supply());
-                    System.out.println("Quote updated: " + quote);
                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
                     String dateString = quote.getLast_updated();
 

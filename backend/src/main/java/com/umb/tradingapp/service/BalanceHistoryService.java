@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.umb.tradingapp.dto.BalanceHistoryDTO;
 import com.umb.tradingapp.dto.ListingLatestCryptoDataDTO;
 import com.umb.tradingapp.dto.ListingLatestDTO;
 import com.umb.tradingapp.dto.ListingLatestQuoteDTO;
@@ -67,8 +68,19 @@ public class BalanceHistoryService {
     }
     
 
-    public List<BalanceHistoryEntity> getBalanceHistory(Long userId) {
-        return balanceHistoryRepo.findByUserIdOrderByDateTimeAsc(userId);
+    public List<BalanceHistoryDTO> getBalanceHistory(Long userId) {
+        List<BalanceHistoryDTO> balanceHistoryDTO = new ArrayList<>();
+        List<BalanceHistoryEntity> balanceHistory = balanceHistoryRepo.findAll();   
+        for (BalanceHistoryEntity balance : balanceHistory) {
+            if (balance.getUser().getId() == userId) {
+                BalanceHistoryDTO balanceDTO = new BalanceHistoryDTO();
+                balanceDTO.setId(balance.getId());
+                balanceDTO.setBalance(balance.getBalance());
+                balanceDTO.setDateTime(balance.getDateTime());
+                balanceHistoryDTO.add(balanceDTO);
+            }
+        }
+        return balanceHistoryDTO;
     }
 
 
