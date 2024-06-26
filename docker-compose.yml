@@ -2,6 +2,7 @@ version: '3.9'
 
 volumes:
   pgadmin-data:
+  pgdata:
 
 services:
   postgres:
@@ -10,7 +11,7 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - ./postgres:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=password
       - POSTGRES_USER=user
