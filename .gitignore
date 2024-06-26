@@ -52,3 +52,4 @@ backend/src/main/resources/static
 backend/db-update.flag
 backend/static/*
 db-update.flag
+config

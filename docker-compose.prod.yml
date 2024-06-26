@@ -1,8 +1,8 @@
 version: '3.9'
-
 volumes:
-  pgadmin-data2:
-  pgdata2:
+  pgdata:
+  pgadmin-data:
+
 
 services:
   postgres:
@@ -11,11 +11,11 @@ services:
     ports:
       - 5432:5432
     volumes:
-      - pgdata2:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD=password
-      - POSTGRES_USER=user
-      - POSTGRES_DB=trading_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
 
   pgadmin:
     image: dpage/pgadmin4:latest
@@ -27,6 +27,18 @@ services:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: password
     volumes:
-      - pgadmin-data2:/var/lib/pgadmin     
+      - pgadmin-data:/var/lib/pgadmin     
+
+        
+  trading_app:
+    image: ghcr.io/fpv-bughunters/app-be:main
+    container_name: trading_app
+    ports:
+      - 8081:8080
+    volumes:
+      - ./config:/config
+    
+    
+    
 
   

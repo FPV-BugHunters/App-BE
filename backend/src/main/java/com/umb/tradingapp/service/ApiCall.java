@@ -21,9 +21,6 @@ public class ApiCall {
     @Value("${coinmarketcapApiKey}")
     private String coinmarketcapApiKey;
 
-    @Value("${coinrankingApiKey}")
-    private String coinrankingApiKey;
-
     @Value("${coinmarketcapUri}")
     private String coinmarketcapUri;
 
